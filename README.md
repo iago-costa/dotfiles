@@ -1,4 +1,5 @@
 -- https://quickref.me/vim
+-- https://github.com/ThePrimeagen/init.lua
 
 ## Commands nvim
     v = Visual Mode
@@ -6,7 +7,7 @@
     <Alt-otherkey> = Out insert mode
     y = Copy selected text (visual mode) 
     P = paste selected text (visual mode) 
-    > = tab (visual mode)
+    > = tab text (visual mode)
     < = same of the '>'
     R = set replace mode
     u = undo change 
@@ -41,38 +42,36 @@
     ggvG = Select all lines in file
     * = search all ocurrencies
 
-Within a Line:
+## Move cursor: Within a Line:
+    Start of Line: 0 = Moves the cursor to the beginning of the current line.
+    First Non-Blank Character of Line: ^ = Moves the cursor to the first non-blank character of the current line.
+    End of Line: $ = Moves the cursor to the end of the current line.
+    Next Word: w = Moves the cursor forward by one word.
+    Previous Word: b = Moves the cursor backward by one word.
 
-Start of Line: 0 = Moves the cursor to the beginning of the current line.
-First Non-Blank Character of Line: ^ = Moves the cursor to the first non-blank character of the current line.
-End of Line: $ = Moves the cursor to the end of the current line.
-Next Word: w = Moves the cursor forward by one word.
-Previous Word: b = Moves the cursor backward by one word.
+## Move cursor: Through the File:
+    First Line: gg = Moves the cursor to the first line of the file.
+    Last Line: G = Moves the cursor to the last line of the file.
+    Line Number: :<line_number> = Replace <line_number> with the line number you want to jump to. For example, :15 will jump to line 15.
+    Search for a Pattern: / = Opens the search prompt, allowing you to search for a specific pattern in the file. After typing the pattern, press Enter to jump to the next occurrence.
+    Next Occurrence: n = After performing a search, this will move the cursor to the next occurrence of the pattern.
+    Previous Occurrence: N = After performing a search, this will move the cursor to the previous occurrence of the pattern.
+    Top of the Screen: H = Moves the cursor to the top of the screen.
+    Middle of the Screen: M = Moves the cursor to the middle of the screen.
+    Bottom of the Screen: L = Moves the cursor to the bottom of the screen.
 
-Through the File:
-
-First Line: gg = Moves the cursor to the first line of the file.
-Last Line: G = Moves the cursor to the last line of the file.
-Line Number: :<line_number> = Replace <line_number> with the line number you want to jump to. For example, :15 will jump to line 15.
-Search for a Pattern: / = Opens the search prompt, allowing you to search for a specific pattern in the file. After typing the pattern, press Enter to jump to the next occurrence.
-Next Occurrence: n = After performing a search, this will move the cursor to the next occurrence of the pattern.
-Previous Occurrence: N = After performing a search, this will move the cursor to the previous occurrence of the pattern.
-Top of the Screen: H = Moves the cursor to the top of the screen.
-Middle of the Screen: M = Moves the cursor to the middle of the screen.
-Bottom of the Screen: L = Moves the cursor to the bottom of the screen.
-
-## Commands nvim-tree
+## Native Commands nvim-tree
     a = Create files and folders
     r = Rename files and folders
     Y = Copy relative Path
     W = Collapse
 
 
-To install Neovim on Ubuntu from a tar.gz file, you can follow these steps:
+To install Neovim on Old date distros from a tar.gz file, you can follow these steps:
 
 1. **Prerequisites**:
 
-   - Make sure you have `curl` and `tar` installed. If not, you can install them using the following command:
+   Make sure you have `curl` and `tar` installed. If not, you can install them using the following command:
      ```
      sudo apt-get update
      sudo apt-get install curl tar
