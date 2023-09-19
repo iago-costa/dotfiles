@@ -17,13 +17,8 @@ require('global_keys')
 -- Load mason to install LSP servers
 require("mason").setup()
 
--- Setup lsp-zero
-local lsp_zero = require('lsp-zero')
-
--- Setup lsp-zero keymaps
-lsp_zero.on_attach(function(client, bufnr)
-	lsp_zero.default_keymaps({buffer = bufnr})
-end)
+-- Load lsp configuration from setup_lsp.lua
+require('setup_lsp')
 
 -- Load lsp configuration auto-completion from lsp_cmp.lua
 require('lsp_cmp')

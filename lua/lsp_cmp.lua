@@ -6,7 +6,7 @@ cmp.setup({
         {name = 'nvim_lsp'},
         {name = 'luasnip'},
         {name = 'rust-tools'},
-        {name = 'pyright'},
+        -- {name = 'pyright'},
     },
     mapping = {
         ['<Enter>'] = cmp.mapping.confirm({select = false}),

@@ -2,10 +2,10 @@
 vim.keymap.set('n', '<leader>lt', [[<Cmd>ToggleTerm<CR>]])
 
 -- split term horizontally
-vim.keymap.set('n', '<leader>lh', [[<Cmd>ToggleTerm size=20 direction=horizontal<CR>]])
+vim.keymap.set('n', '<leader>lth', [[<Cmd>ToggleTerm size=20 direction=horizontal<CR>]])
 
 -- split term vertically
-vim.keymap.set('n', '<leader>lv', [[<Cmd>ToggleTerm size=70 direction=vertical<CR>]])
+vim.keymap.set('n', '<leader>ltv', [[<Cmd>ToggleTerm size=70 direction=vertical<CR>]])
 
 function _G.set_terminal_keymaps()
   local opts = {buffer = 0}
