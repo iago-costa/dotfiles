@@ -1,6 +1,9 @@
-    -- https://quickref.me/vim
-    -- https://github.com/ThePrimeagen/init.lua
+# Pre-config to nvim.
+(And optional but super recommended) -> Pre-config for tmux and zsh
 
+### Major references
+1. (https://quickref.me/vim)
+2. [](https://github.com/ThePrimeagen/init.lua)
 
 ## Commands nvim
     v = Visual Mode
