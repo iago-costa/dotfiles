@@ -2,8 +2,14 @@
 (And optional but super recommended) -> Pre-config for tmux and zsh
 
 ### Major references
-1. (https://quickref.me/vim)
-2. [](https://github.com/ThePrimeagen/init.lua)
+1. [quickref-vim](https://quickref.me/vim)
+2. [ThePrimeagen-Config-nvim](https://github.com/ThePrimeagen/init.lua)
+
+### Plus ./lua/setup_doc_keymap.lua
+An plugin to document and fast see all your custom keymaps
+An example in final of file: ./lua/global_keys.lua
+Preset keymap <Leader><Leader> == \\
+Enjoy!
 
 ## Commands nvim
     v = Visual Mode
