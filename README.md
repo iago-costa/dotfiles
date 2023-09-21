@@ -129,6 +129,7 @@ Now, Neovim should be installed on your Ubuntu system from the tar.gz file. You 
 ## Config for tmux
 
 1. **Install tmux**:
+Use package manager from your distro.
 
 To persist Tmux sessions across reboots and ensure they are automatically restored when you restart your computer, you can use a tool called `tmux-resurrect`. `tmux-resurrect` is a Tmux plugin that allows you to save and restore Tmux sessions and their contents. Here's how to set it up:
 
