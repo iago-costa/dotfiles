@@ -1,5 +1,7 @@
--- https://quickref.me/vim
--- https://github.com/ThePrimeagen/init.lua
+    -- https://quickref.me/vim
+    -- https://github.com/ThePrimeagen/init.lua
+    -- https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df -- To configure zsh
+
 
 ## Commands nvim
     v = Visual Mode
@@ -67,7 +69,7 @@
     W = Collapse
 
 
-To install Neovim on Old date distros from a tar.gz file, you can follow these steps:
+## To install Neovim on Old date distros from a tar.gz file, you can follow these steps:
 
 1. **Prerequisites**:
 
@@ -124,3 +126,63 @@ To install Neovim on Old date distros from a tar.gz file, you can follow these s
    This command should display the version information for Neovim.
 
 Now, Neovim should be installed on your Ubuntu system from the tar.gz file. You can start using Neovim by simply typing `nvim` in the terminal.
+
+
+
+## Config for tmux
+
+1. **Install tmux**:
+
+To persist Tmux sessions across reboots and ensure they are automatically restored when you restart your computer, you can use a tool called `tmux-resurrect`. `tmux-resurrect` is a Tmux plugin that allows you to save and restore Tmux sessions and their contents. Here's how to set it up:
+
+**Step 1: Install Tmux Plugin Manager (TPM) (if not already installed)**
+
+    If you haven't already installed TPM, you can do so by running the following command:
+
+    ```b\sh
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    ```
+
+**Step 2: Configure Tmux to Use `tmux-resurrect`**
+
+Edit your `~/.tmux.conf` file (or create it if it doesn't exist) and add the following lines to enable `tmux-resurrect`:
+
+```bash
+# Initialize TPM (Tmux Plugin Manager)
+set -g @plugin 'tmux-plugins/tpm'
+
+# Restore and save sessions with tmux-resurrect
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+```
+
+Reload Tmux to apply these changes by running:
+
+```bash
+tmux source-file ~/.tmux.conf
+```
+
+**Step 3: Save and Restore Sessions**
+
+Now that you have `tmux-resurrect` configured, you can save your Tmux session before shutting down your computer and automatically restore it when you start it up again:
+
+- To save your current Tmux session, press `Ctrl-b` (the Tmux prefix key, followed by `Ctrl-s` (for "save").
+
+- To restore your saved session after restarting your computer, press `Ctrl-b` followed by `Ctrl-r` (for "restore").
+
+**Step 4: Install 'tmux-continuum' (optional, but recommended)**
+
+`tmux-continuum` is another Tmux plugin that works well in conjunction with `tmux-resurrect` to automate the process. It periodically saves your sessions and provides additional options for customization.
+
+To install `tmux-continuum`, add the following line to your `~/.tmux.conf` file:
+
+```bash
+set -g @plugin 'tmux-plugins/tmux-continuum'
+```
+
+Then, run `tmux source-file ~/.tmux.conf` to apply the changes.
+
+With `tmux-continuum` installed, it will automatically save your Tmux sessions and restore them when you start Tmux.
+
+By following these steps, your Tmux sessions will be automatically persisted and restored across computer reboots, making it convenient to pick up where you left off.
+    
+

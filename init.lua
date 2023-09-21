@@ -73,3 +73,6 @@ require('setup_auto_save')
 
 -- Load setup_lazy_git.lua
 require('setup_lazy_git')
+
+-- Load setup_doc_keymap.lua
+require('setup_doc_keymap')
