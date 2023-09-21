@@ -64,7 +64,7 @@ function load_doc()
         row = float_row2,
         col = float_col2,
         style = "minimal",
-        focusable = false,
+        focusable = true,
         title = 'Doc',
         border = "rounded",
     }
@@ -73,6 +73,7 @@ function load_doc()
     -- Set the keymap for the windows
     -- Esc to quit the windows need affect the two windows in the same time
     vim.api.nvim_buf_set_keymap(float_bufnr, "n", "<Esc>", "<cmd>q!<CR>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(float_bufnr2, "n", "<Esc>", "<cmd>q!<CR>", { noremap = true, silent = true })
 
     -- Set see numbers in the windows
     vim.api.nvim_win_set_option(float_win, "number", true)
@@ -89,7 +90,7 @@ function load_doc()
     set_all_full_path_files_in_buffer(".config/nvim/lua", float_bufnr)
     
     -- Set on click dismiss the floating windows
-    vim.api.nvim_buf_set_keymap(float_bufnr, "n", "<LeftMouse>", "<cmd>q!<CR>", { noremap = true, silent = true })
+    -- vim.api.nvim_buf_set_keymap(float_bufnr, "n", "<LeftMouse>", "<cmd>q!<CR>", { noremap = true, silent = true })
     -- vim.api.nvim_buf_set_keymap(float_bufnr2, "n", "<LeftMouse>", "<cmd>q!<CR>", { noremap = true, silent = true })
 
     -- Set up the autocommands to trigger the function on cursor movement
@@ -97,9 +98,11 @@ function load_doc()
 
     -- Dismiss the autocmd when the window is closed
     vim.cmd([[autocmd BufWinLeave float_bufnr lua vim.cmd("autocmd! CursorMoved,CursorMovedI float_bufnr")]])
+    vim.cmd([[autocmd BufWinLeave float_bufnr2 lua vim.cmd("autocmd! CursorMoved,CursorMovedI float_bufnr2")]])
     
     -- Close the float_win2 when the float_win is closed
     vim.cmd([[autocmd BufWinLeave float_bufnr lua closeFloatWin2()]])
+    vim.cmd([[autocmd BufWinLeave float_bufnr2 lua closeFloatWin2()]])
 
     -- Define a custom highlight group for green text
     vim.api.nvim_command('highlight Green ctermfg=green guifg=green')
@@ -141,6 +144,9 @@ function load_doc_from_file_path(buffer, keymap_file_path)
         if start_marker and end_marker then
             keymap_contents = start_marker .. end_marker
             keymap_contents = keymap_contents:gsub("%-%- init doc key", "")
+            
+            -- Escape all - with %-
+            keymap_contents = keymap_contents:gsub("-", "%-")
 
             -- Transform the keymap contents line by line to remove the leading "-- "
             local keymap_lines = {}
@@ -148,7 +154,6 @@ function load_doc_from_file_path(buffer, keymap_file_path)
                 line = line:gsub("%-%- ", "")
                 table.insert(keymap_lines, line)
             end
-
 
             -- Load the keymap_lines_color in buffer
             vim.api.nvim_buf_set_lines(buffer, 0, -1, false, keymap_lines)
@@ -166,7 +171,8 @@ function load_doc_from_file_path(buffer, keymap_file_path)
                 local color_index = 1
                 for part in line:gmatch("([^:]+)") do
                     local color = colors[colors_index[color_index]] or color_reset
-                    local start_column, end_column = line:find(part)
+                    -- Use find with escape character - to find start_column and end_column
+                    local start_column, end_column = line:find(part, 1, true)
                     vim.api.nvim_buf_add_highlight(buffer, -1, color, index - 1, start_column - 1, end_column) 
                     color_index = color_index + 1
                 end
@@ -273,8 +279,9 @@ function get_all_full_path_files_in_dir(dir)
     local files = {}
     -- Get all full path files in dir
     for _, file in ipairs(vim.fn.globpath(dir, "*", true, true)) do
-        -- print("file: " .. file)
-        table.insert(files, file)
+        if verify_file_content(file) then
+            table.insert(files, file)
+        end
     end
     return files
 end
@@ -284,6 +291,23 @@ function set_all_full_path_files_in_buffer(dir, buffer)
     -- Concat $HOME with dir
     dir = vim.fn.expand("$HOME") .. "/" .. dir
     local files = get_all_full_path_files_in_dir(dir)
-    vim.api.nvim_buf_set_lines(buffer, 0, -1, false, files)
+    if #files == 0 then
+        print("No files with doc found in dir: " .. dir)
+    else
+        vim.api.nvim_buf_set_lines(buffer, 0, -1, false, files)
+    end
 end
 
+
+function verify_file_content(file_path)
+    -- Get only the file name which have -- init doc key and -- end doc key in the file
+ 
+    local file = io.open(file_path, "r")
+    if file then
+        local file_content = file:read("*a")
+        if file_content:find("init doc key", 1, true) and file_content:find("end doc key", 1, true) then
+            return true
+        end
+    end
+    return false
+end

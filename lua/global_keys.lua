@@ -73,3 +73,27 @@ vim.keymap.set("n", "<leader>wv", "<cmd>vsplit<CR>")
 -- Execute named command :LoadDoc
 vim.keymap.set("n", "<leader><leader>", "<cmd>LoadDoc<CR>")
 
+
+-- init doc key
+-- <Leader>ss : substitute word under cursor
+-- <Leader>sa : substitute word under cursor in whole file
+-- <Leader>sb : substitute word under cursor in whole file below cursor
+-- <Leader>sa : substitute word under cursor in whole file above cursor
+-- <Leader>sr : substitute word under cursor in range of lines
+-- <Leader>p : paste yanked text
+-- <Leader>y : yank to end of line and copy to system clipboard
+-- <Leader>d : delete the current char above the cursor
+-- <C-c> : exit insert mode
+-- <Leader>f : format current buffer
+-- <C-k> : move to next quickfix item
+-- <C-j> : move to previous quickfix item
+-- <Leader>k : move to next location list item
+-- <Leader>j : move to previous location list item
+-- <Leader>x : set file to executable
+-- <Tab> : tab in visual mode
+-- <S-Tab> : untab in visual mode
+-- <Leader>wh : split window horizontally
+-- <Leader>wv : split window vertically
+-- <Leader><Leader> : execute named command :LoadDoc
+-- end doc key
+
