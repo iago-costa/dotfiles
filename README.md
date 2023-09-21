@@ -190,6 +190,9 @@ By following these steps, your Tmux sessions will be automatically persisted and
 # Initialize TPM (Tmux Plugin Manager)
 set -g @plugin 'tmux-plugins/tpm'
 
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
+
 # Restore and save sessions with tmux-resurrect
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 
@@ -200,10 +203,7 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @resurrect-save-interval 60
 
 # Restore saved sessions on Tmux startup.
-run-shell '~/.tmux/plugins/tmux-resurrect/scripts/restore.sh'
-
-# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run '~/.tmux/plugins/tpm/tpm'       
+run-shell '$HOME/.tmux/plugins/tmux-resurrect/scripts/restore.sh'    
 ```
 
 ## Zsh file .zshrc
