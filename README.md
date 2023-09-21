@@ -186,7 +186,6 @@ With `tmux-continuum` installed, it will automatically save your Tmux sessions a
 By following these steps, your Tmux sessions will be automatically persisted and restored across computer reboots, making it convenient to pick up where you left off.
     
 ## Tmux file .tmux.conf
-```bash
 # Initialize TPM (Tmux Plugin Manager)
 set -g @plugin 'tmux-plugins/tpm'
 
@@ -203,7 +202,13 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @resurrect-save-interval 60
 
 # Restore saved sessions on Tmux startup.
-run-shell '$HOME/.tmux/plugins/tmux-resurrect/scripts/restore.sh'    
+run-shell '$HOME/.tmux/plugins/tmux-resurrect/scripts/restore.sh'
+
+# Enable mouse support (for scrolling with the mouse wheel).
+set -g mouse on
+
+# Use Vi-like key bindings for copy mode (optional).
+setw -g mode-keys vi    
 ```
 
 ## Zsh file .zshrc
