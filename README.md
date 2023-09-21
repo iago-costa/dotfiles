@@ -7,11 +7,14 @@
 
 ### Plus ./lua/setup_doc_keymap.lua
 An plugin to document and fast see all your custom keymaps
+
 An example in final of file: ./lua/global_keys.lua
+
 Preset keymap <Leader><Leader> == \\
+
 Enjoy!
 
-## Commands nvim
+## Major used commands nvim
     v = Visual Mode
     V = Visual line mode
     <Alt-otherkey> = Out insert mode
