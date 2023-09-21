@@ -20,3 +20,18 @@ end
 
 -- if you only want these mappings for toggle term use term://*toggleterm#* instead
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
+
+
+-- init doc key
+-- {'n'} <leader>lt : toggle term
+-- {'n'} <leader>lth : split term horizontally
+-- {'n'} <leader>ltv : split term vertically
+-- Internal keymaps for terminal mode
+-- {'t'} <esc> : exit terminal mode
+-- {'t'} jk : exit terminal mode
+-- {'t'} <C-h> : move to left window
+-- {'t'} <C-j> : move to bottom window
+-- {'t'} <C-k> : move to top window
+-- {'t'} <C-l> : move to right window
+-- {'t'} <C-w> : exit terminal mode
+-- end doc key

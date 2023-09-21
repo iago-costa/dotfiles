@@ -15,3 +15,10 @@ vim.api.nvim_set_keymap('n', '<Leader>nc', ':NvimTreeCollapse<CR>', { noremap = 
 -- ]]
 
 
+-- init doc key
+-- {'n'} <Leader>nt : toggle nvim tree
+-- {'n'} <Leader>no : open nvim tree
+-- {'n'} <Leader>nf : focus nvim tree
+-- {'n'} <Leader>nff : find file in nvim tree
+-- {'n'} <Leader>nc : collapse nvim tree
+-- end doc key

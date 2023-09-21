@@ -40,3 +40,10 @@ vim.api.nvim_set_keymap('n', '<Leader>th', ':Telescope help_tags<CR>', { noremap
 vim.api.nvim_set_keymap('n', '<Leader>tc', ':Telescope git_files<CR>', { noremap = true, silent = true })
 
 
+-- init doc key
+-- {'n'} <Leader>tf : find files
+-- {'n'} <Leader>tg : live grep
+-- {'n'} <Leader>tb : buffers
+-- {'n'} <Leader>th : help tags
+-- {'n'} <Leader>tc : git files
+-- end doc key

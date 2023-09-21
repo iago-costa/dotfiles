@@ -76,3 +76,6 @@ require('setup_lazy_git')
 
 -- Load setup_doc_keymap.lua
 require('setup_doc_keymap')
+
+-- Load setup_git_signs.lua
+require('setup_git_signs')

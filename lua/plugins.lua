@@ -94,6 +94,11 @@ require('packer').startup(function()
         },
     })
 
+    use {
+        'lewis6991/gitsigns.nvim', -- git signs to blame line and other cool stuff for git
+        requires = { 'nvim-lua/plenary.nvim' },
+    }
+
 end) 
 
 

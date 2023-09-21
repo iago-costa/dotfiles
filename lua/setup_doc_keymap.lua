@@ -1,3 +1,10 @@
+
+local START_MARKER_NAME = "init doc key"
+local START_MARKER = "%-%- " .. START_MARKER_NAME
+local END_MARKER_NAME = "end doc key"
+local END_MARKER = "%-%- " .. END_MARKER_NAME
+local SPECIAL_DOC_SEPARATOR = ":"
+
 function load_doc_named_commands()
     -- Set the named command to open the floating windows :LoadDoc
     vim.cmd([[command! LoadDoc lua load_doc()]])
@@ -75,6 +82,10 @@ function load_doc()
     vim.api.nvim_buf_set_keymap(float_bufnr, "n", "<Esc>", "<cmd>q!<CR>", { noremap = true, silent = true })
     vim.api.nvim_buf_set_keymap(float_bufnr2, "n", "<Esc>", "<cmd>q!<CR>", { noremap = true, silent = true })
 
+    -- <Leader><Leader> to quit the windows need affect the two windows in the same time
+    vim.api.nvim_buf_set_keymap(float_bufnr, "n", "<Leader><Leader>", "<cmd>q!<CR>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(float_bufnr2, "n", "<Leader><Leader>", "<cmd>q!<CR>", { noremap = true, silent = true })
+
     -- Set see numbers in the windows
     vim.api.nvim_win_set_option(float_win, "number", true)
     vim.api.nvim_win_set_option(float_win2, "number", true)
@@ -140,10 +151,10 @@ function load_doc_from_file_path(buffer, keymap_file_path)
         local keymap_contents = keymap_file:read("*a")
 
         -- Extract the block between "-- init doc key" and "-- end doc key"
-        local start_marker, end_marker = keymap_contents:match("(%-%- init doc key)(.-)(%-%- end doc key)")
+        local start_marker, end_marker = keymap_contents:match("(" .. START_MARKER .. ")(.-)(" .. END_MARKER .. ")")
         if start_marker and end_marker then
             keymap_contents = start_marker .. end_marker
-            keymap_contents = keymap_contents:gsub("%-%- init doc key", "")
+            keymap_contents = keymap_contents:gsub(START_MARKER, "")
             
             -- Escape all - with %-
             keymap_contents = keymap_contents:gsub("-", "%-")
@@ -169,7 +180,7 @@ function load_doc_from_file_path(buffer, keymap_file_path)
 
             for index, line in ipairs(keymap_lines) do
                 local color_index = 1
-                for part in line:gmatch("([^:]+)") do
+                for part in line:gmatch("([^" .. SPECIAL_DOC_SEPARATOR .. "]+)") do
                     local color = colors[colors_index[color_index]] or color_reset
                     -- Use find with escape character - to find start_column and end_column
                     local start_column, end_column = line:find(part, 1, true)
@@ -305,7 +316,7 @@ function verify_file_content(file_path)
     local file = io.open(file_path, "r")
     if file then
         local file_content = file:read("*a")
-        if file_content:find("init doc key", 1, true) and file_content:find("end doc key", 1, true) then
+        if file_content:find(START_MARKER_NAME, 1, true) and file_content:find(END_MARKER_NAME, 1, true) then
             return true
         end
     end
