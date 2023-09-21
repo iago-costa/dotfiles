@@ -131,7 +131,7 @@ Now, Neovim should be installed on your Ubuntu system from the tar.gz file. You 
 1. **Install tmux**:
 Use package manager from your distro.
 
-To persist Tmux sessions across reboots and ensure they are automatically restored when you restart your computer, you can use a tool called `tmux-resurrect`. `tmux-resurrect` is a Tmux plugin that allows you to save and restore Tmux sessions and their contents. Here's how to set it up:
+2. To persist Tmux sessions across reboots and ensure they are automatically restored when you restart your computer, you can use a tool called `tmux-resurrect`. `tmux-resurrect` is a Tmux plugin that allows you to save and restore Tmux sessions and their contents. Here's how to set it up:
 
 **Step 1: Install Tmux Plugin Manager (TPM) (if not already installed)**
 
@@ -211,7 +211,9 @@ setw -g mode-keys vi
 ```
 
 ## Zsh file .zshrc
-    -- https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df -- To install/configure zsh
+1. Link To install/configure: [Instal/Configure zsh and plugins](https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df) 
+
+2. Standard configuration
 ```bash
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
