@@ -1,6 +1,5 @@
     -- https://quickref.me/vim
     -- https://github.com/ThePrimeagen/init.lua
-    -- https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df -- To configure zsh
 
 
 ## Commands nvim
@@ -73,61 +72,59 @@
 
 1. **Prerequisites**:
 
-   Make sure you have `curl` and `tar` installed. If not, you can install them using the following command:
-     ```
-     sudo apt-get update
-     sudo apt-get install curl tar
-     ```
+Make sure you have `curl` and `tar` installed. If not, you can install them using the following command:
+ ```bash
+ sudo apt-get update
+ sudo apt-get install curl tar
+ ```
 
 2. **Download Neovim**:
 
-   You can download the latest release of Neovim from the official GitHub repository using `curl`. Replace `VERSION` with the desired version (e.g., `0.5.1`).
+You can download the latest release of Neovim from the official GitHub repository using `curl`. Replace `VERSION` with the desired version (e.g., `0.5.1`).
 
-   ```bash
-   curl -LO https://github.com/neovim/neovim/releases/download/vVERSION/nvim-linux64.tar.gz
-   ```
+```bash
+curl -LO https://github.com/neovim/neovim/releases/download/vVERSION/nvim-linux64.tar.gz
+```
 
-   For the latest version, you can check the releases page on the Neovim GitHub repository: https://github.com/neovim/neovim/releases
+For the latest version, you can check the releases page on the Neovim GitHub repository: https://github.com/neovim/neovim/releases
 
 3. **Extract the Tarball**:
 
-   Once the tar.gz file is downloaded, you can extract it using the following command:
+Once the tar.gz file is downloaded, you can extract it using the following command:
 
-   ```bash
-   tar -xzvf nvim-linux64.tar.gz
-   ```
+```bash
+tar -xzvf nvim-linux64.tar.gz
+```
 
-   This command will extract the contents of the tarball into a directory named `nvim-linux64`.
+This command will extract the contents of the tarball into a directory named `nvim-linux64`.
 
 4. **Move Neovim to /usr/local**:
 
-   It's a good practice to move Neovim to the `/usr/local` directory to make it available system-wide. Use the following command to move the extracted files:
+It's a good practice to move Neovim to the `/usr/local` directory to make it available system-wide. Use the following command to move the extracted files:
 
-   ```bash
-   sudo mv nvim-linux64 /usr/local/
-   ```
+```bash
+sudo mv nvim-linux64 /usr/local/
+```
 
 5. **Create Symbolic Links**:
 
-   Create symbolic links to the `nvim` executable in a directory that's included in your system's `PATH`. This makes it easier to run Neovim from the command line. Typically, `/usr/local/bin` is included in the `PATH`.
+Create symbolic links to the `nvim` executable in a directory that's included in your system's `PATH`. This makes it easier to run Neovim from the command line. Typically, `/usr/local/bin` is included in the `PATH`.
 
-   ```bash
-   sudo ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim
-   ```
+```bash
+sudo ln -s /usr/local/nvim-linux64/bin/nvim /usr/local/bin/nvim
+```
 
 6. **Verify Installation**:
 
-   You can verify that Neovim is installed correctly by running the following command:
+You can verify that Neovim is installed correctly by running the following command:
 
-   ```bash
-   nvim --version
-   ```
+```bash
+nvim --version
+```
 
-   This command should display the version information for Neovim.
+This command should display the version information for Neovim.
 
 Now, Neovim should be installed on your Ubuntu system from the tar.gz file. You can start using Neovim by simply typing `nvim` in the terminal.
-
-
 
 ## Config for tmux
 
@@ -137,11 +134,11 @@ To persist Tmux sessions across reboots and ensure they are automatically restor
 
 **Step 1: Install Tmux Plugin Manager (TPM) (if not already installed)**
 
-    If you haven't already installed TPM, you can do so by running the following command:
+If you haven't already installed TPM, you can do so by running the following command:
 
-    ```b\sh
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    ```
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
 
 **Step 2: Configure Tmux to Use `tmux-resurrect`**
 
@@ -149,142 +146,143 @@ Edit your `~/.tmux.conf` file (or create it if it doesn't exist) and add the fol
 
 ```bash
 # Initialize TPM (Tmux Plugin Manager)
-    set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tpm'
 
 # Restore and save sessions with tmux-resurrect
-    set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
 ```
 
-    Reload Tmux to apply these changes by running:
+Reload Tmux to apply these changes by running:
 
 ```bash
-    tmux source-file ~/.tmux.conf
+tmux source-file ~/.tmux.conf
 ```
 
 **Step 3: Save and Restore Sessions**
 
-    Now that you have `tmux-resurrect` configured, you can save your Tmux session before shutting down your computer and automatically restore it when you start it up again:
+Now that you have `tmux-resurrect` configured, you can save your Tmux session before shutting down your computer and automatically restore it when you start it up again:
 
-    - To save your current Tmux session, press `Ctrl-b` (the Tmux prefix key, followed by `Ctrl-s` (for "save").
+- To save your current Tmux session, press `Ctrl-b` (the Tmux prefix key, followed by `Ctrl-s` (for "save").
 
-    - To restore your saved session after restarting your computer, press `Ctrl-b` followed by `Ctrl-r` (for "restore").
+- To restore your saved session after restarting your computer, press `Ctrl-b` followed by `Ctrl-r` (for "restore").
 
-    **Step 4: Install 'tmux-continuum' (optional, but recommended)**
+**Step 4: Install 'tmux-continuum' (optional, but recommended)**
 
-    `tmux-continuum` is another Tmux plugin that works well in conjunction with `tmux-resurrect` to automate the process. It periodically saves your sessions and provides additional options for customization.
+`tmux-continuum` is another Tmux plugin that works well in conjunction with `tmux-resurrect` to automate the process. It periodically saves your sessions and provides additional options for customization.
 
-    To install `tmux-continuum`, add the following line to your `~/.tmux.conf` file:
+To install `tmux-continuum`, add the following line to your `~/.tmux.conf` file:
 
 ```bash
-    set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @plugin 'tmux-plugins/tmux-continuum'
 ```
 
-    Then, run `tmux source-file ~/.tmux.conf` to apply the changes.
+Then, run `tmux source-file ~/.tmux.conf` to apply the changes.
 
-    With `tmux-continuum` installed, it will automatically save your Tmux sessions and restore them when you start Tmux.
+With `tmux-continuum` installed, it will automatically save your Tmux sessions and restore them when you start Tmux.
 
-    By following these steps, your Tmux sessions will be automatically persisted and restored across computer reboots, making it convenient to pick up where you left off.
+By following these steps, your Tmux sessions will be automatically persisted and restored across computer reboots, making it convenient to pick up where you left off.
         
 ## Tmux file .tmux.conf
 ```bash
-    # Initialize TPM (Tmux Plugin Manager)
-    set -g @plugin 'tmux-plugins/tpm'
+# Initialize TPM (Tmux Plugin Manager)
+set -g @plugin 'tmux-plugins/tpm'
 
-    # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-    run '~/.tmux/plugins/tpm/tpm'
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
 
-    # Restore and save sessions with tmux-resurrect
-    set -g @plugin 'tmux-plugins/tmux-resurrect'
+# Restore and save sessions with tmux-resurrect
+set -g @plugin 'tmux-plugins/tmux-resurrect'
 
-    # Continuum keeps tmux environment up to date
-    set -g @plugin 'tmux-plugins/tmux-continuum'
+# Continuum keeps tmux environment up to date
+set -g @plugin 'tmux-plugins/tmux-continuum'
 
-    # Automatically save the Tmux session every few minutes (e.g., every 1 minutes).
-    set -g @resurrect-save-interval 60
+# Automatically save the Tmux session every few minutes (e.g., every 1 minutes).
+set -g @resurrect-save-interval 60
 
-    # Restore saved sessions on Tmux startup.
-    run-shell '$HOME/.tmux/plugins/tmux-resurrect/scripts/restore.sh'
+# Restore saved sessions on Tmux startup.
+run-shell '$HOME/.tmux/plugins/tmux-resurrect/scripts/restore.sh'
 
-    # Enable mouse support (for scrolling with the mouse wheel).
-    set -g mouse on
+# Enable mouse support (for scrolling with the mouse wheel).
+set -g mouse on
 
-    # Use Vi-like key bindings for copy mode (optional).
-    setw -g mode-keys vi    
+# Use Vi-like key bindings for copy mode (optional).
+setw -g mode-keys vi    
 ```
 
 ## Zsh file .zshrc
+    -- https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df -- To install/configure zsh
 ```bash
-    if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-      source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-    fi
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-    export PATH=$HOME/bin:/usr/local/bin:$PATH
-    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-    export PATH=$JAVA_HOME/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+export PATH=$JAVA_HOME/bin:$PATH
 
-    # Path to your oh-my-zsh installation.
-    export ZSH="$HOME/.oh-my-zsh"
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
 
-    ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
-    SAVEHIST=99999
+SAVEHIST=99999
 
-    plugins=(
-        git 
-        zsh-autosuggestions 
-        zsh-syntax-highlighting 
-        fast-syntax-highlighting 
-        zsh-autocomplete
-        bundler
-        dotenv
-        rake
-        rbenv
-        ruby
-        npm # you added this
-        thefuck
-        docker
-        docker-compose
-        timer
-        fasd
-        direnv
-        dirhistory
-        fzf-tab
-    )
+plugins=(
+    git 
+    zsh-autosuggestions 
+    zsh-syntax-highlighting 
+    fast-syntax-highlighting 
+    zsh-autocomplete
+    bundler
+    dotenv
+    rake
+    rbenv
+    ruby
+    npm # you added this
+    thefuck
+    docker
+    docker-compose
+    timer
+    fasd
+    direnv
+    dirhistory
+    fzf-tab
+)
 
-    source $ZSH/oh-my-zsh.sh
+source $ZSH/oh-my-zsh.sh
 
-    alias a='fasd -a'        # any
-    alias s='fasd -si'       # show / search / select
-    alias d='fasd -d'        # directory
-    alias f='fasd -f'        # file
-    alias sd='fasd -sid'     # interactive directory selection
-    alias sf='fasd -sif'     # interactive file selection
-    alias z='fasd_cd -d'     # cd, same functionality as j in autojump
-    alias zz='fasd_cd -d -i' # cd with interactive selection
-    alias op="fzf --print0 | xargs -0 -o xdg-open $1"
-    alias opd="find / -type d | fzf --print0 | xargs -0 -o xdg-open $1"
+alias a='fasd -a'        # any
+alias s='fasd -si'       # show / search / select
+alias d='fasd -d'        # directory
+alias f='fasd -f'        # file
+alias sd='fasd -sid'     # interactive directory selection
+alias sf='fasd -sif'     # interactive file selection
+alias z='fasd_cd -d'     # cd, same functionality as j in autojump
+alias zz='fasd_cd -d -i' # cd with interactive selection
+alias op="fzf --print0 | xargs -0 -o xdg-open $1"
+alias opd="find / -type d | fzf --print0 | xargs -0 -o xdg-open $1"
 
-    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -TFl --group-directories-first --icons --git -L 2 --no-user $realpath'
-    zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
-    zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
-    zstyle ':fzf-tab:complete:pacman:*' fzf-preview 'pacman -Si $word'
-    zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -TFl --group-directories-first --icons --git -L 2 --no-user $realpath'
+zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
+zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
+zstyle ':fzf-tab:complete:pacman:*' fzf-preview 'pacman -Si $word'
+zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
 
-    zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview 'git diff $word | delta'
-    zstyle ':fzf-tab:complete:git-log:*' fzf-preview 'git show --color=always $word'
-    zstyle ':fzf-tab:complete:git-help:*' fzf-preview 'git help $word | bat -plman --color=always'
+zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview 'git diff $word | delta'
+zstyle ':fzf-tab:complete:git-log:*' fzf-preview 'git show --color=always $word'
+zstyle ':fzf-tab:complete:git-help:*' fzf-preview 'git help $word | bat -plman --color=always'
 
 
-    [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-    export PATH=$JAVA_HOME/bin:$PATH
-    # export SDKMANAGER=/home/gup/Android/Sdk/cmdline-tools/latest/bin
-    export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
-    export PATH=$SDKMANAGER:$PATH
-    export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
-    export PATH=/opt/flutter/bin:$PATH
-    export RUST_BACKTRACE=full
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+export PATH=$JAVA_HOME/bin:$PATH
+# export SDKMANAGER=/home/gup/Android/Sdk/cmdline-tools/latest/bin
+export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
+export PATH=$SDKMANAGER:$PATH
+export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
+export PATH=/opt/flutter/bin:$PATH
+export RUST_BACKTRACE=full
 
-    [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
+[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
 ```
