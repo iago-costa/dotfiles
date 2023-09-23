@@ -41,9 +41,9 @@ vim.api.nvim_set_keymap('n', '<Leader>tc', ':Telescope git_files<CR>', { noremap
 
 
 -- init doc key
--- {'n'} <Leader>tf : find files
--- {'n'} <Leader>tg : live grep
--- {'n'} <Leader>tb : buffers
--- {'n'} <Leader>th : help tags
--- {'n'} <Leader>tc : git files
+-- {'n'} <Leader>tf = find files
+-- {'n'} <Leader>tg = live grep
+-- {'n'} <Leader>tb = buffers
+-- {'n'} <Leader>th = help tags
+-- {'n'} <Leader>tc = git files
 -- end doc key

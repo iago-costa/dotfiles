@@ -4,5 +4,5 @@ vim.api.nvim_set_keymap("v", "<leader>ri", [[ <Esc><Cmd>lua require('refactoring
 
 
 -- init doc key
--- {'v'} <leader>ri : inline variable
+-- {'v'} <leader>ri = inline variable
 -- end doc key

@@ -15,8 +15,8 @@ vim.keymap.set("n", "<leader>xd", "<cmd>TroubleToggle lsp_document_diagnostics<c
 )
 
 -- init doc key
--- {'n'} <leader>xq : toggle quickfix
--- {'n'} <leader>xl : toggle loclist
--- {'n'} <leader>xw : toggle lsp workspace diagnostics
--- {'n'} <leader>xd : toggle lsp document diagnostics
+-- {'n'} <leader>xq = toggle quickfix
+-- {'n'} <leader>xl = toggle loclist
+-- {'n'} <leader>xw = toggle lsp workspace diagnostics
+-- {'n'} <leader>xd = toggle lsp document diagnostics
 -- end doc key

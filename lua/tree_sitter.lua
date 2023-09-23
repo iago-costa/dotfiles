@@ -29,6 +29,6 @@ vim.api.nvim_set_keymap('n', '<leader>su', ':TSHighlightCapturesUnderCursor<CR>'
 
 
 -- init doc key
--- {'n'} <leader>st : toggle treesitter playground
--- {'n'} <leader>su : highlight captures under cursor
+-- {'n'} <leader>st = toggle treesitter playground
+-- {'n'} <leader>su = highlight captures under cursor
 -- end doc key

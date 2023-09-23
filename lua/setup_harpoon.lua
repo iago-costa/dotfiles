@@ -18,8 +18,8 @@ vim.keymap.set("n", "<C-z>", mark.clear_all)
 
 
 -- init doc key
--- {'n'} <C-a> : add file to harpoon
--- {'n'} <C-e> : toggle quick menu
--- {'n'} <C-x> : clear file from harpoon
--- {'n'} <C-z> : clear all marks
+-- {'n'} <C-a> = add file to harpoon
+-- {'n'} <C-e> = toggle quick menu
+-- {'n'} <C-x> = clear file from harpoon
+-- {'n'} <C-z> = clear all marks
 -- end doc key

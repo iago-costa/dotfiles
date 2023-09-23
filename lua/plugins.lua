@@ -95,8 +95,13 @@ require('packer').startup(function()
     })
 
     use {
-        'lewis6991/gitsigns.nvim', -- git signs to blame line and other cool stuff for git
+        'lewis6991/gitsigns.nvim', -- git signs to blame line, highlight diff and other cool stuff for git
         requires = { 'nvim-lua/plenary.nvim' },
+    }
+
+    use { --  multiple cursors
+        'mg979/vim-visual-multi',
+        branch = 'master'
     }
 
 end) 

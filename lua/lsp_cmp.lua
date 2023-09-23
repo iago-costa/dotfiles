@@ -37,11 +37,11 @@ cmp.setup({
 })
 
 -- init doc key
--- Enter : confirm completion
--- Esc : abort completion
--- Up : select prev item
--- Down : select next item
--- C-d : scroll documentation up
--- C-f : scroll documentation down
--- C-p : select prev item
+-- Enter = confirm completion
+-- Esc = abort completion
+-- Up = select prev item
+-- Down = select next item
+-- C-d = scroll documentation up
+-- C-f = scroll documentation down
+-- C-p = select prev item
 -- end doc key

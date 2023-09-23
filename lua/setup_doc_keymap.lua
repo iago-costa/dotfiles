@@ -1,13 +1,8 @@
-
-
-local setup_doc_keymap = {}
-
-
 local START_MARKER_NAME = "init doc key"
 local START_MARKER = "%-%- " .. START_MARKER_NAME
 local END_MARKER_NAME = "end doc key"
 local END_MARKER = "%-%- " .. END_MARKER_NAME
-local SPECIAL_DOC_SEPARATOR = ":"
+local SPECIAL_DOC_SEPARATOR = "="
 
 local KEYMAP_WIN_BUFFER_NAME = "float_bufnr"
 local DOC_WIN_BUFFER_NAME = "float_bufnr2"
@@ -18,7 +13,7 @@ local ACTUAL_LINE = 1
 
 function load_doc_named_commands()
     -- Set the named command to open the floating windows :LoadDoc
-    vim.cmd([[command! LoadDoc lua load_doc()]])
+    vim.cmd([[command! ToggleLoadDoc lua load_doc()]])
 end
 
 load_doc_named_commands()
@@ -134,6 +129,10 @@ function load_doc()
     vim.api.nvim_buf_set_keymap(float_bufnr3, "i", "<Up>", "<cmd>lua move_virtual_cursor_above()<CR>", { noremap = true, silent = true })
     vim.api.nvim_buf_set_keymap(float_bufnr3, "i", "<Down>", "<cmd>lua move_virtual_cursor_bellow()<CR>", { noremap = true, silent = true })
 
+    -- On Enter in the window float_win3, execute function open_file_by_path in normal mode
+    vim.api.nvim_buf_set_keymap(float_bufnr3, "n", "<CR>", "<cmd>lua open_file_by_path()<CR><Esc>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(float_bufnr3, "i", "<CR>", "<cmd>lua open_file_by_path()<CR><Esc>", { noremap = true, silent = true })
+
     -- Set the content of the first window
     set_all_full_path_files_in_buffer(PATH_FILES_LUA, float_bufnr)
 
@@ -149,9 +148,9 @@ function load_doc()
     vim.cmd([[autocmd BufWinLeave ]] .. FILTER_WIN_BUFFER_NAME .. [[ lua vim.cmd("autocmd! CursorMoved,CursorMovedI ]] .. FILTER_WIN_BUFFER_NAME .. [[")]])
 
     -- Close the float_win2 when the float_win is closed
-    vim.cmd([[autocmd BufWinLeave ]] .. KEYMAP_WIN_BUFFER_NAME .. [[ lua closeFloatWindows()]])
-    vim.cmd([[autocmd BufWinLeave ]] .. DOC_WIN_BUFFER_NAME .. [[ lua closeFloatWindows()]])
-    vim.cmd([[autocmd BufWinLeave ]] .. FILTER_WIN_BUFFER_NAME .. [[ lua closeFloatWindows()]])
+    vim.cmd([[autocmd BufWinLeave ]] .. KEYMAP_WIN_BUFFER_NAME .. [[ lua close_float_windows()]])
+    vim.cmd([[autocmd BufWinLeave ]] .. DOC_WIN_BUFFER_NAME .. [[ lua close_float_windows()]])
+    vim.cmd([[autocmd BufWinLeave ]] .. FILTER_WIN_BUFFER_NAME .. [[ lua close_float_windows()]])
 
     -- Define a custom highlight group for green text
     vim.api.nvim_command('highlight Green ctermfg=green guifg=green')
@@ -164,6 +163,18 @@ function load_doc()
 
     -- Define a custom highlight group for black text
     vim.api.nvim_command('highlight White ctermfg=white guifg=white')
+end
+
+
+function open_file_by_path()
+    local keymap_buffer_id = get_buffer_id_by_name(KEYMAP_WIN_BUFFER_NAME)
+    local line = vim.api.nvim_buf_get_lines(keymap_buffer_id, ACTUAL_LINE - 1, ACTUAL_LINE, false)[1]
+
+    -- dismiss the windows after open the file
+    close_float_windows()
+    
+    vim.cmd("e " .. line)
+
 end
 
 
@@ -232,25 +243,25 @@ function move_virtual_cursor_above()
 end
 
 
-
-function closeFloatWindows()
+function close_float_windows()
     local float_win = vim.fn.win_findbuf(vim.fn.bufnr(KEYMAP_WIN_BUFFER_NAME))
     local float_win2 = vim.fn.win_findbuf(vim.fn.bufnr(DOC_WIN_BUFFER_NAME))
     local float_win3 = vim.fn.win_findbuf(vim.fn.bufnr(FILTER_WIN_BUFFER_NAME))
 
     -- Close the float_win
     if float_win[1] then
-        vim.api.nvim_win_close(float_win[1], true)
+        -- try catch to avoid error when the window is closed
+        pcall(vim.api.nvim_win_close, float_win[1], true)
     end
 
     -- Close the float_win2
     if float_win2[1] then
-        vim.api.nvim_win_close(float_win2[1], true)
+        pcall(vim.api.nvim_win_close, float_win2[1], true)
     end
 
     -- Close the float_win3
     if float_win3[1] then
-        vim.api.nvim_win_close(float_win3[1], true)
+        pcall(vim.api.nvim_win_close, float_win3[1], true)
     end
 end
 
@@ -262,7 +273,6 @@ function load_doc_from_file_path(buffer, keymap_file_path)
     if keymap_file then
         local keymap_contents = keymap_file:read("*a")
 
-        -- Extract the block between "-- init doc key" and "-- end doc key"
         local start_marker, end_marker = keymap_contents:match("(" .. START_MARKER .. ")(.-)(" .. END_MARKER .. ")")
         if start_marker and end_marker then
             keymap_contents = start_marker .. end_marker
@@ -307,7 +317,7 @@ function load_doc_from_file_path(buffer, keymap_file_path)
 end
 
 
-local function set_lines_by_buffer_name(current_buf_name, lines)
+function set_lines_by_buffer_name(current_buf_name, lines)
     local buf_id = get_buffer_id_by_name(current_buf_name)
 
     if buf_id then

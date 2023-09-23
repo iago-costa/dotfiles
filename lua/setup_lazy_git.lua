@@ -9,8 +9,8 @@ map("n", "<leader>lff", "<cmd>LazyGitFilterCurrentFile<CR>", opts)
 
 
 -- init doc key
--- {'n'} <leader>lg : open lazygit
--- {'n'} <leader>lc : open lazygit config
--- {'n'} <leader>lf : open lazygit filter
--- {'n'} <leader>lff : open lazygit filter current file
+-- {'n'} <leader>lg = open lazygit
+-- {'n'} <leader>lc = open lazygit config
+-- {'n'} <leader>lf = open lazygit filter
+-- {'n'} <leader>lff = open lazygit filter current file
 -- end doc key
