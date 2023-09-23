@@ -104,9 +104,9 @@ function load_doc()
     vim.api.nvim_buf_set_keymap(float_bufnr3, "n", "<Esc>", "<cmd>q!<CR>", { noremap = true, silent = true })
 
     -- <Leader><Leader> to quit the windows 
-    vim.api.nvim_buf_set_keymap(float_bufnr, "n", "<Leader><Leader>", "<cmd>q!<CR>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(float_bufnr2, "n", "<Leader><Leader>", "<cmd>q!<CR>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(float_bufnr3, "n", "<Leader><Leader>", "<cmd>q!<CR>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(float_bufnr, "n", "<Leader>m", "<cmd>q!<CR>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(float_bufnr2, "n", "<Leader>m", "<cmd>q!<CR>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(float_bufnr3, "n", "<Leader>m", "<cmd>q!<CR>", { noremap = true, silent = true })
 
     -- Set see numbers in the windows
     vim.api.nvim_win_set_option(float_win, "number", true)

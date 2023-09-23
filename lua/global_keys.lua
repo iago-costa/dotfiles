@@ -20,8 +20,8 @@ vim.keymap.set("n", "<M-Down>", ":m .+1<CR><Esc>") -- Move line to down in norma
 vim.keymap.set("n", "J", "mzJ`z") -- Jump to above line in relational to current line
 vim.keymap.set("n", "K", "mzJ`z") -- Jump to below line in relational to current line
 
-vim.keymap.set("n", "<C-Up>", "<C-u>zz") -- UP page cursor movement to keep cursor in middle of screen
-vim.keymap.set("n", "<c-Down>", "<c-d>zz") -- Down page cursor movement to keep cursor in middle of screen
+vim.keymap.set("n", "<S-C-Up>", "<C-u>zz") -- UP page cursor movement to keep cursor in middle of screen
+vim.keymap.set("n", "<S-C-Down>", "<c-d>zz") -- Down page cursor movement to keep cursor in middle of screen
 
 vim.keymap.set("n", "f", "fzz") -- Jump to char n in current line forward
 vim.keymap.set("n", "F", "Fzz") -- Jump to char n in current line backwards
@@ -78,7 +78,8 @@ vim.keymap.set("i", "<S-Tab>", function() -- Untab in insert mode
     vim.api.nvim_win_set_cursor(0, {line, vim.api.nvim_win_get_cursor(0)[2] - 4})
 end)
 
-vim.cmd([[ -- Define the FocusNextWindow and FocusPreviousWindow commands
+-- Define the FocusNextWindow and FocusPreviousWindow commands
+vim.cmd([[ 
   command! FocusNextWindow lua focus_next_window()
   command! FocusPreviousWindow lua focus_previous_window()
 ]])
@@ -115,7 +116,7 @@ vim.api.nvim_set_keymap('n', '<S-M-Left>', ':FocusPreviousWindow<CR>', { noremap
 vim.keymap.set("n", "<leader>wh", "<cmd>split<CR>") -- Split window horizontally
 vim.keymap.set("n", "<leader>wv", "<cmd>vsplit<CR>") -- Split window vertically
 
-vim.keymap.set("n", "<leader><leader>", "<cmd>ToggleLoadDoc<CR>") -- Execute named command :TogleLoadDoc
+vim.keymap.set("n", "<leader>m", "<cmd>ToggleLoadDoc<CR>") -- Execute named command :TogleLoadDoc
 
 vim.keymap.set("n", "<Enter>", "o<Esc>") -- <Enter> in normal mode insert a new line above the cursor and move cursor to new line
 
@@ -143,8 +144,8 @@ vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")
 -- {'v', 'n', 'i'} <M-Up> = move selected line / block of text up
 -- {'n'} J = jump to above line in relational to current line
 -- {'n'} K = jump to below line in relational to current line
--- {'n'} <C-Up> = up page cursor movement to keep cursor in middle of screen
--- {'n'} <c-Down> = down page cursor movement to keep cursor in middle of screen
+-- {'n'} <S-C-Up> = up page cursor movement to keep cursor in middle of screen
+-- {'n'} <S-C-Down> = down page cursor movement to keep cursor in middle of screen
 -- {'n'} f = jump to char n in current line forward
 -- {'n'} F = jump to char n in current line backwards
 -- {'n'} n = move to next search result
@@ -168,7 +169,7 @@ vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")
 -- <S-M-Left> = focus previous window M=Alt
 -- {'n'} <leader>wh = split window horizontally
 -- {'n'} <leader>wv = split window vertically
--- {'n'} <leader><leader> = execute named command :TogleLoadDoc
+-- {'n'} <leader>m = execute named command :TogleLoadDoc
 -- {'n'} <Enter> = <Enter> in normal mode insert a new line above the cursor and move cursor to new line
 -- {'n'} <Backspace> = <Backspace> in normal mode delete the current line and move cursor to the line above
 -- {'n', 'v'} <C-a> = <C-a> Select all text in visual mode and normal mode

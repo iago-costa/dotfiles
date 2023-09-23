@@ -65,12 +65,9 @@ require('setup_refactoring')
 -- Load trouble configuration for lua from trouble.lua
 require('setup_trouble')
 
--- Load colors.lua
-require('colors')
-
 -- Load setup_auto_save.lua
 require('setup_auto_save')
-
+   
 -- Load setup_lazy_git.lua
 require('setup_lazy_git')
 
@@ -79,3 +76,6 @@ require('setup_doc_keymap')
 
 -- Load setup_git_signs.lua
 require('setup_git_signs')
+
+-- Load colors.lua
+require('colors')
