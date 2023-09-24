@@ -9,8 +9,12 @@
  )
 
  -- Set the background color using a Vim command
- vim.api.nvim_command("hi Normal guibg=" .. background_color)
+vim.api.nvim_command("hi Normal guibg=" .. background_color)
 
 -- set autocommand to force background color on VimEnter
 --
 vim.cmd('autocmd VimEnter * highlight Normal guibg=' .. background_color)
+
+-- Set to all active windows the same background color
+vim.cmd('autocmd ColorScheme * highlight Normal guibg=' .. background_color)
+

@@ -33,6 +33,17 @@ require('packer').startup(function()
             -- Debugging
             {'nvim-lua/plenary.nvim'},
             {'mfussenegger/nvim-dap'},
+
+            use { --  flutter tools
+                'akinsho/flutter-tools.nvim',
+                requires = {
+                    'nvim-lua/plenary.nvim',
+                    'stevearc/dressing.nvim', -- optional for vim.ui.select
+                },
+            },
+                                   
+            use ('jose-elias-alvarez/null-ls.nvim'), -- null-ls for formatting and linting support to javascript
+            use ('MunifTanjim/eslint.nvim') -- eslint for javascript
         }
     })
 
@@ -103,6 +114,21 @@ require('packer').startup(function()
         'mg979/vim-visual-multi',
         branch = 'master'
     }
+
+    use { --  replace between multiple files
+        'dyng/ctrlsf.vim',
+    }
+
+    use { --  command-completion to cli nvim
+        'smolck/command-completion.nvim',
+    }
+
+    use { -- fold look like vscode
+        'kevinhwang91/nvim-ufo', 
+        requires = 'kevinhwang91/promise-async'
+    }
+
+
 
 end) 
 

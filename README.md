@@ -15,45 +15,58 @@ Preset keymap <Leader><Leader> == \\
 Enjoy!
 
 ## Major used commands nvim
-    v = Visual Mode
-    V = Visual line mode
-    <Alt-otherkey> = Out insert mode
-    y = Copy selected text (visual mode) 
-    P = paste selected text (visual mode) 
-    > = tab text (visual mode)
-    < = same of the '>'
-    R = set replace mode
-    u = undo change 
-    <Ctrl-R> = redo change
-    w = Move cursor by word
-    b = Move cursor back word
-    aw = Select word
-    iw = Select inner word
-    i( = Select inner text in parentheses
-    a( = Select inner text in parentheses
-    gu = Lowercase selected text
-    gU = Uppercase selected text
-    gUw = Capitalize the word UNDER the cursor
-    :<line-number> = goto the line-number
-    g"" = Convert text to snake case
-    h,j,k,l = left,bottom,top,right
-    Del = delete an char
-    dd = cut lines
-    dW = cut word
-    D = cut from the cursor position to the end of the line
-    d0 = cut from the cursor position to the beginning of the line
-    :<lineN>,<lineN>d = cut range of lines
-    G = Move to the end of the document
-    gg = Move to beginning of the document
-    <Ctrl-u> = page up
-    <Ctrl-d> = page down
+    {'n'} ggVG = select all
+    {'n'} <C-r> = redo
+    {'n'} <S-p> = paste
+    {'n'} F = find in line backward
+    {'n'} f = find in line forward
+    {'n'} <C-d> = move cursor down page
+    {'n'} <C-u> = move cursor up page
+    {'n'} K = move cursor to below line
+    {'n'} J = move cursor to above line
+    {'v'} K = move selected line / block of text up
+    {'v'} J = move selected line / block of text down
     <Ctrl-o> = jump previous cursor position
     <Ctrl-i> = jump next cursor position
-     :%s/old-word/new-word/g = 
-    <Ctrl-W> + <Ctrl-W> = change the screen in focus
-    gg = jump cursor to the top of the file (visual mode) 
-    ggvG = Select all lines in file
-    * = search all ocurrencies
+    Vim Operators ------------------
+    {'n'} d = delete
+    {'n'} c = change
+    {'n'} y = yank
+    {'n'} > = indent right
+    {'n'} < = indent left
+    {'n'} ! = filter through external program
+    {'n'} gq = format lines
+    {'n'} gu = make lowercase
+    {'n'} gU = make uppercase
+    {'n'} = = filter through equalprg
+    {'n'} g? = rot13 encoding
+    {'n'} g~ = swap case
+    Vim Text Objects ----------------
+    {'n'} vaw = select a word
+    {'n'} viw = select inner word
+    {'n'} caw = change a word
+    {'n'} ciw = change inner word
+    {'n'} yaw = yank a word
+    {'n'} yiw = yank inner word
+    {'n'} dap = delete a paragraph
+    {'n'} dip = delete inner paragraph
+    Vim Macros ---------------------
+    {'n'} qi = Record macro i
+    {'n'} q = Stop recording macro
+    {'n'} @i = Run macro i
+    {'n'} 7@i = Run macro i 7 times
+    {'n'} @@ = Repeat last macro
+    Vim Repeat ---------------------
+    {'n'} . = Repeat last command
+    {'n'} ; = Repeat latest f, t, F or T
+    {'n'} , = Repeat latest f, t, F or T reversed
+    {'n'} & = Repeat last :s
+    {'n'} @: = Repeat a command-line command
+    Combinations -------------------
+    {'n'} ggdG = Delete a complete document
+    {'n'} gg=G = Indent a complete document
+    {'n'} ggyG	= Copy a whole document
+
 
 ## Move cursor: Within a Line:
     Start of Line: 0 = Moves the cursor to the beginning of the current line.

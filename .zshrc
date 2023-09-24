@@ -167,4 +167,17 @@ export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
 export PATH=/opt/flutter/bin:$PATH
 export RUST_BACKTRACE=full
 
+# fcd - fuzzy cd
+fcd() {
+    local selected_dir
+    selected_dir=$(find "$1" -type d | fzf +m)  # Recursively list directories and use fzf for selection
+    if [ -n "$selected_dir" ]; then
+        cd "$selected_dir" || return  # Change to the selected directory
+    fi
+}
+
+# fzf cd to directory selected with fzf
+# fcd /
+
+
 [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh

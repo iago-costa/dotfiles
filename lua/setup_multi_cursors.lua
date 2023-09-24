@@ -1,6 +1,3 @@
- 
-
-
 -- Find Word                    <C-n>                        |vm-find-word|
 -- Next/Previous/Skip           n / N / q                    |vm-find-next|
 -- Remove Region                Q                            |vm-remove-region|
@@ -18,22 +15,21 @@
 -- Transposition                \\t                          |vm-transpose|
 
 
-
 -- init doc key b = only in buffer
--- {'n'} = <C-n> Find Word
--- {'b'} = n/N/q Next/Previous/Skip
--- {'b'} = Q Remove Region
--- {'n'} = <C-Down>/<C-Up> Add Cursors Down/Up
--- {'n'} = \\\ Add Cursor at Position
--- {'n'} = <S-Right>, <S-Left> Select Right/Left
--- {'n'} = \\A Select All Words
--- {'b'} = g/ Slash motion
--- {'n'} = \\/ Find with Regex
--- {'n'} = \\gS Reselect Last
--- {'n'} = \\<Space> Toggle Mappings
--- {'b'} = s Select Operator
--- {'b'} = m Find Operator
--- {'b'} = \\a Alignment
--- {'b'} = \\t Transposition
+-- {'n'} <C-n> = Find Word
+-- {'b'} n/N/q = Next/Previous/Skip
+-- {'b'} Q = Remove Region
+-- {'n'} <C-Down>/<C-Up> = Add Cursors Down/Up
+-- {'n'} \\\ = Add Cursor at Position
+-- {'n'} <S-Right>, <S-Left> = Select Right/Left
+-- {'n'} \\A = Select All Words
+-- {'b'} g/ = Slash motion
+-- {'n'} \\/ = Find with Regex
+-- {'n'} \\gS = Reselect Last
+-- {'n'} \\<Space> = Toggle Mappings
+-- {'b'} s = Select Operator
+-- {'b'} m = Find Operator
+-- {'b'} \\a = Alignment
+-- {'b'} \\t = Transposition
 -- end doc key  
   

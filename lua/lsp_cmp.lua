@@ -5,6 +5,18 @@ cmp.setup({
         {name = 'nvim_lsp'},
         {name = 'luasnip'},
         {name = 'rust-tools'},
+        -- vim completion snippets
+        {name = 'buffer'},
+        {name = 'path'},
+        {name = 'calc'},
+        {name = 'emoji'},
+        {name = 'treesitter'},
+        {name = 'spell'},
+        {name = 'tags'},
+        {name = 'crates'},
+        {name = 'latex_symbols'},
+        {name = 'vim-dadbod-completion'},
+
         -- {name = 'pyright'},
     },
     mapping = {
@@ -34,6 +46,7 @@ cmp.setup({
             require('luasnip').lsp_expand(args.body)
         end,
     },
+
 })
 
 -- init doc key

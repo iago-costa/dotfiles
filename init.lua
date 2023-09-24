@@ -9,16 +9,17 @@ require('setup_packer')
 -- Load plugins configuration from plugins.lua
 require('plugins')
 
--- Load custom commands and options from global_cmds.lua, global_opts.lua and global_keys.lu
-require('global_cmds')
-require('global_opts')
-require('global_keys')
-
 -- Load mason to install LSP servers
 require("mason").setup()
 
 -- Load lsp configuration from setup_lsp.lua
 require('setup_lsp')
+
+-- Load lsp configuration for dart from lsp_dart.lua
+require('lsp_dart')
+
+-- Load lsp configuration for flutter from lsp_flutter.lua
+require('lsp_flutter')
 
 -- Load lsp configuration auto-completion from lsp_cmp.lua
 require('lsp_cmp')
@@ -34,6 +35,9 @@ require('lsp_css')
 
 -- Load lsp configuration for lua from lsp_javascript.lua
 require('lsp_javascript')
+
+-- Load lsp configuration for lua from lsp_lua.lua
+require('lsp_lua')
 
 -- Load undotree configuration for lua from undotree.lua
 require('undo_tree')
@@ -77,5 +81,20 @@ require('setup_doc_keymap')
 -- Load setup_git_signs.lua
 require('setup_git_signs')
 
+-- Load setup_ctrlsf.lua
+require('setup_ctrlsf')
+
+-- Load setup_command_completion.lua
+require('setup_command_completion')
+
+-- Load setup_nvim_ufo.lua
+require('setup_nvim_ufo')
+
+-- Load custom commands and options from global_cmds.lua, global_opts.lua and global_keys.lu
+require('global_cmds')
+require('global_opts')
+require('global_keys')
+
 -- Load colors.lua
 require('colors')
+

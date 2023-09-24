@@ -3,8 +3,6 @@
 -- {'n'} ggVG = select all
 -- {'n'} <C-r> = redo
 -- {'n'} <S-p> = paste
--- {'n'} y = copy
--- {'n'} d = cut
 -- {'n'} F = find in line backward
 -- {'n'} f = find in line forward
 -- {'n'} <C-d> = move cursor down page
@@ -13,4 +11,44 @@
 -- {'n'} J = move cursor to above line
 -- {'v'} K = move selected line / block of text up
 -- {'v'} J = move selected line / block of text down
+-- <Ctrl-o> = jump previous cursor position
+-- <Ctrl-i> = jump next cursor position
+-- Vim Operators ------------------
+-- {'n'} d = delete
+-- {'n'} c = change
+-- {'n'} y = yank
+-- {'n'} > = indent right
+-- {'n'} < = indent left
+-- {'n'} ! = filter through external program
+-- {'n'} gq = format lines
+-- {'n'} gu = make lowercase
+-- {'n'} gU = make uppercase
+-- {'n'} = = filter through equalprg
+-- {'n'} g? = rot13 encoding
+-- {'n'} g~ = swap case
+-- Vim Text Objects ----------------
+-- {'n'} vaw = select a word
+-- {'n'} viw = select inner word
+-- {'n'} caw = change a word
+-- {'n'} ciw = change inner word
+-- {'n'} yaw = yank a word
+-- {'n'} yiw = yank inner word
+-- {'n'} dap = delete a paragraph
+-- {'n'} dip = delete inner paragraph
+-- Vim Macros ---------------------
+-- {'n'} qi = Record macro i
+-- {'n'} q = Stop recording macro
+-- {'n'} @i = Run macro i
+-- {'n'} 7@i = Run macro i 7 times
+-- {'n'} @@ = Repeat last macro
+-- Vim Repeat ---------------------
+-- {'n'} . = Repeat last command
+-- {'n'} ; = Repeat latest f, t, F or T
+-- {'n'} , = Repeat latest f, t, F or T reversed
+-- {'n'} & = Repeat last :s
+-- {'n'} @: = Repeat a command-line command
+-- Combinations -------------------
+-- {'n'} ggdG = Delete a complete document
+-- {'n'} gg=G = Indent a complete document
+-- {'n'} ggyG	= Copy a whole document
 -- end doc key
