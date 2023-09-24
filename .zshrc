@@ -165,7 +165,9 @@ export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
 export PATH=$SDKMANAGER:$PATH
 export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
 export PATH=/opt/flutter/bin:$PATH
+export PATH=/opt/asdf-vm/bin:$PATH
 export RUST_BACKTRACE=full
+
 
 # fcd - fuzzy cd
 fcd() {

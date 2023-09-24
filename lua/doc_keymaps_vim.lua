@@ -49,6 +49,6 @@
 -- {'n'} @: = Repeat a command-line command
 -- Combinations -------------------
 -- {'n'} ggdG = Delete a complete document
--- {'n'} gg=G = Indent a complete document
+-- {'n'} ggVG = Indent a complete document
 -- {'n'} ggyG	= Copy a whole document
 -- end doc key
