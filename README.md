@@ -235,6 +235,42 @@ set -g mouse on
 setw -g mode-keys vi    
 ```
 
+### Most used keybindings for tmux
+1. Save session
+    <Ctrl-b><Ctrl-s>
+    Restore session
+
+2. Create vertical window
+    <Ctrl-b> @
+
+3. Create horizontal window
+    <Ctrl-b> "
+
+4. Change the pane active
+    <Ctrl-b> [Arrow keys]
+
+You use space bar for the beginning of the selection and enter for the end.
+
+5. copy:
+    <Ctrl-b>[
+    Space
+    Enter
+
+6. paste:
+    <Ctrl-b>]
+
+7. Update the modification in .tmux.conf
+    tmux source-file ~/.tmux.conf
+
+8. Create new session named
+    tmux new -s <session_name>
+
+9. Attach an old session named
+    tmux a -t <session_name>
+
+10. Rename current session
+    <Ctrl-b> $
+
 ## Zsh file .zshrc
 1. Link To install/configure: [Instal/Configure zsh and plugins](https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df) 
 

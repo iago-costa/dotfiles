@@ -1,6 +1,7 @@
 -- Ensure packer is installed
-if vim.fn.empty(vim.fn.glob(vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim')) then
-	vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', '--depth', '1', vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'})
+if vim.fn.empty(vim.fn.glob(vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim')) then
+    vim.fn.system({ 'git', 'clone', 'https://github.com/wbthomason/packer.nvim', '--depth', '1',
+        vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim' })
 end
 
 -- Load setup_packer.lua
@@ -71,7 +72,7 @@ require('setup_trouble')
 
 -- Load setup_auto_save.lua
 require('setup_auto_save')
-   
+
 -- Load setup_lazy_git.lua
 require('setup_lazy_git')
 
@@ -97,4 +98,3 @@ require('global_keys')
 
 -- Load colors.lua
 require('colors')
-

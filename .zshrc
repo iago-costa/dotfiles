@@ -165,7 +165,11 @@ export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
 export PATH=$SDKMANAGER:$PATH
 export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
 export PATH=/opt/flutter/bin:$PATH
+
 export PATH=/opt/asdf-vm/bin:$PATH
+export ASDF_DIR=$HOME/.asdf
+export ASDF_SHELL=/opt/asdf-vm/asdf.sh
+
 export RUST_BACKTRACE=full
 
 
@@ -178,8 +182,7 @@ fcd() {
     fi
 }
 
-# fzf cd to directory selected with fzf
-# fcd /
+
 
 
 [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
