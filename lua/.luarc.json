@@ -1,0 +1,9 @@
+{
+    "diagnostics.globals": [
+        "vim",
+        "load_doc_named_commands",
+        "load_doc",
+        "current_buf_name",
+        "verify_file_content"
+    ]
+}

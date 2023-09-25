@@ -2,21 +2,22 @@ local mark = require("harpoon.mark")
 local ui = require("harpoon.ui")
 
 -- Add file to harpoon
-vim.keymap.set("n", "<C-a>", mark.add_file)
+vim.keymap.set("n", "<Leader><C-a>", mark.add_file)
 
 -- Toggle quick menu
-vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
+vim.keymap.set("n", "<Leader><C-e>", ui.toggle_quick_menu)
 
 -- Clear file from harpoon
-vim.keymap.set("n", "<C-x>", mark.rm_file)
+vim.keymap.set("n", "<Leader><C-x>", mark.rm_file)
 
 -- Clear all marks
-vim.keymap.set("n", "<C-z>", mark.clear_all)
+vim.keymap.set("n", "<Leader><C-z>", mark.clear_all)
 
 -- Toggle to prev window in list of marks
 -- vim.keymap.set("n", "<C-p>", mark.go_to_prev)
 
-
+-- fn to keymap
+--
 -- init doc key
 -- {'n'} <C-a> = add file to harpoon
 -- {'n'} <C-e> = toggle quick menu

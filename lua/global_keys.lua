@@ -1,36 +1,36 @@
 -- Config substitute keybindings
 vim.api.nvim_set_keymap('n', '<Leader>ss', ':%s//g<Left><Left>', { noremap = true, silent = true })
 
-vim.keymap.set({ "n", "v" }, "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])    -- Fast substitution
+vim.keymap.set({ "n", "v" }, "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])      -- Fast substitution
 
-vim.keymap.set({ "n", "v" }, "<leader>sb", [[:.,$s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]) -- Fast substitution only below cursor
+vim.keymap.set({ "n", "v" }, "<leader>sb", [[:.,$s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])   -- Fast substitution only below cursor
 
-vim.keymap.set({ "n", "v" }, "<leader>sa", [[:.,$s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]) -- Fast substitution only above cursor
+vim.keymap.set({ "n", "v" }, "<leader>sa", [[:.,$s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])   -- Fast substitution only above cursor
 
 vim.keymap.set({ "n", "v" }, "<leader>sr", [[:+4,-4s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]) -- Fast substitution in range of lines
 
-vim.keymap.set("v", "<M-Down>", ":m '>+1<CR>gv=gv")                                                  -- Move selected line / block of text down
-vim.keymap.set("v", "<M-Up>", ":m '<-2<CR>gv=gv")                                                    -- Move selected line / block of text up
-vim.keymap.set("i", "<M-Up>", "<Esc>:m .-2<CR>==gi")                                                 -- Move line to up in insert mode
-vim.keymap.set("i", "<M-Down>", "<Esc>:m .+1<CR>==gi")                                               -- Move line to down in insert mode
-vim.keymap.set("n", "<M-Up>", ":m .-2<CR><Esc>")                                                     -- Move line to up in normal mode
-vim.keymap.set("n", "<M-Down>", ":m .+1<CR><Esc>")                                                   -- Move line to down in normal mode
+vim.keymap.set("v", "<M-Down>", ":m '>+1<CR>gv=gv")                                                    -- Move selected line / block of text down
+vim.keymap.set("v", "<M-Up>", ":m '<-2<CR>gv=gv")                                                      -- Move selected line / block of text up
+vim.keymap.set("i", "<M-Up>", "<Esc>:m .-2<CR>==gi")                                                   -- Move line to up in insert mode
+vim.keymap.set("i", "<M-Down>", "<Esc>:m .+1<CR>==gi")                                                 -- Move line to down in insert mode
+vim.keymap.set("n", "<M-Up>", ":m .-2<CR><Esc>")                                                       -- Move line to up in normal mode
+vim.keymap.set("n", "<M-Down>", ":m .+1<CR><Esc>")                                                     -- Move line to down in normal mode
 
-vim.keymap.set("n", "J", "mzJ`z")                                                                    -- Jump to above line in relational to current line
-vim.keymap.set("n", "K", "mzJ`z")                                                                    -- Jump to below line in relational to current line
+vim.keymap.set("n", "J", "mzJ`z")                                                                      -- Jump to above line in relational to current line
+vim.keymap.set("n", "K", "mzJ`z")                                                                      -- Jump to below line in relational to current line
 
-vim.keymap.set("n", "<S-C-Up>", "<C-u>zz")                                                           -- UP page cursor movement to keep cursor in middle of screen
-vim.keymap.set("n", "<S-C-Down>", "<c-d>zz")                                                         -- Down page cursor movement to keep cursor in middle of screen
+vim.keymap.set("n", "<S-C-Up>", "<C-u>zz")                                                             -- UP page cursor movement to keep cursor in middle of screen
+vim.keymap.set("n", "<S-C-Down>", "<c-d>zz")                                                           -- Down page cursor movement to keep cursor in middle of screen
 
-vim.keymap.set("n", "f", "f")                  -- Jump to char n in current line forward
-vim.keymap.set("n", "F", "F")                  -- Jump to char n in current line backwards
+vim.keymap.set("n", "f", "f")                                                                          -- Jump to char n in current line forward
+vim.keymap.set("n", "F", "F")                                                                          -- Jump to char n in current line backwards
 
-vim.keymap.set("n", "n", "nzzzv")                -- Move to next search result
-vim.keymap.set("n", "N", "Nzzzv")                -- Move to previous search result
+vim.keymap.set("n", "n", "nzzzv")                                                                      -- Move to next search result
+vim.keymap.set("n", "N", "Nzzzv")                                                                      -- Move to previous search result
 
-vim.keymap.set("x", "<leader>p", [["_dP]])       -- Paste yanked text
+vim.keymap.set("x", "<leader>p", [["_dP]])                                                             -- Paste yanked text
 
-vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]]) -- Yank to end of line and copy to system clipboard
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])                                                     -- Yank to end of line and copy to system clipboard
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]]) -- Delete the current char above the cursor
@@ -112,12 +112,13 @@ vim.api.nvim_set_keymap('n', '<S-M-Left>', ':FocusPreviousWindow<CR>', { noremap
 vim.keymap.set("n", "<leader>wh", "<cmd>split<CR>")        -- Split window horizontally
 vim.keymap.set("n", "<leader>wv", "<cmd>vsplit<CR>")       -- Split window vertically
 
-vim.keymap.set("n", "<leader>m", "<cmd>ToggleLoadDoc<CR>") -- Execute named command :TogleLoadDoc
+vim.keymap.set("n", "<leader>m", "<cmd>ToggleLoadDocFiles<CR>") -- Execute named command :TogleLoadDocFiles
+vim.keymap.set("n", "<leader>mg", "<cmd>ToggleLoadDocGrep<CR>")    -- Execute named command :TogleLoadDocGrep
 
 vim.keymap.set("n", "<Enter>", "o<Esc>")                   -- <Enter> in normal mode insert a new line above the cursor and move cursor to new line
 
 vim.keymap.set("n", "<Backspace>",
-    function()                                             -- <Backspace> in normal mode delete the current line and move cursor to the line above
+    function() -- <Backspace> in normal mode delete the current line and move cursor to the line above
         vim.cmd("normal! k")
         vim.cmd("normal! dd")
     end)
