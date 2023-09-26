@@ -252,12 +252,12 @@ setw -g mode-keys vi
 You use space bar for the beginning of the selection and enter for the end.
 
 5. copy:
-    <Ctrl-b>[
-    Space
-    Enter
+    <Ctrl-b> [ -- initiate the copy mode
+    Space -- activate select
+    Enter -- Copy
 
 6. paste:
-    <Ctrl-b>]
+    <Ctrl-b> ]
 
 7. Update the modification in .tmux.conf
     tmux source-file ~/.tmux.conf
@@ -270,6 +270,9 @@ You use space bar for the beginning of the selection and enter for the end.
 
 10. Rename current session
     <Ctrl-b> $
+
+11. Toggle full screen actual pane
+    <Ctrl-b> z
 
 ## Zsh file .zshrc
 1. Link To install/configure: [Instal/Configure zsh and plugins](https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df) 
@@ -350,3 +353,13 @@ export RUST_BACKTRACE=full
 
 [ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
 ```
+
+## asdf to manage multiples versions of programming languages
+```bash
+asdf plugin add <plugin_name>
+asdf install <plugin_name> <plugin_version>
+# Need to make works asdf
+source /opt/asdf-vm/asdf.sh 
+asdf local <plugin_name> <plugin_version>
+```
+
