@@ -37,13 +37,21 @@ vim.api.nvim_set_keymap('n', '<Leader>tf', ':Telescope find_files<CR>', { norema
 vim.api.nvim_set_keymap('n', '<Leader>tg', ':Telescope live_grep<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>tb', ':Telescope buffers<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>th', ':Telescope help_tags<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tc', ':Telescope git_files<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>tgf', ':Telescope git_files<CR>', { noremap = true, silent = true })
 
+vim.keymap.set("n", "<leader>tC", function()
+  require("telescope").extensions.diff.diff_files({ hidden = true })
+end, { desc = "Compare 2 files" })
+vim.keymap.set("n", "<leader>tc", function()
+  require("telescope").extensions.diff.diff_current({ hidden = true })
+end, { desc = "Compare file with current" })
 
 -- init doc key
 -- {'n'} <Leader>tf = find files
 -- {'n'} <Leader>tg = live grep
 -- {'n'} <Leader>tb = buffers
 -- {'n'} <Leader>th = help tags
--- {'n'} <Leader>tc = git files
+-- {'n'} <Leader>tgf = git files
+-- {'n'} <Leader>tC = compare 2 files
+-- {'n'} <Leader>tc = compare file with current
 -- end doc key

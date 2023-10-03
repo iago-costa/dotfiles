@@ -109,27 +109,26 @@ end
 vim.api.nvim_set_keymap('n', '<S-M-Right>', ':FocusNextWindow<CR>', { noremap = true, silent = true }) -- Define keymap for FocusNextWindow
 vim.api.nvim_set_keymap('n', '<S-M-Left>', ':FocusPreviousWindow<CR>', { noremap = true, silent = true })
 
-vim.keymap.set("n", "<leader>wh", "<cmd>split<CR>")        -- Split window horizontally
-vim.keymap.set("n", "<leader>wv", "<cmd>vsplit<CR>")       -- Split window vertically
+vim.keymap.set("n", "<leader>wh", "<cmd>split<CR>")             -- Split window horizontally
+vim.keymap.set("n", "<leader>wv", "<cmd>vsplit<CR>")            -- Split window vertically
 
 vim.keymap.set("n", "<leader>m", "<cmd>ToggleLoadDocFiles<CR>") -- Execute named command :TogleLoadDocFiles
-vim.keymap.set("n", "<leader>mg", "<cmd>ToggleLoadDocGrep<CR>")    -- Execute named command :TogleLoadDocGrep
+vim.keymap.set("n", "<leader>mg", "<cmd>ToggleLoadDocGrep<CR>") -- Execute named command :TogleLoadDocGrep
 
-vim.keymap.set("n", "<Enter>", "o<Esc>")                   -- <Enter> in normal mode insert a new line above the cursor and move cursor to new line
+vim.keymap.set("n", "<Enter>", "o<Esc>")                        -- <Enter> in normal mode insert a new line above the cursor and move cursor to new line
 
-vim.keymap.set("n", "<Backspace>",
-    function() -- <Backspace> in normal mode delete the current line and move cursor to the line above
-        vim.cmd("normal! k")
-        vim.cmd("normal! dd")
-    end)
+-- vim.keymap.set("n", "<Backspace>",
+--     function() -- <Backspace> in normal mode delete the current line and move cursor to the line above
+--         vim.cmd("normal! k")
+--         vim.cmd("normal! dd")
+--     end)
 
 vim.keymap.set({ "n" }, "<C-a>", "ggVG")          -- <C-a> Select all text in visual mode and normal mode
 
 vim.keymap.set("n", "<leader>q", "<cmd>only<CR>") -- kill all windows except current
 vim.keymap.set("n", "<leader>Q", "<cmd>qa<CR>")   -- kill all windows
 
--- kill current window
-vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")
+vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")  -- kill current window
 
 
 -- init doc key
@@ -168,7 +167,7 @@ vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")
 -- {'n'} <leader>wv = split window vertically
 -- {'n'} <leader>m = execute named command :TogleLoadDoc
 -- {'n'} <Enter> = <Enter> in normal mode insert a new line above the cursor and move cursor to new line
--- {'n'} <Backspace> = <Backspace> in normal mode delete the current line and move cursor to the line above
+-- {'n'} <Backspace> = <Backspace> (disabled) in normal mode delete the current line and move cursor to the line above
 -- {'n', 'v'} <C-a> = <C-a> Select all text in visual mode and normal mode
 -- {'n'} <leader>q = kill all windows except current
 -- {'n'} <leader>Q = kill all windows

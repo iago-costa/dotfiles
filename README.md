@@ -275,7 +275,10 @@ You use space bar for the beginning of the selection and enter for the end.
     Ctrl-b z
 
 12. Change position actual pane
-    Ctrl-b } or Ctrl {  
+    Ctrl-b } or Ctrl { 
+
+13. Circulate positions to actual pane
+    Ctrl-b Ctrl-o
 
 ## Zsh file .zshrc
 1. Link To install/configure: [Instal/Configure zsh and plugins](https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df) 

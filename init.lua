@@ -86,6 +86,8 @@ if not vim.g.vscode then
     -- Load setup_nvim_ufo.lua
     require('setup_nvim_ufo')
 
+    -- Load setup_multi_tabs.lua
+    require('setup_multi_tabs')
 end
 
 -- Load commentary configuration from commentary.lua
@@ -94,13 +96,10 @@ require('commentary')
 -- Load lsp configuration auto-completion from lsp_cmp.lua
 require('lsp_cmp')
 
-
 -- Load custom commands and options from global_cmds.lua, global_opts.lua and global_keys.lu
 require('global_cmds')
 require('global_opts')
 require('global_keys')
 
--- Load setup_multi_tabs.lua
-require('setup_multi_tabs')
 -- Load colors.lua
 require('colors')
