@@ -128,8 +128,8 @@ require('packer').startup(function()
         requires = 'kevinhwang91/promise-async'
     }
 
+    use 'romgrk/barbar.nvim' -- multitabs
 
-
-end) 
+end)
 
 

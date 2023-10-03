@@ -85,6 +85,7 @@ if not vim.g.vscode then
 
     -- Load setup_nvim_ufo.lua
     require('setup_nvim_ufo')
+
 end
 
 -- Load commentary configuration from commentary.lua
@@ -99,5 +100,7 @@ require('global_cmds')
 require('global_opts')
 require('global_keys')
 
+-- Load setup_multi_tabs.lua
+require('setup_multi_tabs')
 -- Load colors.lua
 require('colors')

@@ -16,11 +16,9 @@ vim.keymap.set("n", "<Leader><C-z>", mark.clear_all)
 -- Toggle to prev window in list of marks
 -- vim.keymap.set("n", "<C-p>", mark.go_to_prev)
 
--- fn to keymap
---
 -- init doc key
--- {'n'} <C-a> = add file to harpoon
--- {'n'} <C-e> = toggle quick menu
--- {'n'} <C-x> = clear file from harpoon
--- {'n'} <C-z> = clear all marks
+-- {'n'} <Leader><C-a> = add file to harpoon
+-- {'n'} <Leader><C-e> = toggle quick menu
+-- {'n'} <Leader><C-x> = clear file from harpoon
+-- {'n'} <Leader><C-z> = clear all marks
 -- end doc key
