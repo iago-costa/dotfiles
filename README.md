@@ -252,12 +252,12 @@ setw -g mode-keys vi
 You use space bar for the beginning of the selection and enter for the end.
 
 5. copy:
-    <Ctrl-b> [ -- initiate the copy mode
+    Ctrl-b [ -- initiate the copy mode
     Space -- activate select
     Enter -- Copy
 
 6. paste:
-    <Ctrl-b> ]
+    Ctrl-b ]
 
 7. Update the modification in .tmux.conf
     tmux source-file ~/.tmux.conf
@@ -269,10 +269,13 @@ You use space bar for the beginning of the selection and enter for the end.
     tmux a -t <session_name>
 
 10. Rename current session
-    <Ctrl-b> $
+    Ctrl-b $
 
 11. Toggle full screen actual pane
-    <Ctrl-b> z
+    Ctrl-b z
+
+12. Change position actual pane
+    Ctrl-b } or Ctrl {  
 
 ## Zsh file .zshrc
 1. Link To install/configure: [Instal/Configure zsh and plugins](https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df) 
