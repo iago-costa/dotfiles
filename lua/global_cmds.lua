@@ -9,13 +9,14 @@ vim.cmd [[
 highlight MatchWord cterm=underline gui=underline
 ]]
 
--- AutoFormat
-local format_sync_grp = vim.api.nvim_create_augroup("Format", {})
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = [[*.rs, *.lua, *.py, *.js, *.css]],
-	callback = function()
-		vim.lsp.buf.format({ timeout_ms = 200 })
-	end,
-	group = format_sync_grp,
-})
+-- -- AutoFormat
+Pattern = "*.rs, *.lua, *.py, *.js, *.css, *.go, *.yaml, *.yml, *.html, *.clj, *.cpp, *.c, *.h, *.hpp, *.json, *.md"
 
+-- Set up an autocmd for BufWrite for multiple file types
+-- autocmd BufWritePre <buffer> lua vim.defer_fn(function() vim.lsp.buf.format() end, 3000)
+vim.api.nvim_exec([[
+    augroup FormatOnSave
+        autocmd!
+        autocmd BufWritePre <buffer> lua vim.lsp.buf.format()
+    augroup END
+]], true)

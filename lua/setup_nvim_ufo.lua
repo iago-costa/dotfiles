@@ -17,6 +17,9 @@ require('ufo').setup({
 -- Keymaps to toggle ufo
 vim.api.nvim_set_keymap('n', '<leader>zr', ':lua require("ufo").openAllFolds()<CR>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>zm', ':lua require("ufo").closeAllFolds()<CR>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', 'zr', '<Cmd>foldopen<CR>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', 'zm', '<Cmd>foldclose<CR>', {noremap = true, silent = true})
+
 
 
 -- init doc key

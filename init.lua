@@ -38,6 +38,12 @@ if not vim.g.vscode then
     -- Load lsp configuration for lua from lsp_lua.lua
     require('lsp_lua')
 
+    -- Load lsp_go.lua
+    require('lsp_go')
+
+    -- Load lsp_cpp.lua
+    require('lsp_cpp')
+
     -- Load treesitter configuration from treesitter.lua
     require('tree_sitter')
 
