@@ -10,7 +10,7 @@ lsp_zero.on_attach(function(client, bufnr)
     map('n', 'br', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     map('i', '<C-s>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     map('n', 'bi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-    map('n', 'bh', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+        map('n', 'bh', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
     map('n', 'bf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
     map('n', 'ba', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     -- rename symbol

@@ -17,6 +17,6 @@ Pattern = "*.rs, *.lua, *.py, *.js, *.css, *.go, *.yaml, *.yml, *.html, *.clj, *
 vim.api.nvim_exec([[
     augroup FormatOnSave
         autocmd!
-        autocmd BufWritePre <buffer> lua vim.lsp.buf.format()
+        autocmd BufWritePre * lua vim.lsp.buf.format()
     augroup END
 ]], true)
