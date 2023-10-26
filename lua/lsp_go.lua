@@ -1,9 +1,7 @@
-
-
 local nvim_lsp = require('lspconfig')
 
 nvim_lsp.gopls.setup {
-    cmd = {"gopls", "serve"},
+    cmd = { "gopls", "serve" },
     settings = {
         gopls = {
             analyses = {

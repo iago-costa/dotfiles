@@ -1,5 +1,3 @@
-
-
 -- local nvim_lsp = require('lspconfig')
 -- local DATA_PATH = vim.fn.stdpath('data')
 -- -- config lsp to cpp language
@@ -15,3 +13,9 @@
 --         semanticHighlighting = true
 --     }
 -- }
+--
+--
+-- -- config cland-format with 4 spaces
+-- create .clang-format with content:
+-- BasedOnStyle: LLVM
+-- IndentWidth: 4
