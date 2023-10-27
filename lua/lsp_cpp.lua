@@ -13,8 +13,8 @@
 --         semanticHighlighting = true
 --     }
 -- }
---
---
+
+
 -- -- config cland-format with 4 spaces
 -- create .clang-format with content:
 -- BasedOnStyle: LLVM

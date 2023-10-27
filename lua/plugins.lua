@@ -2,16 +2,16 @@ require('packer').startup(function()
     -- Define your plugins here
     -- Example: use 'username/repo'
     use('nvim-tree/nvim-web-devicons') -- optional icons for nvim-tree
-    use('kyazdani42/nvim-tree.lua')  -- file explorer
-    use('andymass/vim-matchup')      -- highlight matching words under cursor
-    use('github/copilot.vim')        -- copilot
+    use('kyazdani42/nvim-tree.lua')    -- file explorer
+    use('andymass/vim-matchup')        -- highlight matching words under cursor
+    use('github/copilot.vim')          -- copilot
 
     use({
         'VonHeikemen/lsp-zero.nvim', -- LSP support
         branch = 'v3.x',
         requires = {
             -- LSP Support
-            { 'neovim/nvim-lspconfig' }, -- config LSP servers
+            { 'neovim/nvim-lspconfig' },   -- config LSP servers
             { 'williamboman/mason.nvim' }, -- install LSP servers
             { 'williamboman/mason-lspconfig.nvim' },
 
@@ -42,8 +42,8 @@ require('packer').startup(function()
                 },
             },
 
-            use('jose-elias-alvarez/null-ls.nvim'),  -- null-ls for formatting and linting support to javascript
-            use('MunifTanjim/eslint.nvim')           -- eslint for javascript
+            use('jose-elias-alvarez/null-ls.nvim'), -- null-ls for formatting and linting support to javascript
+            use('MunifTanjim/eslint.nvim')          -- eslint for javascript
         }
     })
 
@@ -100,14 +100,14 @@ require('packer').startup(function()
             ts_update()
         end,
     })
-    use("nvim-treesitter/playground")                -- playground for treesitter
-    use("nvim-treesitter/nvim-treesitter-context");  -- show context of code
-    use("theprimeagen/harpoon")                      -- box to store files to jump to
-    use("theprimeagen/refactoring.nvim")             -- refactoring tool
-    use("mbbill/undotree")                           -- undo tree visualizer and navigation with timeline
-    use("907th/vim-auto-save")                       -- auto save
+    use("nvim-treesitter/playground")               -- playground for treesitter
+    use("nvim-treesitter/nvim-treesitter-context"); -- show context of code
+    use("theprimeagen/harpoon")                     -- box to store files to jump to
+    use("theprimeagen/refactoring.nvim")            -- refactoring tool
+    use("mbbill/undotree")                          -- undo tree visualizer and navigation with timeline
+    use("907th/vim-auto-save")                      -- auto save
     use({
-        "kdheepak/lazygit.nvim",                     -- git wrapper for neovim
+        "kdheepak/lazygit.nvim",                    -- git wrapper for neovim
         -- optional for floating window border decoration
         requires = {
             "nvim-lua/plenary.nvim",
@@ -137,8 +137,9 @@ require('packer').startup(function()
         requires = 'kevinhwang91/promise-async'
     }
 
-    use ('romgrk/barbar.nvim') -- multitabs
+    use('romgrk/barbar.nvim')  -- multitabs
 
-    use ('tpope/vim-fugitive') -- git wrapper to git history, blame, etc
+    use('tpope/vim-fugitive')  -- git wrapper to git history, blame, etc
 
+    use 'Olical/conjure'       -- clojure REPL
 end)
