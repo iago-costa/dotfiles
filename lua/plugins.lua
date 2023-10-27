@@ -137,9 +137,11 @@ require('packer').startup(function()
         requires = 'kevinhwang91/promise-async'
     }
 
-    use('romgrk/barbar.nvim')  -- multitabs
+    use('romgrk/barbar.nvim')              -- multitabs
 
-    use('tpope/vim-fugitive')  -- git wrapper to git history, blame, etc
+    use('tpope/vim-fugitive')              -- git wrapper to git history, blame, etc
 
-    use 'Olical/conjure'       -- clojure REPL
+    use('Olical/conjure')                  -- clojure REPL
+
+    use('HiPhish/rainbow-delimiters.nvim') -- rainbow delimiters
 end)

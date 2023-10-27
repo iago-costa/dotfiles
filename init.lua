@@ -44,6 +44,9 @@ if not vim.g.vscode then
     -- Load lsp_cpp.lua
     require('lsp_cpp')
 
+    -- Load lsp_clojure.lua
+    require('lsp_clojure')
+
     -- Load treesitter configuration from treesitter.lua
     require('tree_sitter')
 
