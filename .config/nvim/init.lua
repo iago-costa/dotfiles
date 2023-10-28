@@ -97,6 +97,9 @@ if not vim.g.vscode then
 
     -- Load setup_multi_tabs.lua
     require('setup_multi_tabs')
+
+    -- Load setup_possesion.lua
+    -- require('setup_possession')
 end
 
 -- Load commentary configuration from commentary.lua

@@ -145,8 +145,8 @@ require('packer').startup(function()
 
     use('HiPhish/rainbow-delimiters.nvim') -- rainbow delimiters
 
-    use {
-        'jedrzejboczar/possession.nvim',
-        requires = { 'nvim-lua/plenary.nvim' },
-    }
+    -- use { --  possession is disabled because it is not working properly with barbar.nvim
+    --     'jedrzejboczar/possession.nvim',
+    --     requires = { 'nvim-lua/plenary.nvim' },
+    -- }
 end)

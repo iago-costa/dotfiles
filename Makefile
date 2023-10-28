@@ -1,4 +1,4 @@
-update:
+up:
 	@echo "Updating nvim files"
 	rm -rf .config/ | true
 	mkdir -p .config/
