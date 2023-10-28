@@ -2,8 +2,6 @@
 # Dotfiles
 tmux + zsh + nvim
 
-
-
 ## Tmux file .tmux.conf
 - see in the root repository folder
 
