@@ -1,8 +1,13 @@
 update:
 	@echo "Updating nvim files"
-	rm -rf nvim
-	cp -r ~/.config/nvim .
-	rm -rf nvim/.git
+	rm -rf .config/ | true
+	mkdir -p .config/
+	cp -r ~/.config/nvim ./.config/
+	rm -rf ./.config/nvim/.git | true
+	rm -rf ./.config/nvim/undodir | true
+	rm -rf ./.config/nvim/plugin | true
+	rm -rf ./.config/nvim/autoload | true
+
 
 links:
 	ln ${HOME}/.tmux.conf .tmux.conf | true
