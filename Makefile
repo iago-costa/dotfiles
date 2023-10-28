@@ -8,7 +8,7 @@ up:
 	rm -rf ./.config/nvim/undodir | true
 	rm -rf ./.config/nvim/plugin | true
 	rm -rf ./.config/nvim/autoload | true
-
+	rm -rf ./.config/nvim/sessions | true
 
 links:
 	ln ${HOME}/.tmux.conf .tmux.conf | true
