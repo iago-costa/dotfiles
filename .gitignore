@@ -1,4 +1,4 @@
-
-undodir/
-autoload/
-plugin/
+*undodir/
+*autoload/
+*plugin/
+*nvim/.git
