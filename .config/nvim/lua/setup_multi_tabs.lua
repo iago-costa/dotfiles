@@ -18,11 +18,11 @@ map('n', '<A-9>', '<Cmd>BufferGoto 9<CR>', opts)
 map('n', '<A-0>', '<Cmd>BufferLast<CR>', opts)
 
 -- Close buffer
-map('n', '<C-S>c', '<Cmd>BufferClose<CR>', opts)
-map('n', '<Leader>bq', '<Cmd>BufferCloseAllButCurrentOrPinned<CR>', opts)
+map('n', '<Leader>bq', '<Cmd>BufferClose<CR>', opts)
+map('n', '<Leader>bqa', '<Cmd>BufferCloseAllButCurrentOrPinned<CR>', opts)
 
 -- Magic buffer-picking mode
-map('n', '<Meta-p>', '<Cmd>BufferPick<CR>', opts)
+map('n', '<Leader>bp', '<Cmd>BufferPick<CR>', opts)
 
 -- Sort automatically by...
 map('n', '<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>', opts)
@@ -44,9 +44,9 @@ map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', opts)
 -- {'n'} <A-8>          =  * <Cmd>BufferGoto 8<CR>
 -- {'n'} <A-9>          =  * <Cmd>BufferGoto 9<CR>
 -- {'n'} <A-0>          =  * <Cmd>BufferLast<CR>
--- {'n'} <C-S-c>        =  * <Cmd>BufferClose<CR>
--- {'n'} <Leader>bq     =  * <Cmd>BufferCloseAllButCurrentOrPinned<CR>
--- {'n'} <M-p>          =  * <Cmd>BufferPick<CR>
+-- {'n'} <Leader>bq     =  * <Cmd>BufferClose<CR>
+-- {'n'} <Leader>bqa    =  * <Cmd>BufferCloseAllButCurrentOrPinned<CR>
+-- {'n'} <Leader>bp     =  * <Cmd>BufferPick<CR>
 -- {'n'} <Space>bb      =  * <Cmd>BufferOrderByBufferNumber<CR>
 -- {'n'} <Space>bd      =  * <Cmd>BufferOrderByDirectory<CR>
 -- {'n'} <Space>bl      =  * <Cmd>BufferOrderByLanguage<CR>

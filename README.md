@@ -64,27 +64,27 @@ By following these steps, your Tmux sessions will be automatically persisted and
         
 ### Most used keybindings for tmux
 1. Save session
-    <Ctrl-b><Ctrl-s>
+    prefix <Ctrl-s>
     Restore session
 
 2. Create vertical window
-    <Ctrl-b> @
+    prefix @
 
 3. Create horizontal window
-    <Ctrl-b> "
+    prefix "
 
 4. Change the pane active
-    <Ctrl-b> [Arrow keys]
+    prefix [Arrow keys]
 
 You use space bar for the beginning of the selection and enter for the end.
 
 5. copy:
-    Ctrl-b [ -- initiate the copy mode
+    prefix [ -- initiate the copy mode
     Space -- activate select
     Enter -- Copy
 
 6. paste:
-    Ctrl-b ]
+    prefix ]
 
 7. Update the modification in .tmux.conf
     tmux source-file ~/.tmux.conf
@@ -96,16 +96,34 @@ You use space bar for the beginning of the selection and enter for the end.
     tmux a -t <session_name>
 
 10. Rename current session
-    Ctrl-b $
+    prefix $
 
 11. Toggle full screen actual pane
-    Ctrl-b z
+    prefix z
 
 12. Change position actual pane
-    Ctrl-b } or Ctrl { 
+    prefix } or Ctrl {
 
 13. Circulate positions to actual pane
-    Ctrl-b Ctrl-o
+    prefix Ctrl-o
+
+14. Simple file search
+    prefix + Ctrl-f
+
+15. Jumping over git status files (best used after git status command)
+    prefix + Ctrl-g
+
+16. Jumping over SHA-1/SHA-256 hashes (best used after git log command)
+    prefix + Alt-h
+
+17. Url search (http, ftp and git urls)
+    prefix + Ctrl-u
+
+18. Number search (mnemonic d, as digit)
+    prefix + Ctrl-d
+
+19. Ip address search
+    prefix + Alt-i
 
 ## Zsh file .zshrc
 1. Link To install/configure: [Instal/Configure zsh and plugins](https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df) 
