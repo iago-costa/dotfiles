@@ -149,4 +149,6 @@ require('packer').startup(function()
     --     'jedrzejboczar/possession.nvim',
     --     requires = { 'nvim-lua/plenary.nvim' },
     -- }
+
+    use('saecki/crates.nvim') -- crates.io integration for rust
 end)

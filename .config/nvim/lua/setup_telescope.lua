@@ -40,11 +40,26 @@ vim.api.nvim_set_keymap('n', '<Leader>th', ':Telescope help_tags<CR>', { noremap
 vim.api.nvim_set_keymap('n', '<Leader>tgf', ':Telescope git_files<CR>', { noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>tC", function()
-  require("telescope").extensions.diff.diff_files({ hidden = true })
+    require("telescope").extensions.diff.diff_files({ hidden = true })
 end, { desc = "Compare 2 files" })
 vim.keymap.set("n", "<leader>tc", function()
-  require("telescope").extensions.diff.diff_current({ hidden = true })
+    require("telescope").extensions.diff.diff_current({ hidden = true })
 end, { desc = "Compare file with current" })
+
+
+local actions = require("telescope.actions")
+local trouble = require("trouble.providers.telescope")
+
+local telescope = require("telescope")
+
+telescope.setup {
+    defaults = {
+        mappings = {
+            i = { ["<c-t>"] = trouble.open_with_trouble },
+            n = { ["<c-t>"] = trouble.open_with_trouble },
+        },
+    },
+}
 
 -- init doc key
 -- {'n'} <Leader>tf = find files
@@ -54,4 +69,5 @@ end, { desc = "Compare file with current" })
 -- {'n'} <Leader>tgf = git files
 -- {'n'} <Leader>tC = compare 2 files
 -- {'n'} <Leader>tc = compare file with current
+-- {'n', 'i'} <c-t> = open trouble with result search telescope
 -- end doc key

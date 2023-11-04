@@ -44,19 +44,19 @@ vim.keymap.set("i", "<C-x>", function()
     vim.api.nvim_win_set_cursor(0, { line, 0 })
 end)
 
-vim.keymap.set("i", "<C-c>", "<Esc>")                                       -- This is going to get me cancelled
+vim.keymap.set("i", "<C-c>", "<Esc>")                -- This is going to get me cancelled
 
-vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")                            -- Move to next quickfix item
-vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")                            -- Move to previous quickfix item
-vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")                        -- Move to next location list item
-vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")                        -- Move to previous location list item
+vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")     -- Move to next quickfix item
+vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")     -- Move to previous quickfix item
+vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz") -- Move to next location list item
+vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz") -- Move to previous location list item
 
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true }) -- Set file to executable
+-- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true }) -- Set file to executable
 
-vim.keymap.set("v", "<S-Tab>", "<gv")                                       -- Untab in visual mode
-vim.keymap.set("v", "<Tab>", ">gv")                                         -- Tab in visual mode
+vim.keymap.set("v", "<S-Tab>", "<gv")   -- Untab in visual mode
+vim.keymap.set("v", "<Tab>", ">gv")     -- Tab in visual mode
 
-vim.keymap.set("n", "<Tab>", function()                                     -- Tab in normal mode
+vim.keymap.set("n", "<Tab>", function() -- Tab in normal mode
     local line = vim.api.nvim_win_get_cursor(0)[1]
     vim.cmd("normal! >>")
     vim.api.nvim_win_set_cursor(0, { line, vim.api.nvim_win_get_cursor(0)[2] + 4 })
@@ -115,7 +115,7 @@ vim.keymap.set("n", "<leader>wv", "<cmd>vsplit<CR>")            -- Split window 
 vim.keymap.set("n", "<leader>m", "<cmd>ToggleLoadDocFiles<CR>") -- Execute named command :TogleLoadDocFiles
 vim.keymap.set("n", "<leader>mg", "<cmd>ToggleLoadDocGrep<CR>") -- Execute named command :TogleLoadDocGrep
 
-vim.keymap.set("n", "<Enter>", "o<Esc>")                        -- <Enter> in normal mode insert a new line above the cursor and move cursor to new line
+-- vim.keymap.set("n", "<Enter>", "o<Esc>")                        -- <Enter> in normal mode insert a new line above the cursor and move cursor to new line
 
 -- vim.keymap.set("n", "<Backspace>",
 --     function() -- <Backspace> in normal mode delete the current line and move cursor to the line above

@@ -19,7 +19,6 @@ lsp_zero.on_attach(function(client, bufnr)
     map('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 end)
 
-
 require('mason').setup({})
 require('mason-lspconfig').setup({
     ensure_installed = {
