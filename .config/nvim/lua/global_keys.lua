@@ -25,6 +25,8 @@ vim.keymap.set("n", "<S-C-Down>", "<c-d>zz")                                    
 vim.keymap.set("n", "f", "f")                                                                          -- Jump to char n in current line forward
 vim.keymap.set("n", "F", "F")                                                                          -- Jump to char n in current line backwards
 
+vim.keymap.set("n", "<C-M-j>", ":jumps<CR>")                                                           -- Show jump list
+
 vim.keymap.set("n", "n", "nzzzv")                                                                      -- Move to next search result
 vim.keymap.set("n", "N", "Nzzzv")                                                                      -- Move to previous search result
 
@@ -53,26 +55,26 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz") -- Move to previous locatio
 
 -- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true }) -- Set file to executable
 
-vim.keymap.set("v", "<S-Tab>", "<gv")   -- Untab in visual mode
-vim.keymap.set("v", "<Tab>", ">gv")     -- Tab in visual mode
+-- vim.keymap.set("v", "<S-Tab>", "<gv")   -- Untab in visual mode
+-- vim.keymap.set("v", "<Tab>", ">gv")     -- Tab in visual mode
 
-vim.keymap.set("n", "<Tab>", function() -- Tab in normal mode
-    local line = vim.api.nvim_win_get_cursor(0)[1]
-    vim.cmd("normal! >>")
-    vim.api.nvim_win_set_cursor(0, { line, vim.api.nvim_win_get_cursor(0)[2] + 4 })
-end)
+-- vim.keymap.set("n", "<Tab>", function() -- Tab in normal mode
+--     local line = vim.api.nvim_win_get_cursor(0)[1]
+--     vim.cmd("normal! >>")
+--     vim.api.nvim_win_set_cursor(0, { line, vim.api.nvim_win_get_cursor(0)[2] + 4 })
+-- end)
 
-vim.keymap.set("n", "<S-Tab>", function() -- Untab in normal mode
-    local line = vim.api.nvim_win_get_cursor(0)[1]
-    vim.cmd("normal! <<")
-    vim.api.nvim_win_set_cursor(0, { line, vim.api.nvim_win_get_cursor(0)[2] - 4 })
-end)
+-- vim.keymap.set("n", "<S-Tab>", function() -- Untab in normal mode
+--     local line = vim.api.nvim_win_get_cursor(0)[1]
+--     vim.cmd("normal! <<")
+--     vim.api.nvim_win_set_cursor(0, { line, vim.api.nvim_win_get_cursor(0)[2] - 4 })
+-- end)
 
-vim.keymap.set("i", "<S-Tab>", function() -- Untab in insert mode
-    local line = vim.api.nvim_win_get_cursor(0)[1]
-    vim.cmd("normal! <<")
-    vim.api.nvim_win_set_cursor(0, { line, vim.api.nvim_win_get_cursor(0)[2] - 4 })
-end)
+-- vim.keymap.set("i", "<S-Tab>", function() -- Untab in insert mode
+--     local line = vim.api.nvim_win_get_cursor(0)[1]
+--     vim.cmd("normal! <<")
+--     vim.api.nvim_win_set_cursor(0, { line, vim.api.nvim_win_get_cursor(0)[2] - 4 })
+-- end)
 
 -- Define the FocusNextWindow and FocusPreviousWindow commands
 vim.cmd([[
@@ -145,6 +147,7 @@ vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")  -- kill current window
 -- {'n'} <S-C-Down> = down page cursor movement to keep cursor in middle of screen
 -- {'n'} f = jump to char n in current line forward
 -- {'n'} F = jump to char n in current line backwards
+-- {'n'} <C-M-j> = show jump list
 -- {'n'} n = move to next search result
 -- {'n'} N = move to previous search result
 -- {'x'} <leader>p = paste yanked text
@@ -158,16 +161,16 @@ vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")  -- kill current window
 -- {'n'} <C-j> = move to previous quickfix item
 -- {'n'} <leader>k = move to next location list item
 -- {'n'} <leader>j = move to previous location list item
--- {'n'} <leader>x = set file to executable
--- {'v', 'n', 'i'} <S-Tab> = untab in visual mode
--- {'v', 'n', 'i'} <Tab> = tab in visual mode
--- <S-M-Right> = focus next window M=Alt
--- <S-M-Left> = focus previous window M=Alt
+-- DISABLED {'n'} <leader>x = set file to executable
+-- DISABLED {'v', 'n', 'i'} <S-Tab> = untab in visual mode
+-- DISABLED {'v', 'n', 'i'} <Tab> = tab in visual mode
+-- DISABLED <S-M-Right> = focus next window M=Alt
+-- DISABLED <S-M-Left> = focus previous window M=Alt
 -- {'n'} <leader>wh = split window horizontally
 -- {'n'} <leader>wv = split window vertically
 -- {'n'} <leader>m = execute named command :TogleLoadDoc
--- {'n'} <Enter> = <Enter> in normal mode insert a new line above the cursor and move cursor to new line
--- {'n'} <Backspace> = <Backspace> (disabled) in normal mode delete the current line and move cursor to the line above
+-- DISABLED {'n'} <Enter> = <Enter> in normal mode insert a new line above the cursor and move cursor to new line
+-- DISABLED {'n'} <Backspace> = <Backspace> (disabled) in normal mode delete the current line and move cursor to the line above
 -- {'n', 'v'} <C-a> = <C-a> Select all text in visual mode and normal mode
 -- {'n'} <leader>q = kill all windows except current
 -- {'n'} <leader>Q = kill all windows
