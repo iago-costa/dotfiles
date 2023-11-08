@@ -25,5 +25,7 @@ vim.opt.updatetime = 50
 
 vim.opt.signcolumn = "yes"
 
-vim.o.clipboard = "unnamedplus"
+vim.opt.clipboard = "unnamedplus"
 
+vim.opt.cursorline = true
+vim.opt.cursorcolumn = true
