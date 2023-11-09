@@ -129,7 +129,6 @@ vim.keymap.set({ "n" }, "<C-a>", "ggVG")          -- <C-a> Select all text in vi
 
 vim.keymap.set("n", "<leader>q", "<cmd>only<CR>") -- kill all windows except current
 vim.keymap.set("n", "<leader>Q", "<cmd>qa<CR>")   -- kill all windows
-
 vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")  -- kill current window
 
 

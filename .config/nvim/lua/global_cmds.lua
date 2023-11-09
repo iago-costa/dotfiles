@@ -6,11 +6,11 @@ vim.cmd [[packadd packer.nvim]]
 
 -- Highlight matching words under cursor
 vim.cmd [[
-highlight MatchWord cterm=underline gui=underline
+highlight MatchWord cterm=underline gui=underline guibg=Gray
 ]]
 
 -- -- AutoFormat
-Pattern = "*.rs, *.lua, *.py, *.js, *.css, *.go, *.yaml, *.yml, *.html, *.clj, *.cpp, *.c, *.h, *.hpp, *.json, *.md"
+-- Pattern = "*.rs, *.lua, *.py, *.js, *.css, *.go, *.yaml, *.yml, *.html, *.clj, *.cpp, *.c, *.h, *.hpp, *.json, *.md"
 
 -- Set up an autocmd for BufWrite for multiple file types
 -- autocmd BufWritePre <buffer> lua vim.defer_fn(function() vim.lsp.buf.format() end, 3000)

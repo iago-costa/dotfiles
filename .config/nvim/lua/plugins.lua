@@ -137,18 +137,23 @@ require('packer').startup(function()
         requires = 'kevinhwang91/promise-async'
     }
 
-    use('romgrk/barbar.nvim')              -- multitabs
-
     use('tpope/vim-fugitive')              -- git wrapper to git history, blame, etc
 
     use('Olical/conjure')                  -- clojure REPL
 
     use('HiPhish/rainbow-delimiters.nvim') -- rainbow delimiters
 
-    -- use { --  possession is disabled because it is not working properly with barbar.nvim
-    --     'jedrzejboczar/possession.nvim',
-    --     requires = { 'nvim-lua/plenary.nvim' },
-    -- }
+    use('saecki/crates.nvim')              -- crates.io integration for rust
 
-    use('saecki/crates.nvim') -- crates.io integration for rust
+    use('j-morano/buffer_manager.nvim')    -- buffer manager
+
+    use({
+        'rmagatti/auto-session',
+        config = function()
+            require("auto-session").setup {
+                log_level = "error",
+                auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+            }
+        end
+    })
 end)

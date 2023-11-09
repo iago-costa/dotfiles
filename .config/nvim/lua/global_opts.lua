@@ -30,3 +30,8 @@ vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
 
 vim.opt.virtualedit = "onemore"
+
+-- Change color and font StatusLine
+vim.cmd [[
+highlight StatusLine guibg=Green guifg=White gui=bold
+]]
