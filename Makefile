@@ -16,3 +16,12 @@ links:
 
 red:
 	redshift -P -O 6000
+
+pull:
+	git pull origin main
+	cp .tmux.conf ${HOME}/.tmux.conf
+	cp .zshrc ${HOME}/.zshrc
+	cp .vimrc ${HOME}/.vimrc
+	cp .config/nvim/ ${HOME}/.config/nvim/ -r
+	cp .config/redshift/ ${HOME}/.config/redshift/ -r
+	cp vifmrc ${HOME}/.config/vifm/vifmrc
