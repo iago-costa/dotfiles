@@ -32,6 +32,12 @@ vim.opt.cursorcolumn = true
 vim.opt.virtualedit = "onemore"
 
 -- Change color and font StatusLine
+-- vim.cmd [[
+-- highlight StatusLine guibg=Green guifg=White gui=bold
+-- ]]
+
+
+-- force vim cmd
 vim.cmd [[
-highlight StatusLine guibg=Green guifg=White gui=bold
+autocmd BufWinEnter * highlight StatusLine guibg=Green guifg=White gui=bold
 ]]

@@ -78,7 +78,7 @@ require('packer').startup(function()
         config = function()
             require('github-theme').setup({
             })
-            vim.cmd('colorscheme github_dark_colorblind')
+            vim.cmd('colorscheme github_dark_tritanopia')
         end
     })
 
@@ -147,7 +147,7 @@ require('packer').startup(function()
 
     use('j-morano/buffer_manager.nvim')    -- buffer manager
 
-    use({
+    use({                                  --  auto save session nvim
         'rmagatti/auto-session',
         config = function()
             require("auto-session").setup {
@@ -155,5 +155,10 @@ require('packer').startup(function()
                 auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
             }
         end
+    })
+
+    use({
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true }
     })
 end)

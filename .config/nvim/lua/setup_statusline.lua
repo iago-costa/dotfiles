@@ -23,7 +23,13 @@ local modes = {
 
 local function mode()
     local current_mode = vim.api.nvim_get_mode().mode
-    return string.format(" %s ", modes[current_mode]):upper()
+    local modified = vim.api.nvim_buf_get_option(0, 'modified')
+    if modified then
+        modified = " [+]"
+    else
+        modified = ""
+    end
+    return string.format(" %s ", modes[current_mode] .. modified):upper()
 end
 
 local function update_mode_colors()
@@ -171,3 +177,5 @@ vim.api.nvim_exec([[
   au WinEnter,BufEnter,FileType NvimTree setlocal statusline=%!v:lua.Statusline.short()
   augroup END
 ]], false)
+
+-- https://nuxsh.is-a.dev/blog/custom-nvim-statusline.html#orgbd5fcc4

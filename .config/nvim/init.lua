@@ -102,7 +102,10 @@ if not vim.g.vscode then
     require('setup_auto_session')
 
     -- Load setup_statusline.lua
-    require('setup_statusline')
+    -- require('setup_statusline')
+    --
+    -- Load setup_lualine.lua
+    require('setup_lualine')
 end
 
 -- Load commentary configuration from commentary.lua

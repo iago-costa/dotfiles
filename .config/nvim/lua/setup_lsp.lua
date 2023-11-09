@@ -29,6 +29,7 @@ require('mason-lspconfig').setup({
 })
 
 
+
 -- init doc key
 -- {'n'} bd = Go to definition
 -- {'n'} bD = Go to declaration
