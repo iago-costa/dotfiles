@@ -24,4 +24,5 @@ pull:
 	cp .vimrc ${HOME}/.vimrc
 	cp .config/nvim/ ${HOME}/.config/nvim/ -r
 	cp .config/redshift/ ${HOME}/.config/redshift/ -r
+	mkdir -p ${HOME}/.config/vifm/ | true
 	cp vifmrc ${HOME}/.config/vifm/vifmrc
