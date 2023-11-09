@@ -3,7 +3,7 @@ local custom_theme = require 'lualine.themes.iceberg_dark'
 -- Change the background of lualine_c section for normal mode
 custom_theme.normal.c.fg = 'White'
 custom_theme.normal.b.fg = 'White'
-custom_theme.normal.a.fg = 'Black'
+custom_theme.normal.a.fg = 'White'
 
 custom_theme.insert.a.fg = 'White'
 custom_theme.insert.b.fg = 'White'
