@@ -87,6 +87,9 @@ map('n', 'ts', '<Cmd>lua require("telescope.builtin").spell_suggest()<CR>', opts
 map('n', 'to', '<Cmd>lua require("telescope.builtin").oldfiles()<CR>', opts)
 map('n', 't;', '<Cmd>lua require("telescope.builtin").current_buffer_fuzzy_find()<CR>', opts)
 
+-- builtin.grep_string
+map('n', 'tes', '<Cmd>lua require("telescope.builtin").grep_string()<CR>', opts)
+
 -- init doc key
 -- {'n'} tgh = builtin.git_stash
 -- {'n'} tgc = builtin.git_commits
