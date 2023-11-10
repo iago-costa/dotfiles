@@ -137,7 +137,7 @@ source /opt/asdf-vm/asdf.sh
 asdf local <plugin_name> <plugin_version>
 ```
 
-## top terminal tools
+## Top terminal tools
 1. navi -- terminal snippets
     - navi fn welcome
     - navi
@@ -145,3 +145,7 @@ asdf local <plugin_name> <plugin_version>
 3. fcd
     - combination fzf + cd
 4. fasd -- fast cd
+5. ripgrep/fzf -- search files
+6. zellij -- terminal multiplexer
+7. vifm -- vim-like file manager
+8. alacritty -- terminal emulator
