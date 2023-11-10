@@ -20,9 +20,9 @@ red:
 pull:
 	git pull origin main
 	cp .tmux.conf ${HOME}/.tmux.conf
-	cp .zshrc ${HOME}/.zshrc
-	cp .vimrc ${HOME}/.vimrc
-	cp .config/nvim/ ${HOME}/.config/nvim/ -r
-	cp .config/redshift/ ${HOME}/.config/redshift/ -r
+	cp .zshrc ${HOME}/.zshrc -v
+	cp .vimrc ${HOME}/.vimrc -v
+	cp .config/nvim/ ${HOME}/.config/ -rv
+	cp .config/redshift/ ${HOME}/.config/ -rv
 	mkdir -p ${HOME}/.config/vifm/ | true
-	cp vifmrc ${HOME}/.config/vifm/vifmrc
+	cp vifmrc ${HOME}/.config/vifm/vifmrc -v
