@@ -132,6 +132,11 @@ vim.keymap.set("n", "<leader>Q", "<cmd>qa<CR>")   -- kill all windows
 vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")  -- kill current window
 
 
+-- Copy current file path to clipboard
+vim.keymap.set("n", "cp", function()
+    vim.fn.setreg("+", vim.fn.expand("%:p"))
+end)
+
 -- init doc key
 -- {'n'} <Leader>ss = substitute word under cursor
 -- {'n', 'v'} <Leader>s = substitute word under cursor in all file
