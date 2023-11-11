@@ -1,15 +1,71 @@
 -- Configure Rust Analyzer
 local nvim_lsp = require('lspconfig')
-nvim_lsp.rust_analyzer.setup {}
+
+local on_attach = function(client)
+    require 'completion'.on_attach(client)
+end
+
+nvim_lsp.rust_analyzer.setup({
+    on_attach = on_attach,
+    settings = {
+        ["rust-analyzer"] = {
+            imports = {
+                granularity = {
+                    group = "module",
+                },
+                prefix = "self",
+            },
+            cargo = {
+                buildScripts = {
+                    enable = true,
+                },
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
+})
+
 
 local rust_tools = require('rust-tools')
 rust_tools.setup({
     server = {
         on_attach = function(client, bufnr)
-            vim.keymap.set('n', '<leader>bh', rust_tools.hover_actions.hover_actions, { buffer = bufnr })
-        end
+            -- Hover actions
+            vim.keymap.set("n", "<C-space>", rust_tools.hover_actions.hover_actions, { buffer = bufnr })
+            -- Code action groups
+            vim.keymap.set("n", "<Leader>a", rust_tools.code_action_group.code_action_group, { buffer = bufnr })
+            -- -- DAP :lua require('dap').continue() keymap
+            -- vim.keymap.set("n", "<Leader>dc", rust_tools.dap_continue.continue, { buffer = bufnr })
+        end,
+        standalone = false,
+        hover_actions = {
+            auto_focus = true,
+        },
+        server = {
+            settings = {
+                ["rust-analyzer"] = {
+                    checkOnSave = {
+                        command = "clippy"
+                    }
+                }
+            },
+        },
     }
 })
+
+rust_tools.runnables.runnables()
+rust_tools.hover_actions.hover_actions()
+rust_tools.parent_module.parent_module()
+
+local map = vim.keymap.set
+local opts = { noremap = true, silent = true }
+-- Command:
+-- RustMoveItemUp
+-- RustMoveItemDown
+map('n', '<Leader>ru', '<cmd>RustMoveItemUp<CR>', opts)
+map('n', '<Leader>rd', '<cmd>RustMoveItemDown<CR>', opts)
 
 
 require('crates').setup {
@@ -188,5 +244,6 @@ end
 vim.keymap.set('n', 'K', show_documentation, { silent = true })
 
 -- init doc key
--- {'n'} <leader>bh = Hover actions
+-- {'n'} <C-space> hover_actions()
+-- {'n'} <Leader>a code_action_group()
 -- end doc key

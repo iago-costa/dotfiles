@@ -31,5 +31,5 @@
 -- {'b'} m = Find Operator
 -- {'b'} \\a = Alignment
 -- {'b'} \\t = Transposition
--- end doc key  
-  
+-- {'n'} \\l = Update InfoLine
+-- end doc key

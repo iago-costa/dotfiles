@@ -31,8 +31,7 @@
 -- map('n', '<Space>bl', '<Cmd>BufferOrderByLanguage<CR>', opts)
 -- map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', opts)
 
-
--- -- init doc key
+--
 -- -- {'n'} <C-S-Left>     =  * <Cmd>BufferPrevious<CR>
 -- -- {'n'} <C-S-Right>    =  * <Cmd>BufferNext<CR>
 -- -- {'n'} <A-1>          =  * <Cmd>BufferGoto 1<CR>
@@ -52,7 +51,7 @@
 -- -- {'n'} <Space>bd      =  * <Cmd>BufferOrderByDirectory<CR>
 -- -- {'n'} <Space>bl      =  * <Cmd>BufferOrderByLanguage<CR>
 -- -- {'n'} <Space>bw      =  * <Cmd>BufferOrderByWindowNumber<CR>
--- -- end doc key
+--
 --
 --
 --
@@ -114,11 +113,10 @@ end, opts)
 -- autocmd FileType buffer_manager vnoremap K :m '<-2<CR>gv=gv
 -- ]])
 
-
 -- init doc key
--- {'n'} bm = * <Cmd>lua require("buffer_manager.ui").toggle_quick_menu()<CR>
--- {'n'} bn =  * <Cmd>lua require("buffer_manager.ui").nav_next()<CR>
--- {'n'} bp =  * <Cmd>lua require("buffer_manager.ui").nav_prev()<CR>
--- {'n'} <leader>number =  * <Cmd>lua require("buffer_manager.ui").nav_file(number)<CR>
--- {'t', 'n'} <M-m> =  * <Cmd>lua require("buffer_manager.ui").toggle_quick_menu()<CR>
+-- {'n'} bm = toggle_quick_menu()
+-- {'n'} bn = nav_next()
+-- {'n'} bp = nav_prev()
+-- {'n'} <leader>number = nav_file(number)
+-- {'t', 'n'} <M-m> = toggle_quick_menu()
 -- end doc key
