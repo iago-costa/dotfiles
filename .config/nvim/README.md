@@ -4,6 +4,7 @@
 ### Major references
 1. [quickref-vim](https://quickref.me/vim)
 2. [ThePrimeagen-Config-nvim](https://github.com/ThePrimeagen/init.lua)
+3. [Tmux crash course](https://thoughtbot.com/blog/a-tmux-crash-course)
 
 ### Plus ./lua/setup_doc_keymap.lua
 An plugin to document and fast see all your custom keymaps
