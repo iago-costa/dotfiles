@@ -20,7 +20,6 @@ require('packer').startup(function()
             { 'hrsh7th/cmp-path' },
             { 'hrsh7th/cmp-nvim-lsp' },
             { 'hrsh7th/cmp-nvim-lua' },
-            { 'hrsh7th/cmp-cmdline' },
 
             -- Snippets
             { 'saadparwaiz1/cmp_luasnip' },
@@ -115,10 +114,6 @@ require('packer').startup(function()
         branch = 'master'
     }
 
-    use { --  replace between multiple files
-        'dyng/ctrlsf.vim',
-    }
-
     use { -- fold look like vscode
         'kevinhwang91/nvim-ufo',
         requires = 'kevinhwang91/promise-async'
@@ -138,7 +133,7 @@ require('packer').startup(function()
         },
     })
 
-    use { -- nvim cli snippets
+    use { -- nvim cmdline completion
         'gelguy/wilder.nvim',
         requires = { 'romgrk/fzy-lua-native' },
     }
@@ -165,5 +160,13 @@ require('packer').startup(function()
     use({ -- custom status line
         'nvim-lualine/lualine.nvim',
         requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+    })
+
+    use({
+        'nvim-pack/nvim-spectre' -- search and replace
+    })
+
+    use({ --  replace between multiple files
+        'dyng/ctrlsf.vim',
     })
 end)

@@ -100,6 +100,9 @@ if not vim.g.vscode then
 
     -- Load setup_wilder.lua
     require('setup_wilder')
+
+    -- Load setup_spectre.lua
+    require('setup_spectre')
 end
 
 -- Load commentary configuration from commentary.lua
