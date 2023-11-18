@@ -56,12 +56,6 @@ if not vim.g.vscode then
     -- Load undotree configuration for lua from undotree.lua
     require('undo_tree')
 
-    -- Enable setup_nvim_tree.lua
-    require('setup_nvim_tree')
-
-    -- Load toggleterm configuration from toggle_term.lua
-    require('toggle_term')
-
     -- Load telescope configuration from telescope.lua
     require('setup_telescope')
 
@@ -89,9 +83,6 @@ if not vim.g.vscode then
     -- Load setup_ctrlsf.lua
     require('setup_ctrlsf')
 
-    -- Load setup_command_completion.lua
-    require('setup_command_completion')
-
     -- Load setup_nvim_ufo.lua
     require('setup_nvim_ufo')
 
@@ -102,10 +93,13 @@ if not vim.g.vscode then
     require('setup_auto_session')
 
     -- Load setup_statusline.lua
-    -- require('setup_statusline')
-    --
+    -- require('setup_statusline') -- short implementation of statusline
+
     -- Load setup_lualine.lua
     require('setup_lualine')
+
+    -- Load setup_wilder.lua
+    require('setup_wilder')
 end
 
 -- Load commentary configuration from commentary.lua

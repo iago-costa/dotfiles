@@ -2,7 +2,6 @@ require('packer').startup(function()
     -- Define your plugins here
     -- Example: use 'username/repo'
     use('nvim-tree/nvim-web-devicons') -- optional icons for nvim-tree
-    use('kyazdani42/nvim-tree.lua')    -- file explorer
     use('andymass/vim-matchup')        -- highlight matching words under cursor
     use('github/copilot.vim')          -- copilot
 
@@ -19,11 +18,12 @@ require('packer').startup(function()
             { 'hrsh7th/nvim-cmp' }, -- config autocomplete
             { 'hrsh7th/cmp-buffer' },
             { 'hrsh7th/cmp-path' },
-            { 'saadparwaiz1/cmp_luasnip' },
             { 'hrsh7th/cmp-nvim-lsp' },
             { 'hrsh7th/cmp-nvim-lua' },
+            { 'hrsh7th/cmp-cmdline' },
 
             -- Snippets
+            { 'saadparwaiz1/cmp_luasnip' },
             { 'L3MON4D3/LuaSnip' },
             { 'rafamadriz/friendly-snippets' },
 
@@ -46,10 +46,6 @@ require('packer').startup(function()
             use('MunifTanjim/eslint.nvim')          -- eslint for javascript
         }
     })
-
-    use { "akinsho/toggleterm.nvim", tag = '*', config = function() -- terminal in a floating window
-        require("toggleterm").setup()
-    end }
 
     -- install live grep and telescope
     use({
@@ -84,15 +80,9 @@ require('packer').startup(function()
 
     use({
         "folke/trouble.nvim", -- see list of diagnostics
-        config = function()
-            require("trouble").setup {
-                icons = false,
-                -- your configuration comes here
-                -- or leave it empty to use the default settings
-                -- refer to the configuration section below
-            }
-        end
+        requires = { "nvim-tree/nvim-web-devicons", "folke/lsp-colors.nvim" },
     })
+
     use({
         'nvim-treesitter/nvim-treesitter', -- treesitter for syntax highlighting
         run = function()
@@ -102,10 +92,11 @@ require('packer').startup(function()
     })
     use("nvim-treesitter/playground")               -- playground for treesitter
     use("nvim-treesitter/nvim-treesitter-context"); -- show context of code
+
     use("theprimeagen/harpoon")                     -- box to store files to jump to
     use("theprimeagen/refactoring.nvim")            -- refactoring tool
+
     use("mbbill/undotree")                          -- undo tree visualizer and navigation with timeline
-    use("907th/vim-auto-save")                      -- auto save
     use({
         "kdheepak/lazygit.nvim",                    -- git wrapper for neovim
         -- optional for floating window border decoration
@@ -128,16 +119,29 @@ require('packer').startup(function()
         'dyng/ctrlsf.vim',
     }
 
-    use { --  command-completion to cli nvim
-        'smolck/command-completion.nvim',
-    }
-
     use { -- fold look like vscode
         'kevinhwang91/nvim-ufo',
         requires = 'kevinhwang91/promise-async'
     }
 
-    use('tpope/vim-fugitive')              -- git wrapper to git history, blame, etc
+    use({
+        "aaronhallaert/advanced-git-search.nvim", -- git history commits changes for files and more
+        requires = {
+            "nvim-telescope/telescope.nvim",
+            -- to show diff splits and open commits in browser
+            "tpope/vim-fugitive",
+            -- to open commits in browser with fugitive
+            "tpope/vim-rhubarb",
+            -- optional: to replace the diff from fugitive with diffview.nvim
+            -- (fugitive is still needed to open in browser)
+            -- "sindrets/diffview.nvim",
+        },
+    })
+
+    use { -- nvim cli snippets
+        'gelguy/wilder.nvim',
+        requires = { 'romgrk/fzy-lua-native' },
+    }
 
     use('Olical/conjure')                  -- clojure REPL
 
@@ -147,6 +151,7 @@ require('packer').startup(function()
 
     use('j-morano/buffer_manager.nvim')    -- buffer manager
 
+    use("907th/vim-auto-save")             -- auto save
     use({                                  --  auto save session nvim
         'rmagatti/auto-session',
         config = function()
@@ -157,7 +162,7 @@ require('packer').startup(function()
         end
     })
 
-    use({
+    use({ -- custom status line
         'nvim-lualine/lualine.nvim',
         requires = { 'nvim-tree/nvim-web-devicons', opt = true }
     })

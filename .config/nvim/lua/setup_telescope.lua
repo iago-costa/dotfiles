@@ -12,22 +12,6 @@ vim.api.nvim_set_var('telescope', {
             '--column',
             '--smart-case',
             '--hidden',
-            -- '--glob',
-            -- '!.git/**',
-            -- '--glob',
-            -- '!node_modules/**',
-            -- '--glob',
-            -- '!dist/**',
-            -- '--glob',
-            -- '!build/**',
-            -- '--glob',
-            -- '!target/**',
-            -- '--glob',
-            -- '!vendor/**',
-            -- '--glob',
-            -- '!yarn.lock',
-            -- '--glob',
-            -- '!package-lock.json',
         },
     },
 })
@@ -36,12 +20,6 @@ local map = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
 
 -- Config telescope.nvim keybindings
-
-map('n', 'tgh', '<Cmd>lua require("telescope.builtin").git_stash()<CR>', opts)
-map('n', 'tgc', '<Cmd>lua require("telescope.builtin").git_commits()<CR>', opts)
-map('n', 'tgs', '<Cmd>lua require("telescope.builtin").git_status()<CR>', opts)
-map('n', 'tgb', '<Cmd>lua require("telescope.builtin").git_branches()<CR>', opts)
-map('n', 'tgf', '<Cmd>lua require("telescope.builtin").git_files()<CR>', opts)
 
 map('n', 'tf', '<Cmd>lua require("telescope.builtin").find_files()<CR>', opts)
 map('n', 'tq', '<Cmd>lua require("telescope.builtin").quickfix()<CR>', opts)
@@ -77,18 +55,55 @@ telescope.setup {
             n = { ["<c-t>"] = trouble.open_with_trouble },
         },
     },
+    extensions = {
+        advanced_git_search = {
+            -- fugitive or diffview
+            diff_plugin = "fugitive",
+            -- customize git in previewer
+            -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
+            git_flags = { "-c", "delta.side-by-side=true" },
+            -- customize git diff in previewer
+            -- e.g. flags such as { "--raw" }
+            git_diff_flags = {},
+            -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
+            show_builtin_git_pickers = true,
+            entry_default_author_or_date = "date", -- one of "author" or "date"
+
+            -- Telescope layout setup
+            telescope_theme = {
+                -- e.g. realistic example
+                show_custom_functions = {
+                    layout_config = { width = 0.4, height = 0.4 },
+                },
+
+            }
+        }
+    }
 }
 
 map('n', 't,', '<Cmd>lua require("telescope.builtin").registers()<CR>', opts)
 map('n', 't.', '<Cmd>lua require("telescope.builtin").jumplist()<CR>', opts)
 map('n', 't/', '<Cmd>lua require("telescope.builtin").keymaps()<CR>', opts)
 map('n', 'tm', '<Cmd>lua require("telescope.builtin").man_pages()<CR>', opts)
-map('n', 'ts', '<Cmd>lua require("telescope.builtin").spell_suggest()<CR>', opts)
+map('n', 'te', '<Cmd>lua require("telescope.builtin").spell_suggest()<CR>', opts)
 map('n', 'to', '<Cmd>lua require("telescope.builtin").oldfiles()<CR>', opts)
 map('n', 't;', '<Cmd>lua require("telescope.builtin").current_buffer_fuzzy_find()<CR>', opts)
 
 -- builtin.grep_string
-map('n', 'tes', '<Cmd>lua require("telescope.builtin").grep_string()<CR>', opts)
+map('n', 'tps', '<Cmd>lua require("telescope.builtin").grep_string()<CR>', opts)
+
+map('n', 'tgh', '<Cmd>lua require("telescope.builtin").git_stash()<CR>', opts)
+map('n', 'tgc', '<Cmd>lua require("telescope.builtin").git_commits()<CR>', opts)
+map('n', 'tgs', '<Cmd>lua require("telescope.builtin").git_status()<CR>', opts)
+map('n', 'tgb', '<Cmd>lua require("telescope.builtin").git_branches()<CR>', opts)
+map('n', 'tgf', '<Cmd>lua require("telescope.builtin").git_files()<CR>', opts)
+
+-- Telescope extensions advanced_git_search
+map('n', 'tsd', '<Cmd>Telescope advanced_git_search diff_commit_file<CR>', opts)
+map('n', 'tsl', '<Cmd>Telescope advanced_git_search diff_commit_line<CR>', opts)
+map('n', 'tsb', '<Cmd>Telescope advanced_git_search diff_branch_file<CR>', opts)
+map('n', 'tsc', '<Cmd>Telescope advanced_git_search search_log_content_file<CR>', opts)
+
 
 -- init doc key
 -- {'n'} tgh = builtin.git_stash
@@ -116,4 +131,9 @@ map('n', 'tes', '<Cmd>lua require("telescope.builtin").grep_string()<CR>', opts)
 -- {'n'} ts = builtin.spell_suggest
 -- {'n'} to = builtin.oldfiles
 -- {'n'} t; = builtin.current_buffer_fuzzy_find
+-- {'n'} tps = builtin.grep_string
+-- {'n'} tsd = advanced_git_search diff_commit_file
+-- {'n'} tsl = advanced_git_search diff_commit_line
+-- {'n'} tsb = advanced_git_search diff_branch_file
+-- {'n'} tsc = advanced_git_search search_log_content_file
 -- -- end doc key

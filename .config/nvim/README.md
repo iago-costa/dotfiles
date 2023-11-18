@@ -91,7 +91,6 @@ Enjoy!
     Y = Copy relative Path
     W = Collapse
 
-
 ## To install Neovim on Old date distros from a tar.gz file, you can follow these steps:
 1. **Prerequisites**:
 
