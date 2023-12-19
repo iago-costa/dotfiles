@@ -36,8 +36,10 @@ vim.opt.virtualedit = "onemore"
 -- highlight StatusLine guibg=Green guifg=White gui=bold
 -- ]]
 
-
 -- force vim cmd
 vim.cmd [[
 autocmd BufWinEnter * highlight StatusLine guibg=Green guifg=White gui=bold
 ]]
+
+-- keys to wrap lines
+vim.opt.whichwrap = "b,s,<,>,[,],h,l"

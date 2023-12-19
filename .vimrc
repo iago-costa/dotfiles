@@ -82,3 +82,5 @@ set updatetime=50
 " Set one more character in cursor end of line
 set virtualedit=onemore
 " https://www.freecodecamp.org/news/vimrc-configuration-guide-customize-your-vim-editor/
+
+set whichwrap+=b,s,<,>,[,],h,l
