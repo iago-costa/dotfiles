@@ -176,4 +176,5 @@ end)
 -- {'n'} <leader>q = kill all windows except current
 -- {'n'} <leader>Q = kill all windows
 -- {'n'} <leader>wq = kill current window
+-- {'n'} cp = copy current file path to clipboard
 -- end doc key
