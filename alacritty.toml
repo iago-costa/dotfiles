@@ -10,6 +10,8 @@ TERM = "xterm-256color"
 
 [font]
 size = 10.0
+# [font.normal]
+# family = "MesloLGS NF Regular"
 
 [font.offset]
 x = 1
@@ -40,3 +42,5 @@ instance = "Alacritty"
 [window.padding]
 x = 6
 y = 6
+
+
