@@ -123,6 +123,8 @@ alias zz='fasd_cd -d -i' # cd with interactive selection
 alias op="fzf --print0 | xargs -0 -o xdg-open $1"
 alias opd="find / -type d | fzf --print0 | xargs -0 -o xdg-open $1"
 
+alias thefuck='fuck'
+
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -TFl --group-directories-first --icons --git -L 2 --no-user $realpath'
 zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
 zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
