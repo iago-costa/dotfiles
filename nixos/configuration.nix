@@ -2,12 +2,14 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running `nixos-help`).
 
+
 { config, pkgs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./suspend-and-hibernate.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -49,9 +51,10 @@
     displayManager.defaultSession = "xfce";
     # windowManager.i3.enable = true;
   };
+  services.upower.enable = config.powerManagement.enable;
 
   # Configure keymap in X11
-  services.xserver.layout = "us";
+  services.xserver.xkb.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
@@ -78,12 +81,12 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  nixpkgs.config.allowUnfree = true; 
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    vivaldi
     htop
+    vivaldi
+    vivaldi-ffmpeg-codecs
     xfce.xfce4-whiskermenu-plugin
     zellij
     zsh
@@ -103,7 +106,37 @@
       extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
     })
     nodejs_21
+    xclip
+    patchelf
+    steam-run
+    fuse
+    fuse3
+    libGL
+    libGLU
+    libxml2
+    pdfstudio2023
+    masterpdfeditor
+    logseq
+    docker
+    docker-compose
+    wrk2
+    dmidecode
+    neofetch
+    direnv
+    xz
+    nox
+    file
+    busybox
+    wpsoffice
+    zoom-us
+    openssl
   ];
+
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.vivaldi = {
+    proprietaryCodecs = true;
+    enableWideVine = true;
+  }; 
 
   fonts.packages = with pkgs; [
     noto-fonts
@@ -126,8 +159,18 @@
     enable = true;
     enableSSHSupport = true;
   };
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    # Add any missing dynamic libraries for unpackaged programs
+    # here, NOT in environment.systemPackages
+  ];
 
   # List services that you want to enable:
+  services.flatpak.enable = true;
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg.portal.config.common.default = "gtk";
+
   services.gnome.gnome-keyring.enable = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -151,5 +194,10 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "unstable"; # Did you read the comment?
 
+  virtualisation.docker.enable = true;
+  users.extraGroups.docker.members = [ "zen" ];
+  virtualisation.docker.rootless = {
+    enable = true;
+    setSocketVariable = true;
+  };
 }
-
