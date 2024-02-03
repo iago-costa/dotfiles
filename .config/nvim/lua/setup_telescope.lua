@@ -3,11 +3,20 @@ require('telescope').setup {
         file_ignore_patterns = { 
             'node_modules', 'dist', 'build', 'target/', 'vendor', 'yarn.lock', 'package-lock.json', '__pycache__', '.git' },
         vimgrep_arguments = { 
-            'rg', '--hidden', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
+            'rg', '--ignore', '--hidden', '--files', '-u', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
     },
     pickers = {
         find_files = {
-            hidden = true
+            hidden = true,
+            find_command = {
+                'fd',
+                '--type',
+                'f',
+                '--no-ignore-vcs',
+                '--color=never',
+                '--hidden',
+                '--follow',
+            },
         },
     },
 }
