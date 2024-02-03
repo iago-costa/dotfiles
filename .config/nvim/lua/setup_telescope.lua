@@ -1,26 +1,21 @@
--- Set to search hidden files
-vim.api.nvim_set_var('telescope', {
+require('telescope').setup {
     defaults = {
-        file_ignore_patterns = { 'node_modules', 'dist', 'build', 'target/', 'vendor', 'yarn.lock', 'package-lock.json',
-        '__pycache__' },
-        vimgrep_arguments = {
-            'rg',
-            '--color=never',
-            '--no-heading',
-            '--with-filename',
-            '--line-number',
-            '--column',
-            '--smart-case',
-            '--hidden',
+        file_ignore_patterns = { 
+            'node_modules', 'dist', 'build', 'target/', 'vendor', 'yarn.lock', 'package-lock.json', '__pycache__', '.git' },
+        vimgrep_arguments = { 
+            'rg', '--hidden', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
+    },
+    pickers = {
+        find_files = {
+            hidden = true
         },
     },
-})
+}
 
 local map = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
 
 -- Config telescope.nvim keybindings
-
 map('n', 'tf', '<Cmd>lua require("telescope.builtin").find_files()<CR>', opts)
 map('n', 'tq', '<Cmd>lua require("telescope.builtin").quickfix()<CR>', opts)
 map('n', 'tl', '<Cmd>lua require("telescope.builtin").loclist()<CR>', opts)
