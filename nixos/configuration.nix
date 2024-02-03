@@ -130,6 +130,9 @@
     wpsoffice
     zoom-us
     openssl
+    ripgrep
+    fd
+    unzip
   ];
 
   nixpkgs.config.allowUnfree = true;

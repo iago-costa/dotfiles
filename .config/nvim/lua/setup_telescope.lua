@@ -1,8 +1,8 @@
 -- Set to search hidden files
 vim.api.nvim_set_var('telescope', {
     defaults = {
-        -- file_ignore_patterns = { 'node_modules', 'dist', 'build', 'target', 'vendor', 'yarn.lock', 'package-lock.json',
-        -- '__pycache__' },
+        file_ignore_patterns = { 'node_modules', 'dist', 'build', 'target/', 'vendor', 'yarn.lock', 'package-lock.json',
+        '__pycache__' },
         vimgrep_arguments = {
             'rg',
             '--color=never',
