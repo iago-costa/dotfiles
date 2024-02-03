@@ -133,6 +133,7 @@
     ripgrep
     fd
     unzip
+    fasd
   ];
 
   nixpkgs.config.allowUnfree = true;
