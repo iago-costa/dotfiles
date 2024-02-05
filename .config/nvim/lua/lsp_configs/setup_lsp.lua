@@ -22,6 +22,24 @@ end)
 require('mason').setup({})
 require('mason-lspconfig').setup({
     ensure_installed = {
+        'clang-format',
+        'clangd',
+        'codelldb',
+        'cpplint',
+        'cpptools',
+        'delve',
+        'goimports',
+        'goimports-reviser',
+        'golines',
+        'google-java-format',
+        'gopls',
+        'gotests',
+        'java-debug-adapter',
+        'java-test',
+        'jdtls',
+        'lua-language-server',
+        'rust-analyzer',
+        'sonarlint-language-server',
     },
     handlers = {
         lsp_zero.default_setup,
