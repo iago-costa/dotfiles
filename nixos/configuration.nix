@@ -134,6 +134,7 @@
     fd
     unzip
     fasd
+    gh
   ];
 
   nixpkgs.config.allowUnfree = true;
