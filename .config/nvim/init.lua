@@ -98,6 +98,8 @@ if not vim.g.vscode then
     -- Load setup_git_signs.lua
     require('coding/setup_git_signs')
 
+    require('coding/dap_mapping')
+
     -- Load vim-matchup configuration from vim_matchup.lua
     require('styles/vim_matchup')
 

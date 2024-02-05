@@ -15,11 +15,12 @@ require('packer').startup(function()
                     require('plugins.configs.lspconfig')
                     require('custom.configs.lspconfig')
                 end
-            } },   -- config LSP servers
-            { 'williamboman/mason.nvim', 
+            } }, -- config LSP servers
+            {
+                'williamboman/mason.nvim',
                 opts = {
-                
-                } 
+
+                }
             }, -- install LSP servers
             { 'williamboman/mason-lspconfig.nvim' },
 
@@ -40,7 +41,21 @@ require('packer').startup(function()
 
             -- Debugging
             { 'nvim-lua/plenary.nvim' },
-            { 'mfussenegger/nvim-dap' },
+            {
+                'mfussenegger/nvim-dap',
+                init = function()
+                    require("core.utils").load_mappings("dap")
+                end
+            },
+            {
+                "leoluz/nvim-dap-go",
+                ft = "go",
+                dependencies = { "mfussenegger/nvim-dap" },
+                config = function(_, opts)
+                    require("dap-go").setup(opts)
+                    require("core.utils").load_mappings("dap_go")
+                end,
+            },
 
             use { --  flutter tools
                 'akinsho/flutter-tools.nvim',
@@ -50,13 +65,12 @@ require('packer').startup(function()
                 },
             },
 
-            use{'jose-elias-alvarez/null-ls.nvim', -- null-ls for formatting and linting support
+            use { 'jose-elias-alvarez/null-ls.nvim', -- null-ls for formatting and linting support
                 ft = "go",
                 opts = function()
                     return require("custom.configs.null-ls")
                 end,
-	    },
-            use('MunifTanjim/eslint.nvim')          -- eslint for javascript
+            },
         }
     })
 
@@ -143,7 +157,7 @@ require('packer').startup(function()
             "tpope/vim-rhubarb",
             -- optional: to replace the diff from fugitive with diffview.nvim
             -- (fugitive is still needed to open in browser)
-            -- "sindrets/diffview.nvim",
+            "sindrets/diffview.nvim",
         },
     })
 
@@ -152,7 +166,7 @@ require('packer').startup(function()
         requires = { 'romgrk/fzy-lua-native' },
     }
 
-    use('Olical/conjure')                  -- clojure REPL
+    -- use('Olical/conjure')                  -- clojure REPL
 
     use('HiPhish/rainbow-delimiters.nvim') -- rainbow delimiters
 
@@ -180,7 +194,7 @@ require('packer').startup(function()
         'nvim-pack/nvim-spectre' -- search and replace
     })
 
-    use({ --  replace between multiple files
-        'dyng/ctrlsf.vim',
-    })
+    -- use({ --  replace between multiple files
+    --     'dyng/ctrlsf.vim',
+    -- })
 end)
