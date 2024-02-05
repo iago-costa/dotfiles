@@ -43,6 +43,13 @@ require('packer').startup(function()
             { 'nvim-lua/plenary.nvim' },
             {
                 'mfussenegger/nvim-dap',
+                requires = {
+                    'rcarriga/nvim-dap-ui',
+                    'mfussenegger/nvim-dap-python',
+                    'theHamsta/nvim-dap-virtual-text',
+                    'nvim-telescope/telescope-dap.nvim',
+                    'folke/which-key.nvim',
+                },
                 init = function()
                     require("core.utils").load_mappings("dap")
                 end
