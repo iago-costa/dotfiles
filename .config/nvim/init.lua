@@ -48,7 +48,7 @@ if not vim.g.vscode then
     require('lsp_configs/lsp_clojure')
 
     -- Load null_ls.lua
-    require('lsp_configs/null_ls')
+    -- require('lsp_configs/null_ls')
 
     -- Load lsp configuration for java from lsp_java.lua
     require('lsp_configs/lsp_java')

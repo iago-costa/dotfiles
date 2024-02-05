@@ -35,8 +35,10 @@ local opts = {
                     callback = function()
                         vim.lsp.buf.format({ bufnr = bufnr })
                     end,
-                },
+                }
             )
         end
     end,
 }
+
+return opts

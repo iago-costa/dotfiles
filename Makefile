@@ -2,8 +2,8 @@ push:
 	@echo "Updating nvim files from local files"
 	rm -rf .config/ | true
 	mkdir -p .config/
-	cp -r ~/.config/nvim ./.config/
-	cp -r ~/.config/redshift ./.config/
+	cp -r ${HOME}/.config/nvim ./.config/
+	cp -r ${HOME}/.config/redshift ./.config/
 	rm -rf ./.config/nvim/.git | true
 	rm -rf ./.config/nvim/undodir | true
 	rm -rf ./.config/nvim/plugin | true

@@ -11,10 +11,6 @@ require('packer').startup(function()
         requires = {
             -- LSP Support
             { 'neovim/nvim-lspconfig', {
-                config = function()
-                    require('plugins.configs.lspconfig')
-                    require('custom.configs.lspconfig')
-                end
             } }, -- config LSP servers
             {
                 'williamboman/mason.nvim',
@@ -60,7 +56,6 @@ require('packer').startup(function()
                 dependencies = { "mfussenegger/nvim-dap" },
                 config = function(_, opts)
                     require("dap-go").setup(opts)
-                    require("core.utils").load_mappings("dap_go")
                 end,
             },
 
@@ -75,7 +70,7 @@ require('packer').startup(function()
             use { 'jose-elias-alvarez/null-ls.nvim', -- null-ls for formatting and linting support
                 ft = "go",
                 opts = function()
-                    return require("custom.configs.null-ls")
+                    return require("lsp_comfigs/null-ls")
                 end,
             },
         }
