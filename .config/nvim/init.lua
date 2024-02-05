@@ -50,6 +50,10 @@ if not vim.g.vscode then
     -- Load null_ls.lua
     require('lsp_configs/null_ls')
 
+    -- Load lsp configuration for java from lsp_java.lua
+    require('lsp_configs/lsp_java')
+    -- require('ftplugin/lsp_java')
+
     -- Load treesitter configuration from treesitter.lua
     require('utility/tree_sitter')
 
