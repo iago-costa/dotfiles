@@ -29,6 +29,27 @@ require('mason-lspconfig').setup({
 })
 
 
+-- Most used from mason
+-- ◍ clang-format
+-- ◍ clangd
+-- ◍ codelldb
+-- ◍ cpplint
+-- ◍ cpptools
+-- ◍ delve
+-- ◍ goimports
+-- ◍ goimports-reviser
+-- ◍ golines
+-- ◍ google-java-format
+-- ◍ gopls
+-- ◍ gotests
+-- ◍ java-debug-adapter
+-- ◍ java-test
+-- ◍ jdtls
+-- ◍ lua-language-server lua_ls
+-- ◍ rust-analyzer rust_analyzer
+-- ◍ sonarlint-language-server
+
+
 
 -- init doc key
 -- {'n'} bd = Go to definition

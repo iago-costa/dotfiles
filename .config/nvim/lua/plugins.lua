@@ -10,8 +10,17 @@ require('packer').startup(function()
         branch = 'v3.x',
         requires = {
             -- LSP Support
-            { 'neovim/nvim-lspconfig' },   -- config LSP servers
-            { 'williamboman/mason.nvim' }, -- install LSP servers
+            { 'neovim/nvim-lspconfig', {
+                config = function()
+                    require('plugins.configs.lspconfig')
+                    require('custom.configs.lspconfig')
+                end
+            } },   -- config LSP servers
+            { 'williamboman/mason.nvim', 
+                opts = {
+                
+                } 
+            }, -- install LSP servers
             { 'williamboman/mason-lspconfig.nvim' },
 
             -- Autocompletion
@@ -41,7 +50,12 @@ require('packer').startup(function()
                 },
             },
 
-            use('jose-elias-alvarez/null-ls.nvim'), -- null-ls for formatting and linting support to javascript
+            use{'jose-elias-alvarez/null-ls.nvim', -- null-ls for formatting and linting support
+                ft = "go",
+                opts = function()
+                    return require("custom.configs.null-ls")
+                end,
+	    },
             use('MunifTanjim/eslint.nvim')          -- eslint for javascript
         }
     })
