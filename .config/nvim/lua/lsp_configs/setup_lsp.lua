@@ -44,8 +44,7 @@ require('mason-lspconfig').setup({
         'pylsp',
         'black',
         'isort',
-        'flake8',
-        'mypy'
+        'flake8'
     },
     handlers = {
         lsp_zero.default_setup,
