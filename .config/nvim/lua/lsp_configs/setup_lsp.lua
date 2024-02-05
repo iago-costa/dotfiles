@@ -40,6 +40,12 @@ require('mason-lspconfig').setup({
         'lua-language-server',
         'rust-analyzer',
         'sonarlint-language-server',
+        'pyright',
+        'pylsp',
+        'black',
+        'isort',
+        'flake8',
+        'mypy'
     },
     handlers = {
         lsp_zero.default_setup,
