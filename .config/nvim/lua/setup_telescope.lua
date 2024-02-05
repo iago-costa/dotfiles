@@ -1,7 +1,7 @@
 require('telescope').setup {
     defaults = {
         file_ignore_patterns = { 
-            'node_modules', 'dist', 'build', 'target/', 'vendor', 'yarn.lock', 'package-lock.json', '__pycache__', '.git' },
+            'node_modules', 'dist', 'build', 'target/', 'vendor', 'yarn.lock', 'package-lock.json', '__pycache__', '.git', 'bin/' },
         vimgrep_arguments = { 
             'rg', '--ignore', '--hidden', '--files', '-u', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
     },
