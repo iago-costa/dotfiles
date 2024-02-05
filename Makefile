@@ -1,6 +1,6 @@
 push:
 	@echo "Updating nvim files from local files"
-	rm -rf .config/ | true
+	sudo rm -rf .config/ | true
 	mkdir -p .config/
 	cp -r ${HOME}/.config/nvim ./.config/
 	cp -r ${HOME}/.config/redshift ./.config/
@@ -65,10 +65,10 @@ del:
 	rm ${HOME}/.config/vifm/ -rv | true
 
 del-root:
-	rm /root/.tmux.conf | true
-	rm /root/.zshrc | true
-	rm /root/.vimrc | true
-	rm /root/.config/redshift/ -rv | true
-	rm /root/.config/vifm/ -rv | true
+	sudo rm /root/.tmux.conf | true
+	sudo rm /root/.zshrc | true
+	sudo rm /root/.vimrc | true
+	sudo rm /root/.config/redshift/ -rv | true
+	sudo rm /root/.config/vifm/ -rv | true
 
 
