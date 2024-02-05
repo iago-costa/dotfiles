@@ -118,7 +118,7 @@ end
 require('coding/commentary')
 
 -- Load lsp configuration auto-completion from lsp_cmp.lua
-require('lsp_cmp')
+require('lsp_configs/lsp_cmp')
 
 -- Load colors.lua
 require('styles/colors')
