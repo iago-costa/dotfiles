@@ -135,6 +135,8 @@
     unzip
     fasd
     gh
+    gatling
+    jmeter
   ];
 
   nixpkgs.config.allowUnfree = true;
