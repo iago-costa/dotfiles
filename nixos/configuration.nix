@@ -4,7 +4,11 @@
 
 
 { config, pkgs, ... }:
-
+let  
+  baseconfig = { allowUnfree = true; };
+  stable = import <nixos-23.11> { config = baseconfig; };
+  unstable = import <nixos> { config = baseconfig; };
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -83,60 +87,60 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
-    htop
-    vivaldi
-    vivaldi-ffmpeg-codecs
-    xfce.xfce4-whiskermenu-plugin
-    zellij
-    zsh
-    alacritty
-    vscode
-    gnome.gnome-keyring
-    libsecret
-    gparted
-    ethtool
-    neovim
-    git
-    gnumake
-    gcc
-    redshift
-    thefuck
+    unstable.wget
+    unstable.htop
+    unstable.vivaldi
+    unstable.vivaldi-ffmpeg-codecs
+    unstable.xfce.xfce4-whiskermenu-plugin
+    unstable.zellij
+    unstable.zsh
+    unstable.alacritty
+    unstable.gnome.gnome-keyring
+    unstable.libsecret
+    unstable.gparted
+    unstable.ethtool
+    unstable.neovim
+    unstable.git
+    unstable.gnumake
+    unstable.gcc
+    unstable.redshift
+    unstable.thefuck
     (appimage-run.override {
       extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
     })
-    nodejs_21
-    xclip
-    patchelf
-    steam-run
-    fuse
-    fuse3
-    libGL
-    libGLU
-    libxml2
-    pdfstudio2023
-    masterpdfeditor
-    logseq
-    docker
-    docker-compose
-    wrk2
-    dmidecode
-    neofetch
-    direnv
-    xz
-    nox
-    file
-    busybox
-    wpsoffice
-    zoom-us
-    openssl
-    ripgrep
-    fd
-    unzip
-    fasd
-    gh
-    gatling
-    jmeter
+    unstable.nodejs_21
+    unstable.xclip
+    unstable.patchelf
+    unstable.steam-run
+    unstable.fuse
+    unstable.fuse3
+    unstable.libGL
+    unstable.libGLU
+    unstable.libxml2
+    unstable.pdfstudio2023
+    unstable.masterpdfeditor
+    unstable.logseq
+    unstable.docker
+    unstable.docker-compose
+    unstable.wrk2
+    unstable.dmidecode
+    unstable.neofetch
+    unstable.direnv
+    unstable.xz
+    unstable.nox
+    unstable.file
+    unstable.busybox
+    unstable.wpsoffice
+    unstable.zoom-us
+    unstable.openssl
+    unstable.ripgrep
+    unstable.fd
+    unstable.unzip
+    unstable.fasd
+    unstable.gh
+    unstable.gatling
+    unstable.jmeter
+    stable.vscode
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -206,5 +210,14 @@
   virtualisation.docker.rootless = {
     enable = true;
     setSocketVariable = true;
+  };
+
+  nix.settings.auto-optimise-store = true;
+  nix.optimise.automatic = true;
+  nix.optimise.dates = [ "12:00" ]; # Optional; allows customizing optimisation schedule
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 4d";
   };
 }
