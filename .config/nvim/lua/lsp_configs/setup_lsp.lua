@@ -20,36 +20,57 @@ lsp_zero.on_attach(function(client, bufnr)
 end)
 
 require('mason').setup({})
-require('mason-lspconfig').setup({
-    ensure_installed = {
-        'clang-format',
-        'clangd',
-        'codelldb',
-        'cpplint',
-        'cpptools',
-        'delve',
-        'goimports',
-        'goimports-reviser',
-        'golines',
-        'google-java-format',
-        'gopls',
-        'gotests',
-        'java-debug-adapter',
-        'java-test',
-        'jdtls',
-        'lua-language-server',
-        'rust-analyzer',
-        'sonarlint-language-server',
-        'pyright',
-        'pylsp',
-        'black',
-        'isort',
-        'flake8'
-    },
-    handlers = {
-        lsp_zero.default_setup,
-    },
-})
+-- get the user linux username
+local username = vim.fn.expand('$USER')
+
+if username == 'root' then
+    require('mason-lspconfig').setup({
+        ensure_installed = {
+            -- 'clang-format',
+            -- 'clangd',
+            -- 'codelldb',
+            -- 'cpplint',
+            -- 'cpptools',
+            -- 'delve',
+            -- 'goimports',
+            -- 'goimports-reviser',
+            -- 'golines',
+            -- 'google-java-format',
+            -- 'gopls',
+            -- 'gotests',
+            -- 'java-debug-adapter',
+            -- 'java-test',
+            -- 'jdtls',
+            -- 'rust-analyzer',
+            -- 'sonarlint-language-server',
+            -- 'pyright',
+            -- 'pylsp',
+            -- 'black',
+            -- 'isort',
+            -- 'flake8',
+            -- 'lua-language-server',
+            -- 'markdownlint',
+            -- 'mdformat',
+            -- 'json-lsp',
+        },
+        handlers = {
+            lsp_zero.default_setup,
+        },
+    })
+else
+    require('mason-lspconfig').setup({
+        ensure_installed = {
+            -- 'lua-language-server',
+            -- 'markdownlint',
+            -- 'mdformat',
+            -- 'json-lsp',
+        },
+        handlers = {
+            lsp_zero.default_setup,
+        },
+    })
+end
+
 
 
 -- Most used from mason
