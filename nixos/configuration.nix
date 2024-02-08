@@ -2,10 +2,19 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running `nixos-help`).
 
-
 { config, pkgs, ... }:
 let  
-  baseconfig = { allowUnfree = true; };
+  baseconfig = { 
+    allowUnfree = true; 
+    vivaldi = {
+        proprietaryCodecs = true;
+        enableWideVine = true;
+    };
+    permittedInsecurePackages = [
+        "electron-19.1.9"
+    ];
+    pulseaudio = true;
+  };
   stable = import <nixos-23.11> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
 in
@@ -66,7 +75,6 @@ in
 
   # Enable sound.
   sound.enable = true;
-  nixpkgs.config.pulseaudio = true;
   hardware.pulseaudio.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -105,7 +113,7 @@ in
     unstable.gcc
     unstable.redshift
     unstable.thefuck
-    (appimage-run.override {
+    (unstable.appimage-run.override {
       extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
     })
     unstable.nodejs_21
@@ -141,13 +149,9 @@ in
     unstable.gatling
     unstable.jmeter
     stable.vscode
+    unstable.distrobox
+    unstable.etcher
   ];
-
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.vivaldi = {
-    proprietaryCodecs = true;
-    enableWideVine = true;
-  }; 
 
   fonts.packages = with pkgs; [
     noto-fonts
