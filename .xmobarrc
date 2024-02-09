@@ -11,7 +11,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%battery% | %multicpu% | %memory% | %dynnetwork% }{ [%window% | %workspace%] | [%brightness% | %default:Master%] | [%SBMA%] | %date% | %kbd%"
+   , template = "%battery% | [%multicpu% | %memory% | %dynnetwork%] }{ [%window% | %workspace%] | [%default:Master%] | [%SBMA%] | %date% | %kbd%"
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -114,9 +114,9 @@ Config {
         
         , Run Com "tail" ["-n1", "/tmp/.xmonad-active-windows"] "window" 10
 
-        , Run Brightness     [ "--template", "Bri: <percent>%"
-                             , "--"
-                             , "--brightness-icon-pattern", "^[^0-9]*\\([0-9]*\\)"
-                             ] "brightness" 10
-    ]
+        , Run Brightness [ "-t", "<ipat>"
+                          , "--"
+                          , "--brightness-icon-pattern", "<icon=bright_%%.xpm/>"
+                          ] 10
+        ]
    }

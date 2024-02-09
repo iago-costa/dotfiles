@@ -34,7 +34,7 @@ myKeys = [
     -- , ((mod4Mask, xK_f), spawn "firefox")
     ]
 
-myWorkspaces = ["1:main", "2:web", "3:code", "4:chat", "5:media", "6:other", "7:other", "8:other", "9:other"]
+myWorkspaces = ["1:main", "2:web", "3:code", "4:chat", "5:study", "6:other", "7:other", "8:other", "9:other"]
  
 
 -- get the current workspace using the command xprop -root | grep _NET_CURRENT_DESKTOP
@@ -43,7 +43,7 @@ myLogWorkpace = do
     ws <- gets windowset
     let tag = W.currentTag ws
     io $ writeFile "/tmp/.xmonad-workspace"
-        ("WS=" ++ tag)
+        ("Work=" ++ tag)
     return ()
 
 -- get number of active windows and send to logHook
@@ -51,7 +51,7 @@ myLogActiveWindows = do
     n <- gets $ Just . length . W.index . windowset
     io $ writeFile "/tmp/.xmonad-active-windows" -- with legend "Active Windows: " ++ show n
         (case n of
-            Just n' -> "AWs=" ++ show n'
+            Just n' -> "Windows=" ++ show n'
             Nothing -> "0")
     return ()
 
