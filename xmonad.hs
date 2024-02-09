@@ -23,15 +23,16 @@ myConfig = xfceConfig
 
 -- Key bindings
 myKeys = [
-    -- keys to handle brightness and volume
+    -- keys to handle brightness and volume mod4Mask + Control_L + 3
     ((mod4Mask, xK_F3), spawn "amixer -q set Master toggle")
     , ((mod4Mask, xK_F5), spawn "amixer -q set Master 2%-")
     , ((mod4Mask, xK_F6), spawn "amixer -q set Master 2%+")
     -- , ((modm, xK_F8), spawn "xbacklight -dec 10")
     -- , ((modm, xK_F9), spawn "xbacklight -inc 10")
     -- key to toggle full view layout for active window
-    , ((mod4Mask, xK_f), sendMessage (Toggle "Full"))
-    -- , ((mod4Mask, xK_f), spawn "firefox")
+    -- , ((mod4Mask, xK_d), spawn "Thunar")
+    -- key to toggle full view layout for active window
+    -- , ((mod4Mask, xK_f), sendMessage ToggleLayout)
     ]
 
 myWorkspaces = ["1:main", "2:web", "3:code", "4:chat", "5:study", "6:other", "7:other", "8:other", "9:other"]
