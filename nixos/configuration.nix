@@ -6,6 +6,7 @@
 let  
   baseconfig = { 
     allowUnfree = true; 
+    #allowBroken = true;
     vivaldi = {
         proprietaryCodecs = true;
         enableWideVine = true;
@@ -17,6 +18,7 @@ let
   };
   stable = import <nixos-23.11> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
+  deprecated = import <nixos-23.05> { config = baseconfig; };
 in
 {
   imports =
@@ -49,23 +51,35 @@ in
   #   useXkbConfig = true; # use xkbOptions in tty.
   # };
 
+  services.upower.enable = config.powerManagement.enable;
+  
   # Enable the X11 windowing system.
-  # services.xserver.enable = true;
   services.xserver = {
     enable = true;   
     desktopManager = {
-      xterm.enable = false;
+      #xterm.enable = false;
       xfce = {
-        enable = true;
-        # noDesktop = true;
-        # enableXfwm = false;
+         enable = true;
+         noDesktop = true;
+         enableXfwm = true;
       };
     };
-    displayManager.defaultSession = "xfce";
-    # windowManager.i3.enable = true;
+    #displayManager.defaultSession = "xfce";
+    #windowManager.i3.enable = true;
+    windowManager = {
+      xmonad = {
+        enable = true;
+        enableContribAndExtras = true;
+        extraPackages = haskellPackages : [
+          haskellPackages.xmonad-contrib
+          haskellPackages.xmonad-extras
+          haskellPackages.xmonad
+        ];
+      };
+    };
+    displayManager.defaultSession = "xfce+xmonad";
   };
-  services.upower.enable = config.powerManagement.enable;
-
+    
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e,caps:escape";
@@ -137,7 +151,6 @@ in
     unstable.xz
     unstable.nox
     unstable.file
-    unstable.busybox
     unstable.wpsoffice
     unstable.zoom-us
     unstable.openssl
@@ -149,8 +162,22 @@ in
     unstable.gatling
     unstable.jmeter
     stable.vscode
-    unstable.distrobox
     unstable.etcher
+    stable.ghc
+    stable.haskellPackages.xmobar
+    stable.lux
+    stable.xorg.xmessage
+    stable.xorg.xbacklight
+    stable.lm_sensors
+    stable.pulseaudio-ctl
+    stable.yad
+    stable.libnotify
+    #unstable.distrobox
+    #unstable.busybox
+    #deprecated.haskellPackages.ghcup
+    #unstable.haskellPackages.base-compat-batteries_0_13_1
+    #unstable.haskellPackages.base-compat_0_13_1
+    #deprecated.haskellPackages.streamly
   ];
 
   fonts.packages = with pkgs; [

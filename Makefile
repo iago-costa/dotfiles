@@ -15,7 +15,8 @@ nixos-link:
 	sudo ln /etc/nixos/configuration.nix ./nixos/configuration.nix | true
 	sudo ln /etc/nixos/hardware-configuration.nix ./nixos/hardware-configuration.nix | true
 	sudo ln /etc/nixos/suspend-and-hibernate.nix ./nixos/suspend-and-hibernate.nix | true
-
+	sudo ln ${HOME}/.xmobarrc .xmobarrc | true
+	sudo ln ${HOME}/.xmonad/xmonad.hs xmonad.hs | true
 red:
 	redshift -P -O 6000
 
