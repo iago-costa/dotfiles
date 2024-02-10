@@ -13,6 +13,20 @@ export PATH=$JAVA_HOME/bin:$PATH
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+export PATH=$JAVA_HOME/bin:$PATH
+# export SDKMANAGER=/home/gup/Android/Sdk/cmdline-tools/latest/bin
+export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
+export PATH=$SDKMANAGER:$PATH
+export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
+export PATH=/opt/flutter/bin:$PATH
+
+export PATH=/opt/asdf-vm/bin:$PATH
+export ASDF_DIR=$HOME/.asdf
+export ASDF_SHELL=/opt/asdf-vm/asdf.sh
+
+export RUST_BACKTRACE=full
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -53,7 +67,7 @@ SAVEHIST=99999
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # You can also set it to another string to have that shown instead of the default red dots.
@@ -64,7 +78,7 @@ SAVEHIST=99999
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -90,19 +104,19 @@ plugins=(
 	zsh-syntax-highlighting 
 	fast-syntax-highlighting 
 	zsh-autocomplete
-  	bundler
-  	dotenv
-  	rake
-  	rbenv
+  bundler
+  dotenv
+  rake
+  rbenv
 	ruby
-  	npm # you added this
+  npm
 	thefuck
 	docker
 	docker-compose
 	timer
 	fasd
 	direnv
-    dirhistory
+  dirhistory
 	fzf-tab
 )
 
@@ -123,7 +137,10 @@ alias zz='fasd_cd -d -i' # cd with interactive selection
 alias op="fzf --print0 | xargs -0 -o xdg-open $1"
 alias opd="find / -type d | fzf --print0 | xargs -0 -o xdg-open $1"
 
-alias thefuck='fuck'
+alias thefix='fuck'
+alias xmonadinit='pkill -f "xmonad" | true | xmonad --recompile &> /dev/null | true && xmonad --replace &'
+alias xmobarinit='pkill -f "xmobar" | true && xmobar &'
+alias xmoinit='xmonadinit; xmobarinit;'
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -TFl --group-directories-first --icons --git -L 2 --no-user $realpath'
 zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
@@ -143,11 +160,11 @@ zstyle ':fzf-tab:complete:git-help:*' fzf-preview 'git help $word | bat -plman -
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='nvim'
+else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -164,21 +181,6 @@ zstyle ':fzf-tab:complete:git-help:*' fzf-preview 'git help $word | bat -plman -
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-export PATH=$JAVA_HOME/bin:$PATH
-# export SDKMANAGER=/home/gup/Android/Sdk/cmdline-tools/latest/bin
-export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
-export PATH=$SDKMANAGER:$PATH
-export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
-export PATH=/opt/flutter/bin:$PATH
-
-export PATH=/opt/asdf-vm/bin:$PATH
-export ASDF_DIR=$HOME/.asdf
-export ASDF_SHELL=/opt/asdf-vm/asdf.sh
-
-export RUST_BACKTRACE=full
-
-
 # fcd - fuzzy cd
 fcd() {
     local selected_dir
@@ -189,11 +191,8 @@ fcd() {
 }
 
 # tm.zsh
-#
 # Simplifies creating new tmux sessions, attaching to existing sessions,
 # switching between sessions, and listing active sessions.
-#
-
 function tm() {
   [[ -z "$1" ]] && {
     echo "Usage: tm <session>"
@@ -219,7 +218,5 @@ function __tmux-sessions() {
 compdef __tmux-sessions tm
 # end tm.zsh
 alias t="tmux switchc -t"
-
-[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
 
 

@@ -3,43 +3,38 @@ import XMonad.Config.Xfce
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.ToggleLayouts
-import XMonad.Util.EZConfig (additionalKeys)
+import XMonad.Util.EZConfig (additionalKeys, additionalKeysP)
 
 import qualified XMonad.StackSet as W
+import qualified Data.Map as M
 
 -- The main function.
 main = xmonad myConfig 
 
-
 myConfig = xfceConfig
     { terminal = "alacritty"
     , modMask = mod4Mask -- Use Win as MOD key
-    , startupHook = ewmhDesktopsStartup >> setWMName "LG3D" -- for some reason the double greater sign is escaped here due to wiki formatting, replace this with proper greater signs!
-    -- , keys = myKeys
+    , startupHook = ewmhDesktopsStartup >> setWMName "LG3D"
     , workspaces = myWorkspaces
     , logHook = myLogHook
-    } `additionalKeys` myKeys
-
+    } `additionalKeys` myKeys `additionalKeysP` myKeysP
 
 -- Key bindings
 myKeys = [
-    -- keys to handle brightness and volume mod4Mask + Control_L + 3
-    ((mod4Mask, xK_F3), spawn "amixer -q set Master toggle")
-    , ((mod4Mask, xK_F5), spawn "amixer -q set Master 2%-")
-    , ((mod4Mask, xK_F6), spawn "amixer -q set Master 2%+")
-    -- , ((modm, xK_F8), spawn "xbacklight -dec 10")
-    -- , ((modm, xK_F9), spawn "xbacklight -inc 10")
+    -- ((mod4Mask, xK_f), toggleFull)
     -- key to toggle full view layout for active window
     -- , ((mod4Mask, xK_d), spawn "Thunar")
     -- key to toggle full view layout for active window
-    -- , ((mod4Mask, xK_f), sendMessage ToggleLayout)
     ]
 
-myWorkspaces = ["1:main", "2:web", "3:code", "4:chat", "5:study", "6:other", "7:other", "8:other", "9:other"]
+myKeysP = [    
+    ("M-x w", spawn "xmessage 'woohoo!'")
+    -- key to toggle full view layout for active window
+    -- , ("M-x f", sendMessage Toggle "Full")
+    ]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
  
-
--- get the current workspace using the command xprop -root | grep _NET_CURRENT_DESKTOP
--- then send in logHook
+-- get the current workspace
 myLogWorkpace = do
     ws <- gets windowset
     let tag = W.currentTag ws
@@ -52,10 +47,25 @@ myLogActiveWindows = do
     n <- gets $ Just . length . W.index . windowset
     io $ writeFile "/tmp/.xmonad-active-windows" -- with legend "Active Windows: " ++ show n
         (case n of
-            Just n' -> "Windows=" ++ show n'
+            Just n' -> "WNum=" ++ show n'
             Nothing -> "0")
     return ()
 
-myLogHook = myLogWorkpace >> myLogActiveWindows
+-- get the name of the active window
+myActiveWindowName = do
+    n <- gets $ Just . W.peek . windowset
+    io $ writeFile "/tmp/.xmonad-active-window-name"
+        (case n of
+            Just n' -> "Win=" ++ show n'
+            Nothing -> "0")
+    return ()
 
+myLogHook = myLogWorkpace >> myLogActiveWindows >> myActiveWindowName
 
+-- Looks to see if focused window is floating and if it is the places it in the stack
+-- else it makes it floating but as full screen
+toggleFull = withFocused (\windowId -> do
+     { floats <- gets (W.floating . windowset);
+         if windowId `M.member` floats
+         then withFocused $ windows . W.sink
+         else withFocused $ windows . (flip W.float $ W.RationalRect 0 0 1 1) })  

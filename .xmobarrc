@@ -11,7 +11,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%battery% | [%multicpu% | %memory% | %dynnetwork%] }{ [%window% | %workspace%] | [%default:Master%] | [%SBMA%] | %date% | %kbd%"
+   , template = "%battery% %multicpu% %memory% %dynnetwork% }{ (%window% %workspace%) %default:Master% %SBMA% %date% %kbd%"
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -38,7 +38,7 @@ Config {
    , commands = 
 
         -- weather monitor
-        [ Run Weather "SBMA" [ "--template", "<skyCondition> | <fc=#4682B4><tempC></fc>°C | <fc=#4682B4><rh></fc>% | <fc=#4682B4><pressure></fc>hPa"
+        [ Run Weather "SBMA" [ "--template", "(<skyCondition> <fc=#4682B4><tempC></fc>°C <fc=#4682B4><rh></fc>% <fc=#4682B4><pressure></fc>hPa)"
                              ] 36000
 
         -- network activity monitor (dynamic interface resolution)
@@ -51,7 +51,7 @@ Config {
                              ] 10
 
         -- cpu activity monitor
-        , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%|<total2>%|<total3>%|<total4>%|<total5>%|<total6>%|<total7>%|<total8>%|<total9>%|<total10>%|<total11>%|<total12>%|<total13>%|<total14>%|<total15>%"
+        , Run MultiCpu       [ "--template" , "Cpu(1<total0>% 2<total1>% 3<total2>% 4<total3>% 5<total4>% 6<total5>% 7<total6>% 8<total7>% 9<total8>% 10<total9>% 11<total10>% 12<total11>% 13<total12>% 14<total13>% 15<total14>% 16<total15>%)"
                              , "--Low"      , "50"         -- units: %
                              , "--High"     , "85"         -- units: %
                              , "--low"      , "darkgreen"
@@ -69,7 +69,7 @@ Config {
         --                     ] 50
                           
         -- memory usage monitor
-        , Run Memory         [ "--template" ,"Mem: <usedratio>%"
+        , Run Memory         [ "--template" ,"Mem(<usedratio>)%"
                              , "--Low"      , "20"        -- units: %
                              , "--High"     , "90"        -- units: %
                              , "--low"      , "darkgreen"
@@ -78,14 +78,14 @@ Config {
                              ] 10
 
         -- volume monitor
-        , Run Volume "default" "Master" [ "--template" , "Vol: <volume>% <status>"
+        , Run Volume "default" "Master" [ "--template" , "Vol(<volume>% <status>)"
                                         , "--"
                                         , "--on"       , "<fc=#FFFF00>On</fc>"
                                         , "--off"      , "<fc=#FF0000>Off</fc>"
                                         ] 10
 
         -- battery monitor
-        , Run Battery        [ "--template" , "Batt: <acstatus>|<watts>w (<left>%)"
+        , Run Battery        [ "--template" , "Batt(<acstatus> <watts>wts <left>%)"
                              , "--Low"      , "10"        -- units: %
                              , "--High"     , "80"        -- units: %
                              , "--low"      , "darkred"

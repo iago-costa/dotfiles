@@ -18,13 +18,13 @@ set number
 
 set relativenumber
 
-set softtabstop=4
+set softtabstop=2
 
-" Set shift width to 4 spaces.
-set shiftwidth=4
+" Set shift width to n spaces.
+set shiftwidth=2
 
-" Set tab width to 4 columns.
-set tabstop=4
+" Set tab width to n columns.
+set tabstop=2
 
 " Use space characters instead of tabs.
 set expandtab
