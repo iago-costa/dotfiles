@@ -27,6 +27,7 @@ export ASDF_SHELL=/opt/asdf-vm/asdf.sh
 
 export RUST_BACKTRACE=full
 
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -219,4 +220,4 @@ compdef __tmux-sessions tm
 # end tm.zsh
 alias t="tmux switchc -t"
 
-
+unset ZSH_AUTOSUGGEST_USE_ASYNC

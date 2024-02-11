@@ -31,11 +31,6 @@ in
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # networking.hostName = "nixos"; # Define your hostname.
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
-
   # Set your time zone.
   time.timeZone = "America/Belem";
 
@@ -52,7 +47,19 @@ in
   # };
 
   services.upower.enable = config.powerManagement.enable;
-  
+  services.gnome.gnome-keyring.enable = true;
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = true;
+  services.flatpak.enable = true;
+
+  environment.xfce.excludePackages = [ 
+    stable.xfce.xfwm4
+    stable.xfce.xfce4-panel
+    stable.xfce.xfce4-power-manager
+    stable.xfce.xfce4-terminal
+    stable.xfce.xfce4-whiskermenu-plugin
+  ];
+
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;   
@@ -61,11 +68,10 @@ in
       xfce = {
          enable = true;
          noDesktop = true;
-         enableXfwm = true;
+         enableXfwm = false;
+         enableScreensaver = false;
       };
     };
-    #displayManager.defaultSession = "xfce";
-    #windowManager.i3.enable = true;
     windowManager = {
       xmonad = {
         enable = true;
@@ -77,9 +83,35 @@ in
         ];
       };
     };
-    displayManager.defaultSession = "xfce+xmonad";
+    displayManager = {
+        defaultSession = "xfce+xmonad";
+        #defaultSession = "xmonad";
+        #startx.enable = true;
+        sessionCommands = ''
+            xset -dpms  # Disable Energy Star, as we are going to suspend anyway and it may hide "success" on that
+            xset s blank # `noblank` may be useful for debugging 
+            xset s 300 # seconds
+            ${pkgs.lightlocker}/bin/light-locker --idle-hint --lock-on-suspend --lock-on-lid --lock-on-lid-close --lock-after-screensaver 0 &
+        '';
+    };
+    libinput = { # Enable touchpad support.
+      enable = true;
+      touchpad = {
+        naturalScrolling = true;
+      };
+    };
   };
-    
+
+  powerManagement = {
+    enable = true;
+  };
+
+  systemd.targets.hybrid-sleep.enable = true;
+  services.logind.extraConfig = ''
+    IdleAction=hybrid-sleep
+    IdleActionSec=600s
+  '';
+
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e,caps:escape";
@@ -90,9 +122,6 @@ in
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.zen = {
@@ -109,11 +138,12 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    stable.lightlocker
     unstable.wget
     unstable.htop
     unstable.vivaldi
     unstable.vivaldi-ffmpeg-codecs
-    unstable.xfce.xfce4-whiskermenu-plugin
+    #unstable.xfce.xfce4-whiskermenu-plugin
     unstable.zellij
     unstable.zsh
     unstable.alacritty
@@ -139,8 +169,8 @@ in
     unstable.libGL
     unstable.libGLU
     unstable.libxml2
-    unstable.pdfstudio2023
-    unstable.masterpdfeditor
+    # unstable.pdfstudio2023
+    # unstable.masterpdfeditor
     unstable.logseq
     unstable.docker
     unstable.docker-compose
@@ -172,6 +202,7 @@ in
     stable.pulseaudio-ctl
     stable.yad
     stable.libnotify
+    stable.xdotool
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup
@@ -195,34 +226,36 @@ in
   
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
-  programs.zsh.enable = true;  
-  programs.mtr.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
+  programs = {
+    zsh.enable = true;
+    mtr.enable = true;
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
+    nix-ld.enable = true;
+    nix-ld.libraries = with pkgs; [
+      # Add any missing dynamic libraries for unpackaged programs
+      # here, NOT in environment.systemPackages
+    ];
+    xfconf.enable = true;
+    light.brightnessKeys.enable = true;
   };
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-    # Add any missing dynamic libraries for unpackaged programs
-    # here, NOT in environment.systemPackages
-  ];
-
   # List services that you want to enable:
-  services.flatpak.enable = true;
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   xdg.portal.config.common.default = "gtk";
-
-  services.gnome.gnome-keyring.enable = true;
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
-
+  # networking.hostName = "nixos"; # Define your hostname.
+  # Pick only one of the below networking options.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
