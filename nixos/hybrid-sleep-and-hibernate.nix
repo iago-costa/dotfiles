@@ -4,11 +4,10 @@
     HIBERNATE_LOCK = "/var/run/autohibernate.lock";
   };
 in {
-
-  systemd.services."awake-after-suspend-for-a-time" = {
-    description = "Sets up the suspend so that it'll wake for hibernation";
-    wantedBy = [ "suspend.target" ];
-    before = [ "systemd-suspend.service" ];
+  systemd.services."awake-after-hybrid-sleep-for-a-time" = {
+    description = "Sets up the hybrid-sleep so that it'll awake for hibernation";
+    wantedBy = [ "hybrid-sleep.target" ];
+    before = [ "systemd-hybrid-sleep.service" ];
     environment = hibernateEnvironment;
     script = ''
       curtime=$(date +%s)
@@ -18,10 +17,10 @@ in {
     '';
     serviceConfig.Type = "simple";
   };
-  systemd.services."hibernate-after-recovery" = {
-    description = "Hibernates after a suspend recovery due to timeout";
-    wantedBy = [ "suspend.target" ];
-    after = [ "systemd-suspend.service" ];
+  systemd.services."hibernate-after-recovery-hybrid-sleep" = {
+    description = "Hibernates after a hybrid-sleep recovery due to timeout";
+    wantedBy = [ "hybrid-sleep.target" ];
+    after = [ "systemd-hybrid-sleep.service" ];
     environment = hibernateEnvironment;
     script = ''
       curtime=$(date +%s)

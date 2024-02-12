@@ -24,7 +24,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./suspend-and-hibernate.nix
+      ./hybrid-sleep-and-hibernate.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -46,7 +46,13 @@ in
   #   useXkbConfig = true; # use xkbOptions in tty.
   # };
 
-  services.upower.enable = config.powerManagement.enable;
+  services.upower = {
+    enable = true;
+    usePercentageForPolicy = true;
+    percentageAction = 15;
+    criticalPowerAction = "Hibernate";
+  };
+
   services.gnome.gnome-keyring.enable = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
