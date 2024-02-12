@@ -57,6 +57,7 @@ in
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.flatpak.enable = true;
+  # flatpak install postman compass openlens
 
   environment.xfce.excludePackages = [ 
     stable.xfce.xfwm4
@@ -149,7 +150,7 @@ in
     unstable.htop
     unstable.vivaldi
     unstable.vivaldi-ffmpeg-codecs
-    #unstable.xfce.xfce4-whiskermenu-plugin
+    unstable.xfce.xfce4-clipman-plugin
     unstable.zellij
     unstable.zsh
     unstable.alacritty
@@ -175,8 +176,6 @@ in
     unstable.libGL
     unstable.libGLU
     unstable.libxml2
-    # unstable.pdfstudio2023
-    # unstable.masterpdfeditor
     unstable.logseq
     unstable.docker
     unstable.docker-compose
@@ -209,6 +208,7 @@ in
     stable.yad
     stable.libnotify
     stable.xdotool
+    unstable.libsForQt5.okular
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup

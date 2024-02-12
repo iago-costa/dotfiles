@@ -181,6 +181,14 @@ keybinds {
     shared_except "tmux" "locked" {
         bind "Ctrl b" { SwitchToMode "Tmux"; }
     }
+    shared_except "locked" {
+        bind "Alt t" {
+            LaunchOrFocusPlugin "file:.config/zellij/plugins/room.wasm" {
+                floating true
+                ignore_case true
+            }
+        }
+    }
 }
 
 plugins {
@@ -350,5 +358,6 @@ theme "dracula"
 //
 // styled_underlines false
 
-serialization_interval 1
+serialization_interval 60
+
 
