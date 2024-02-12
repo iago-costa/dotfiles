@@ -42,7 +42,7 @@ Config {
                              ] 36000
 
         -- network activity monitor (dynamic interface resolution)
-        , Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
+        , Run DynNetwork     [ "--template" , "<dev>(Tx<tx>kB/s Rx<rx>kB/s)"
                              , "--Low"      , "1000"       -- units: B/s
                              , "--High"     , "5000"       -- units: B/s
                              , "--low"      , "darkgreen"
@@ -69,7 +69,7 @@ Config {
         --                     ] 50
                           
         -- memory usage monitor
-        , Run Memory         [ "--template" ,"Mem(<usedratio>)%"
+        , Run Memory         [ "--template" ,"Mem(<usedratio>%)"
                              , "--Low"      , "20"        -- units: %
                              , "--High"     , "90"        -- units: %
                              , "--low"      , "darkgreen"
