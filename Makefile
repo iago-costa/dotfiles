@@ -45,15 +45,15 @@ red:
 hard-pull:
 	@echo "Updating nvim files from git"
 	git pull origin main
-	make sync-to-user
 	make del
+	make sync-to-user
 	make link
 
 hard-pull-root:
 	@echo "Updating nvim files from git"
 	git pull origin main
-	make sync-to-root
 	make del-root
+	make sync-to-root
 	make link-root
 
 sync-to-root:
@@ -64,10 +64,10 @@ sync-to-root:
 	sudo mkdir -p /root/.config/nvim | true
 	sudo mkdir -p /root/.config/nvim/lua | true
 	sudo mkdir -p /root/.config/nvim/ftplugin | true
-	sudo cp -r ./.config/nvim/lua/ /root/.config/nvim/lua/
-	sudo cp -r ./.config/nvim/init.vim /root/.config/nvim/
-	sudo cp -r ./.config/nvim/ftplugin /root/.config/nvim/
-	sudo cp -r ./.config/redshift /root/.config/
+	sudo cp -r ./.config/nvim/lua/ /root/.config/nvim/lua/ | true
+	sudo cp -r ./.config/nvim/init.lua /root/.config/nvim/ | true
+	sudo cp -r ./.config/nvim/ftplugin /root/.config/nvim/ | true
+	sudo cp -r ./.config/redshift /root/.config/ | true
 
 sync-to-user:
 	@echo "Updating nvim files to user files"
@@ -77,10 +77,10 @@ sync-to-user:
 	mkdir -p ${HOME}/.config/nvim | true
 	mkdir -p ${HOME}/.config/nvim/lua | true
 	mkdir -p ${HOME}/.config/nvim/ftplugin | true
-	cp -r ./.config/nvim/lua/ ${HOME}/.config/nvim/lua/
-	cp -r ./.config/nvim/init.vim ${HOME}/.config/nvim/
-	cp -r ./.config/nvim/ftplugin ${HOME}/.config/nvim/
-	cp -r ./.config/redshift ${HOME}/.config/
+	cp -r ./.config/nvim/lua/ ${HOME}/.config/nvim/lua/ | true
+	cp -r ./.config/nvim/init.lua ${HOME}/.config/nvim/	| true
+	cp -r ./.config/nvim/ftplugin ${HOME}/.config/nvim/ | true
+	cp -r ./.config/redshift ${HOME}/.config/ | true
 
 link:
 	git pull origin main
@@ -99,18 +99,18 @@ link:
 
 link-root:
 	git pull origin main
-	ln .tmux.conf /root/.tmux.conf | true
-	ln .zshrc /root/.zshrc | true
-	ln .vimrc /root/.vimrc | true
-	mkdir -p /root/.config/vifm/ | true
-	ln vifmrc /root/.config/vifm/vifmrc | true
-	mkdir -p /root/.config/alacritty/ | true
-	ln alacritty.toml /root/.config/alacritty/alacritty.toml | true
-	mkdir -p /root/.config/zellij/ | true
-	ln ./zellij/config.kdl /root/.config/zellij/config.kdl | true
-	ln .xmobarrc ${HOME}/.xmobarrc | true
-	mkdir -p ${HOME}/.xmonad/ | true
-	ln xmonad.hs ${HOME}/.xmonad/xmonad.hs | true
+	sudo ln .tmux.conf /root/.tmux.conf | true
+	sudo ln .zshrc /root/.zshrc | true
+	sudo ln .vimrc /root/.vimrc | true
+	sudo mkdir -p /root/.config/vifm/ | true
+	sudo ln vifmrc /root/.config/vifm/vifmrc | true
+	sudo mkdir -p /root/.config/alacritty/ | true
+	sudo ln alacritty.toml /root/.config/alacritty/alacritty.toml | true
+	sudo mkdir -p /root/.config/zellij/ | true
+	sudo ln ./zellij/config.kdl /root/.config/zellij/config.kdl | true
+	sudo ln .xmobarrc /root/.xmobarrc | true
+	sudo mkdir -p /root/.xmonad/ | true
+	sudo ln xmonad.hs /root/.xmonad/xmonad.hs | true
 
 del:
 	cp ${HOME}/.tmux.conf ${HOME}/.tmux.conf.bak | true
@@ -135,24 +135,24 @@ del:
 	rm ${HOME}/.xmonad/xmonad.hs | true
 
 del-root:
-	cp /root/.tmux.conf /root/.tmux.conf.bak | true
+	sudo cp /root/.tmux.conf /root/.tmux.conf.bak | true
 	sudo rm /root/.tmux.conf | true
 	
-	cp /root/.zshrc /root/.zshrc.bak | true
+	sudo cp /root/.zshrc /root/.zshrc.bak | true
 	sudo rm /root/.zshrc | true
 
-	cp /root/.vimrc /root/.vimrc.bak | true
+	sudo cp /root/.vimrc /root/.vimrc.bak | true
 	sudo rm /root/.vimrc | true
 	
-	cp /root/.config/redshift/ /root/.config/redshift.bak | true
+	sudo cp /root/.config/redshift/ /root/.config/redshift.bak | true
 	sudo rm /root/.config/redshift/ -rv | true
 
-	cp /root/.config/vifm/ /root/.config/vifm.bak | true
+	sudo cp /root/.config/vifm/ /root/.config/vifm.bak | true
 	sudo rm /root/.config/vifm/ -rv | true
 
-	cp /root/.xmobarrc /root/.xmobarrc.bak | true
+	sudo cp /root/.xmobarrc /root/.xmobarrc.bak | true
 	sudo rm /root/.xmobarrc | true
 
-	cp /root/.xmonad/xmonad.hs /root/.xmonad/xmonad.hs.bak | true
+	sudo cp /root/.xmonad/xmonad.hs /root/.xmonad/xmonad.hs.bak | true
 	sudo rm /root/.xmonad/xmonad.hs | true
 
