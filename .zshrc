@@ -7,25 +7,25 @@ fi
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-export PATH=$JAVA_HOME/bin:$PATH
+# export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+# export PATH=$JAVA_HOME/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-export PATH=$JAVA_HOME/bin:$PATH
+# export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+# export PATH=$JAVA_HOME/bin:$PATH
 # export SDKMANAGER=/home/gup/Android/Sdk/cmdline-tools/latest/bin
-export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
-export PATH=$SDKMANAGER:$PATH
-export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
-export PATH=/opt/flutter/bin:$PATH
+# export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
+# export PATH=$SDKMANAGER:$PATH
+# export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
+# export PATH=/opt/flutter/bin:$PATH
 
-export PATH=/opt/asdf-vm/bin:$PATH
-export ASDF_DIR=$HOME/.asdf
-export ASDF_SHELL=/opt/asdf-vm/asdf.sh
+# export PATH=/opt/asdf-vm/bin:$PATH
+# export ASDF_DIR=$HOME/.asdf
+# export ASDF_SHELL=/opt/asdf-vm/asdf.sh
 
-export RUST_BACKTRACE=full
+export RUST_BACKTRACE=none
 
 
 # Set name of the theme to load --- if set to "random", it will
