@@ -1,20 +1,14 @@
-
-
 -- Set dart lsp using lspconfig
 local lspconfig = require('lspconfig')
 
--- Set the path to the dart analysis server
-local dart_analysis_server_path = '/opt/dart-sdk/bin/snapshots/analysis_server.dart.snapshot'
-
 -- Set the path to the dart sdk
-local dart_sdk_path = '/opt/dart-sdk'
+local dart_sdk_path = os.getenv('DART_SDK')
 
 -- Set the path to the flutter sdk
-local flutter_sdk_path = '/opt/flutter'
+local flutter_sdk_path = os.getenv('FLUTTER_SDK')
 
 -- Configure the dart language server
 lspconfig.dartls.setup {
-  cmd = { dart_analysis_server_path, '--lsp' },
   init_options = {
     closingLabels = true,
     flutterOutline = true,
