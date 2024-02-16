@@ -134,7 +134,10 @@ in
   users.users.zen = {
     isNormalUser = true;
     initialPassword = "pw123"; 
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ 
+      "wheel" # Enable ‘sudo’ for the user.
+      "adbusers" # Enable ‘adb’ for the user.
+    ]; 
     packages = with pkgs; [
       firefox
       tree
@@ -209,6 +212,12 @@ in
     stable.libnotify
     stable.xdotool
     unstable.libsForQt5.okular
+    unstable.vifm-full
+    unstable.gcc-unwrapped
+    unstable.networkmanager_dmenu
+    unstable.wirelesstools
+    unstable.nix-index
+    unstable.xorg.xhost
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup
@@ -243,9 +252,22 @@ in
     nix-ld.libraries = with pkgs; [
       # Add any missing dynamic libraries for unpackaged programs
       # here, NOT in environment.systemPackages
+      # add stdlibc++.so.6
+      stdenv.cc.cc.lib
+      gcc-unwrapped.lib
+      unstable.zlib
+      unstable.fuse3
+      unstable.icu
+      unstable.zlib
+      unstable.nss
+      unstable.openssl
+      unstable.curl
+      unstable.expat
+      libgcc.lib
     ];
     xfconf.enable = true;
     light.brightnessKeys.enable = true;
+    adb.enable = true;
   };
   # List services that you want to enable:
   xdg.portal.enable = true;
