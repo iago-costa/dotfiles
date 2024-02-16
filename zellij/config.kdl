@@ -162,6 +162,8 @@ keybinds {
     }
     shared_except "pane" "locked" {
         bind "Ctrl p" { SwitchToMode "Pane"; }
+        bind "Alt w" { ToggleFloatingPanes; }
+        bind "Alt f" { ToggleFocusFullscreen; }
     }
     shared_except "resize" "locked" {
         bind "Ctrl n" { SwitchToMode "Resize"; }
