@@ -1,24 +1,52 @@
 require('telescope').setup {
-    defaults = {
-        file_ignore_patterns = { 
-            'node_modules', 'dist', 'build', 'target/', 'vendor', 'yarn.lock', 'package-lock.json', '__pycache__', '.git', 'bin/' },
-        vimgrep_arguments = { 
-            'rg', '--ignore', '--hidden', '--files', '-u', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
+  defaults = {
+    file_ignore_patterns = {
+      'node_modules', 'dist', 'build', 'target/', 'vendor', 'yarn.lock', 'package-lock.json', '__pycache__', '.git', 'bin/' },
+    -- vimgrep_arguments = {
+    --   'rg', '--ignore', '--hidden' },
+  },
+  pickers = {
+    find_files = {
+      hidden = true,
+      -- find_command = {
+      --   'fd',
+      --   '--type',
+      --   'f',
+      --   '--no-ignore-vcs',
+      --   '--color=never',
+      --   '--hidden',
+      --   '--follow',
+      -- },
+      find_command = {
+        'rg',
+        '--files',
+        '--hidden',
+        '--no-ignore-vcs',
+        '--glob',
+        '!.git',
+        '--glob',
+        '!node_modules',
+        '--glob',
+        '!dist',
+        '--glob',
+        '!build',
+        '--glob',
+        '!target',
+        '--glob',
+        '!vendor',
+        '--glob',
+        '!*.lock',
+        '--glob',
+        '!package-lock.json',
+        '--glob',
+        '!__pycache__',
+        '--glob',
+        '!bin',
+        '--glob',
+        '!undodir',
+      },
     },
-    pickers = {
-        find_files = {
-            hidden = true,
-            find_command = {
-                'fd',
-                '--type',
-                'f',
-                '--no-ignore-vcs',
-                '--color=never',
-                '--hidden',
-                '--follow',
-            },
-        },
-    },
+  },
 }
 
 local map = vim.api.nvim_set_keymap
@@ -41,10 +69,10 @@ map('n', 'th', ':Telescope help_tags<CR>', opts)
 map('n', 'tt', '<Cmd>lua require("telescope.builtin").treesitter()<CR>', opts)
 
 vim.keymap.set("n", "tC", function()
-    require("telescope").extensions.diff.diff_files({ hidden = true })
+  require("telescope").extensions.diff.diff_files({ hidden = true })
 end, { desc = "Compare 2 files" })
 vim.keymap.set("n", "tc", function()
-    require("telescope").extensions.diff.diff_current({ hidden = true })
+  require("telescope").extensions.diff.diff_current({ hidden = true })
 end, { desc = "Compare file with current" })
 
 -- local actions = require("telescope.actions")
@@ -53,36 +81,36 @@ local trouble = require("trouble.providers.telescope")
 local telescope = require("telescope")
 
 telescope.setup {
-    defaults = {
-        mappings = {
-            i = { ["<c-t>"] = trouble.open_with_trouble },
-            n = { ["<c-t>"] = trouble.open_with_trouble },
-        },
+  defaults = {
+    mappings = {
+      i = { ["<c-t>"] = trouble.open_with_trouble },
+      n = { ["<c-t>"] = trouble.open_with_trouble },
     },
-    extensions = {
-        advanced_git_search = {
-            -- fugitive or diffview
-            diff_plugin = "fugitive",
-            -- customize git in previewer
-            -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
-            git_flags = { "-c", "delta.side-by-side=true" },
-            -- customize git diff in previewer
-            -- e.g. flags such as { "--raw" }
-            git_diff_flags = {},
-            -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
-            show_builtin_git_pickers = true,
-            entry_default_author_or_date = "date", -- one of "author" or "date"
+  },
+  extensions = {
+    advanced_git_search = {
+      -- fugitive or diffview
+      diff_plugin = "fugitive",
+      -- customize git in previewer
+      -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
+      git_flags = { "-c", "delta.side-by-side=true" },
+      -- customize git diff in previewer
+      -- e.g. flags such as { "--raw" }
+      git_diff_flags = {},
+      -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
+      show_builtin_git_pickers = true,
+      entry_default_author_or_date = "date", -- one of "author" or "date"
 
-            -- Telescope layout setup
-            telescope_theme = {
-                -- e.g. realistic example
-                show_custom_functions = {
-                    layout_config = { width = 0.4, height = 0.4 },
-                },
+      -- Telescope layout setup
+      telescope_theme = {
+        -- e.g. realistic example
+        show_custom_functions = {
+          layout_config = { width = 0.4, height = 0.4 },
+        },
 
-            }
-        }
+      }
     }
+  }
 }
 
 map('n', 't,', '<Cmd>lua require("telescope.builtin").registers()<CR>', opts)
