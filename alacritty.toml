@@ -1,6 +1,6 @@
-# dynamic_title = true
 import = ["/home/gup/.config/alacritty/themes/themes/hyper.toml"]
-# window_opacity = 0.45
+
+live_config_reload = true
 
 [cursor]
 style = "Beam"
@@ -9,9 +9,12 @@ style = "Beam"
 TERM = "xterm-256color"
 
 [font]
-size = 10.0
+size = 9.0
 # [font.normal]
 # family = "MesloLGS NF Regular"
+
+# [[hints.enabled]]
+# command = { program = "xclip", args = ["-selection", "clipboard"], input = "replace" }
 
 [font.offset]
 x = 1
@@ -20,7 +23,8 @@ y = 1
 [[hints.enabled]]
 action = "Copy"
 post_processing = false
-regex = '([0-9a-f]{12,128})|([[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3})'
+regex = '(([0-9a-f]{12,128})|([[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3})|("[^ ]+\\.rs:\\d+:\\d+))'
+mouse = { enabled = true }
 
 [hints.enabled.binding]
 key = "I"
@@ -34,6 +38,9 @@ save_to_clipboard = true
 
 [window]
 title = "Alacritty"
+decorations = "None"
+dynamic_padding = false
+opacity = 0.9
 
 [window.class]
 general = "Alacritty"

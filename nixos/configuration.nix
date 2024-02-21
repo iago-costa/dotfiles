@@ -218,6 +218,10 @@ in
     unstable.wirelesstools
     unstable.nix-index
     unstable.xorg.xhost
+    unstable.wireshark
+    unstable.tshark
+    unstable.termshark
+    unstable.zip
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup

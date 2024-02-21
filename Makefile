@@ -97,6 +97,27 @@ link:
 	mkdir -p ${HOME}/.xmonad/ | true
 	ln xmonad.hs ${HOME}/.xmonad/xmonad.hs | true
 
+link-base:
+	@echo "Set nvim, zsh, zellij"
+	ln .zshrc ${HOME}/.zshrc | true
+	ln .vimrc ${HOME}/.vimrc | true
+	mkdir -p ${HOME}/.config/ | true
+	mkdir -p ${HOME}/.config/zellij/ | true
+	ln ./zellij/config.kdl ${HOME}/.config/zellij/config.kdl | true
+	mkdir -p ${HOME}/.config/nvim | true
+	mkdir -p ${HOME}/.config/nvim/lua | true
+	mkdir -p ${HOME}/.config/nvim/ftplugin | true
+	cp -r ./.config/nvim/lua/ ${HOME}/.config/nvim/lua/ | true
+	cp -r ./.config/nvim/init.lua ${HOME}/.config/nvim/	| true
+	cp -r ./.config/nvim/ftplugin ${HOME}/.config/nvim/ | true
+
+del-base:
+	@echo "Removing nvim, zsh, zellij"
+	rm ${HOME}/.zshrc | true
+	rm ${HOME}/.vimrc | true
+	rm -rf ${HOME}/.config/zellij/ | true
+	rm -rf ${HOME}/.config/nvim/ | true
+
 link-root:
 	git pull origin main
 	sudo ln .tmux.conf /root/.tmux.conf | true
