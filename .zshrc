@@ -27,6 +27,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 export RUST_BACKTRACE=none
 
+typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE='20'
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -98,11 +99,11 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 
-# plugins=(git)
+plugins=(git)
 plugins=(
 	git 
 	zsh-autosuggestions 
-	zsh-syntax-highlighting 
+	# zsh-syntax-highlighting 
 	fast-syntax-highlighting 
 	zsh-autocomplete
   bundler
