@@ -119,6 +119,31 @@ plugins=(
 	direnv
   dirhistory
 	fzf-tab
+  zellij
+  gh
+  alias-finder
+  adb
+  ansible
+  aws
+  azure
+  git-flow
+  kubectl
+  minikube
+  terraform
+  yarn
+  vault
+  nmap
+  helm
+  gradle
+  git-lfs
+  deno
+  node
+  emacs
+  flutter
+  git-flow
+  gitfast
+  lein
+  microk8s
 )
 
 source $ZSH/oh-my-zsh.sh
