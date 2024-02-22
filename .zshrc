@@ -144,6 +144,9 @@ plugins=(
   gitfast
   lein
   microk8s
+  singlechar
+  sudo
+  git-prompt
 )
 
 source $ZSH/oh-my-zsh.sh
