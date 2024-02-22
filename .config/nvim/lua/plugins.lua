@@ -197,6 +197,10 @@ require('packer').startup(function()
     'nvim-pack/nvim-spectre' -- search and replace
   })
 
+  use({
+    'ojroques/vim-oscyank' -- copy to system clipboard
+  })
+
   -- use({ --  replace between multiple files
   --     'dyng/ctrlsf.vim',
   -- })

@@ -31,16 +31,19 @@ vim.keymap.set("x", "<leader>p", [["_dP]])                                      
 
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])                                                       -- Yank to end of line and copy to system clipboard
 vim.keymap.set("n", "<leader>Y", [["+Y]])
+vim.keymap.set('n', '<leader>c', '<Plug>OSCYankOperator')
+vim.keymap.set('n', '<leader>cc', '<leader>c_', { remap = true })
+vim.keymap.set('v', '<leader>c', '<Plug>OSCYankVisual')
 
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]]) -- Delete the current char above the cursor
 
 -- Cut line in insert mode
 vim.keymap.set("i", "<C-x>", function()
-    local line = vim.api.nvim_win_get_cursor(0)[1]
-    vim.cmd("normal! ^")
-    vim.cmd("normal! v$")
-    vim.cmd("normal! d")
-    vim.api.nvim_win_set_cursor(0, { line, 0 })
+  local line = vim.api.nvim_win_get_cursor(0)[1]
+  vim.cmd("normal! ^")
+  vim.cmd("normal! v$")
+  vim.cmd("normal! d")
+  vim.api.nvim_win_set_cursor(0, { line, 0 })
 end)
 
 vim.keymap.set("i", "<C-c>", "<Esc>")                -- This is going to get me cancelled
@@ -81,28 +84,28 @@ vim.cmd([[
 
 -- Lua function to focus on the next window in a loop
 function focus_next_window()
-    local current_win = vim.fn.winnr()
-    local total_wins = vim.fn.winnr('$')
-    local next_win = current_win + 1
+  local current_win = vim.fn.winnr()
+  local total_wins = vim.fn.winnr('$')
+  local next_win = current_win + 1
 
-    if next_win > total_wins then
-        next_win = 1
-    end
+  if next_win > total_wins then
+    next_win = 1
+  end
 
-    vim.cmd(next_win .. 'wincmd w')
+  vim.cmd(next_win .. 'wincmd w')
 end
 
 -- Lua function to focus on the previous window in a loop
 function focus_previous_window()
-    local current_win = vim.fn.winnr()
-    local total_wins = vim.fn.winnr('$')
-    local previous_win = current_win - 1
+  local current_win = vim.fn.winnr()
+  local total_wins = vim.fn.winnr('$')
+  local previous_win = current_win - 1
 
-    if previous_win < 1 then
-        previous_win = total_wins
-    end
+  if previous_win < 1 then
+    previous_win = total_wins
+  end
 
-    vim.cmd(previous_win .. 'wincmd w')
+  vim.cmd(previous_win .. 'wincmd w')
 end
 
 vim.api.nvim_set_keymap('n', '<M-Right>', ':FocusNextWindow<CR>', { noremap = true, silent = true }) -- Define keymap for FocusNextWindow
@@ -131,7 +134,7 @@ vim.keymap.set("n", "<leader>wq", "<cmd>wq<CR>")  -- kill current window
 
 -- Copy current file path to clipboard
 vim.keymap.set("n", "cp", function()
-    vim.fn.setreg("+", vim.fn.expand("%:p"))
+  vim.fn.setreg("+", vim.fn.expand("%:p"))
 end)
 
 -- init doc key
