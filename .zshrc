@@ -7,6 +7,7 @@ fi
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="$HOME/.cargo/bin:$PATH"
 # export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 # export PATH=$JAVA_HOME/bin:$PATH
 
@@ -99,7 +100,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(git)
+#plugins=(git)
 plugins=(
 	git 
 	zsh-autosuggestions 
