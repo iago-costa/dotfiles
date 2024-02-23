@@ -7,7 +7,7 @@ fi
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 # export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 # export PATH=$JAVA_HOME/bin:$PATH
 
