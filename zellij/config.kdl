@@ -6,6 +6,7 @@ keybinds {
     }
     locked {
         bind "Ctrl g" { SwitchToMode "Normal"; }
+        bind "Alt ;" { SwitchToMode "Normal"; }
     }
     resize {
         bind "Ctrl n" { SwitchToMode "Normal"; }
@@ -146,6 +147,7 @@ keybinds {
     }
     shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
+        bind "Alt ;" { SwitchToMode "Locked"; }
         bind "Ctrl q" { Quit; }
         bind "Alt n" { NewPane; }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
@@ -156,7 +158,29 @@ keybinds {
         bind "Alt -" { Resize "Decrease"; }
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
-    }
+        bind "Alt t" {
+            LaunchOrFocusPlugin "file:.config/zellij/plugins/room.wasm" {
+                floating true
+                ignore_case true
+            };
+        }
+        // bind F1 to open monocle in a new floating pane and open any results in a new tiled/floating pane
+        bind "F2" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/monocle.wasm" {
+                floating true
+            };
+            SwitchToMode "Normal"
+        }
+        // bind "Alt m" to open monocle on top of the current pane and open any results on top of itself
+        bind "F3" {
+            LaunchPlugin "file:~/.config/zellij/plugins/monocle.wasm" {
+                in_place true
+                kiosk true
+            };
+            SwitchToMode "Normal"
+        }
+
+   }
     shared_except "normal" "locked" {
         bind "Enter" "Esc" { SwitchToMode "Normal"; }
     }
@@ -173,6 +197,12 @@ keybinds {
     }
     shared_except "session" "locked" {
         bind "Ctrl o" { SwitchToMode "Session"; }
+        bind "Alt z" {
+            LaunchOrFocusPlugin "zellij:session-manager" {
+                floating true
+                move_to_focused_tab true
+            };
+        }
     }
     shared_except "tab" "locked" {
         bind "Ctrl t" { SwitchToMode "Tab"; }
@@ -182,14 +212,6 @@ keybinds {
     }
     shared_except "tmux" "locked" {
         bind "Ctrl b" { SwitchToMode "Tmux"; }
-    }
-    shared_except "locked" {
-        bind "Alt t" {
-            LaunchOrFocusPlugin "file:.config/zellij/plugins/room.wasm" {
-                floating true
-                ignore_case true
-            }
-        }
     }
 }
 
