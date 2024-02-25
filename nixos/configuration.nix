@@ -222,6 +222,7 @@ in
     unstable.tshark
     unstable.termshark
     unstable.zip
+    unstable.just
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup

@@ -1,0 +1,16 @@
+
+
+sudo ip link set inp1s0 down
+sudo ip link set inp1s0 up
+
+sudo nmcli dev wifi connect SSID password "password"
+
+sudo nmcli dev status
+sudo nmcli c
+
+sudo nmcli c up id "SSID"
+sudo nmcli c down id "SSID"
+
+sudo nmcli d connect inp1s0
+sudo nmcli d disconnect inp1s0
+

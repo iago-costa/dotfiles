@@ -179,7 +179,6 @@ keybinds {
             };
             SwitchToMode "Normal"
         }
-
    }
     shared_except "normal" "locked" {
         bind "Enter" "Esc" { SwitchToMode "Normal"; }
