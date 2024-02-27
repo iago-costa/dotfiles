@@ -204,4 +204,8 @@ require('packer').startup(function()
   -- use({ --  replace between multiple files
   --     'dyng/ctrlsf.vim',
   -- })
+  --
+  use({
+    'NoahTheDuke/vim-just' -- justfile syntax
+  })
 end)
