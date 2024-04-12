@@ -12,7 +12,7 @@ let
         enableWideVine = true;
     };
     permittedInsecurePackages = [
-        "electron-19.1.9"
+        "electron-25.9.0"
     ];
     pulseaudio = true;
   };
@@ -26,6 +26,8 @@ in
       ./hardware-configuration.nix
       ./hybrid-sleep-and-hibernate.nix
     ];
+
+  nixpkgs.config.allowUnfree = true;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -68,6 +70,7 @@ in
   ];
 
   # Enable the X11 windowing system.
+  services.displayManager.defaultSession = "xfce+xmonad";
   services.xserver = {
     enable = true;   
     desktopManager = {
@@ -91,7 +94,7 @@ in
       };
     };
     displayManager = {
-        defaultSession = "xfce+xmonad";
+        #defaultSession = "xfce+xmonad";
         #defaultSession = "xmonad";
         #startx.enable = true;
         sessionCommands = ''
@@ -131,9 +134,11 @@ in
   hardware.pulseaudio.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.defaultUserShell = pkgs.zsh;
   users.users.zen = {
     isNormalUser = true;
     initialPassword = "pw123"; 
+    group = "users";
     extraGroups = [ 
       "wheel" # Enable ‘sudo’ for the user.
       "adbusers" # Enable ‘adb’ for the user.
@@ -179,7 +184,7 @@ in
     unstable.libGL
     unstable.libGLU
     unstable.libxml2
-    unstable.logseq
+    stable.logseq
     unstable.docker
     unstable.docker-compose
     unstable.wrk2
@@ -199,8 +204,8 @@ in
     unstable.gh
     unstable.gatling
     unstable.jmeter
-    stable.vscode
-    unstable.etcher
+    unstable.vscode
+    #unstable.etcher
     stable.ghc
     stable.haskellPackages.xmobar
     stable.lux
@@ -223,12 +228,19 @@ in
     unstable.termshark
     unstable.zip
     unstable.just
+    unstable.mosh
+    unstable.qemu
+    unstable.quickemu
+    unstable.quickgui
+    unstable.tmux
+    unstable.emacs
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup
     #unstable.haskellPackages.base-compat-batteries_0_13_1
     #unstable.haskellPackages.base-compat_0_13_1
     #deprecated.haskellPackages.streamly
+    unstable.sshfs
   ];
 
   fonts.packages = with pkgs; [
@@ -241,7 +253,9 @@ in
     mplus-outline-fonts.githubRelease
     dina-font
     proggyfonts
-    meslo-lgs-nf
+    unstable.meslo-lgs-nf
+    unstable.vistafonts
+    unstable.corefonts
   ];
   
   # Some programs need SUID wrappers, can be configured further or are
@@ -258,8 +272,8 @@ in
       # Add any missing dynamic libraries for unpackaged programs
       # here, NOT in environment.systemPackages
       # add stdlibc++.so.6
-      stdenv.cc.cc.lib
-      gcc-unwrapped.lib
+      unstable.stdenv.cc.cc.lib
+      unstable.gcc-unwrapped.lib
       unstable.zlib
       unstable.fuse3
       unstable.icu
@@ -268,7 +282,7 @@ in
       unstable.openssl
       unstable.curl
       unstable.expat
-      libgcc.lib
+      unstable.libgcc.lib
     ];
     xfconf.enable = true;
     light.brightnessKeys.enable = true;
@@ -301,6 +315,12 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "unstable"; # Did you read the comment?
+
+  #users.extraGroups.vboxusers.members = [ "zen" ];
+  #virtualisation.virtualbox.host.enable = true;
+  #virtualisation.virtualbox.host.enableExtensionPack = true;
+  #virtualisation.virtualbox.guest.enable = true;
+  #virtualisation.virtualbox.guest.x11 = true;
 
   virtualisation.docker.enable = true;
   users.extraGroups.docker.members = [ "zen" ];

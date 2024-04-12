@@ -18,13 +18,13 @@ nixos-link:
 	@echo "Linking nixos configuration"
 	sudo ln /etc/nixos/configuration.nix ./nixos/configuration.nix | true
 	sudo ln /etc/nixos/hardware-configuration.nix ./nixos/hardware-configuration.nix | true
-	sudo ln /etc/nixos/suspend-and-hibernate.nix ./nixos/suspend-and-hibernate.nix | true
+	sudo ln /etc/nixos/hybrid-sleep-and-hibernate.nix ./nixos/hybrid-sleep-and-hibernate.nix | true
 
 nixos-del:
 	@echo "Removing nixos configuration"
 	sudo rm ./nixos/configuration.nix | true
 	sudo rm ./nixos/hardware-configuration.nix | true
-	sudo rm ./nixos/suspend-and-hibernate.nix | true
+	sudo rm ./nixos/hybrid-sleep-and-hibernate.nix | true
 
 nixos-hard:
 	@echo "Updating nixos configuration"
