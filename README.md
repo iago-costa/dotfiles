@@ -63,70 +63,21 @@ With `tmux-continuum` installed, it will automatically save your Tmux sessions a
 By following these steps, your Tmux sessions will be automatically persisted and restored across computer reboots, making it convenient to pick up where you left off.
         
 ### Most used keybindings for tmux
-1. Save session
-    prefix <Ctrl-s>
-    Restore session
-
-2. Create vertical window
-    prefix @
-
-3. Create horizontal window
-    prefix "
-
-4. Change the pane active
-    prefix [Arrow keys]
-
-You use space bar for the beginning of the selection and enter for the end.
-
-5. copy:
-    prefix [ -- initiate the copy mode
-    Space -- activate select
-    Enter -- Copy
-
-6. paste:
-    prefix ]
-
-7. Update the modification in .tmux.conf
-    tmux source-file ~/.tmux.conf
-
-8. Create new session named
-    tmux new -s <session_name>
-
-9. Attach an old session named
-    tmux a -t <session_name>
-
-10. Rename current session
-    prefix $
-
-11. Toggle full screen actual pane
-    prefix z
-
-12. Change position actual pane
-    prefix } or Ctrl {
-
-13. Circulate positions to actual pane
-    prefix Ctrl-o
-
-14. Simple file search
-    prefix + Ctrl-f
-
-15. Jumping over git status files (best used after git status command)
-    prefix + Ctrl-g
-
-16. Jumping over SHA-1/SHA-256 hashes (best used after git log command)
-    prefix + Alt-h
-
-17. Url search (http, ftp and git urls)
-    prefix + Ctrl-u
-
-18. Number search (mnemonic d, as digit)
-    prefix + Ctrl-d
-
-19. Ip address search
-    prefix + Alt-i
+>1. Save session
+>    prefix <Ctrl-s>
+>    Restore session
+> 
+>2. Create vertical window
+>    prefix @
+> 
+>3. Create horizontal window
+>    prefix "
+> 
+>4. Change the pane active
+>    prefix [Arrow keys]
 
 ## Zsh file .zshrc
-1. Link To install/configure: [Instal/Configure zsh and plugins](https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df) 
+>1. Link To install/configure: [Instal/Configure zsh and plugins](https://gist.github.com/n1snt/454b879b8f0b7995740ae04c5fb5b7df) 
 
 ## asdf to manage multiples versions of programming languages
 ```bash
