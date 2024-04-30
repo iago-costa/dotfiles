@@ -104,11 +104,12 @@ in
             ${pkgs.lightlocker}/bin/light-locker --idle-hint --lock-on-suspend --lock-on-lid --lock-on-lid-close --lock-after-screensaver 0 &
         '';
     };
-    libinput = { # Enable touchpad support.
-      enable = true;
-      touchpad = {
-        naturalScrolling = true;
-      };
+  };
+  
+  services.libinput = { # Enable touchpad support.
+    enable = true;
+    touchpad = {
+      naturalScrolling = true;
     };
   };
 
@@ -175,7 +176,7 @@ in
     (unstable.appimage-run.override {
       extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
     })
-    unstable.nodejs_21
+    unstable.nodejs_22
     unstable.xclip
     unstable.patchelf
     unstable.steam-run
@@ -195,7 +196,7 @@ in
     unstable.nox
     unstable.file
     unstable.wpsoffice
-    unstable.zoom-us
+    #stable.zoom-us
     unstable.openssl
     unstable.ripgrep
     unstable.fd
@@ -241,6 +242,14 @@ in
     #unstable.haskellPackages.base-compat_0_13_1
     #deprecated.haskellPackages.streamly
     unstable.sshfs
+    #unstable.winbox
+    unstable.wine64
+    unstable.virt-manager
+    unstable.inetutils
+    unstable.p7zip
+    unstable.anydesk
+    unstable.teamviewer
+    #unstable.rustdesk
   ];
 
   fonts.packages = with pkgs; [
@@ -255,7 +264,7 @@ in
     proggyfonts
     unstable.meslo-lgs-nf
     unstable.vistafonts
-    unstable.corefonts
+    stable.corefonts
   ];
   
   # Some programs need SUID wrappers, can be configured further or are
@@ -321,6 +330,9 @@ in
   #virtualisation.virtualbox.host.enableExtensionPack = true;
   #virtualisation.virtualbox.guest.enable = true;
   #virtualisation.virtualbox.guest.x11 = true;
+
+  virtualisation.libvirtd.enable = true;
+  programs.dconf.enable = true; # virt-manager requires dconf to remember settings
 
   virtualisation.docker.enable = true;
   users.extraGroups.docker.members = [ "zen" ];
