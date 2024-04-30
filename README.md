@@ -1,9 +1,13 @@
-
 # Dotfiles
-tmux + zsh + nvim
-
-## Tmux file .tmux.conf
-- see in the root repository folder
+> nixos configuration files = operating system
+> tmux = terminal multiplexer
+> zellij = terminal multiplexer
+> zsh = shell
+> xmonad = tiling window manager
+> xmobar = status bar
+> vifm = vim-like file manager
+> vim = text editor
+> nvim = text editor
 
 ## Config for tmux
 
@@ -66,13 +70,13 @@ By following these steps, your Tmux sessions will be automatically persisted and
 >1. Save session
 >    prefix <Ctrl-s>
 >    Restore session
-> 
+>
 >2. Create vertical window
 >    prefix @
-> 
+>
 >3. Create horizontal window
 >    prefix "
-> 
+>
 >4. Change the pane active
 >    prefix [Arrow keys]
 
@@ -89,14 +93,10 @@ asdf local <plugin_name> <plugin_version>
 ```
 
 ## Top terminal tools
-1. navi -- terminal snippets
-    - navi fn welcome
-    - navi
-2. zoxide -- smart cd
-3. fcd
-    - combination fzf + cd
-4. fasd -- fast cd
-5. ripgrep/fzf -- search files
-6. zellij -- terminal multiplexer
-7. vifm -- vim-like file manager
-8. alacritty -- terminal emulator
+1. navi: terminal snippets
+    > navi fn welcome
+    > navi
+2. zoxide: smart cd
+3. fcd: combination fzf + cd
+4. fasd: fast cd
+5. ripgrep/fzf: search files
