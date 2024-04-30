@@ -21,14 +21,15 @@ x = 1
 y = 1
 
 [[hints.enabled]]
-action = "Copy"
-post_processing = false
-regex = '(([0-9a-f]{12,128})|([[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3})|("[^ ]+\\.rs:\\d+:\\d+))'
-mouse = { enabled = true }
-
-[hints.enabled.binding]
-key = "I"
-mods = "Control|Shift"
+command         = "xdg-open" # On Linux/BSD
+# command       = "open" # On macOS
+# command       = { program = "cmd", args = [ "/c", "start", "" ] } # On Windows
+hyperlinks      = true
+post_processing = true
+persist         = false
+mouse.enabled   = true
+binding         = { key = "U", mods = "Control|Shift" }
+regex           = "(ipfs:|ipns:|magnet:|mailto:|gemini://|go‐pher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
 
 [scrolling]
 history = 50000
