@@ -214,7 +214,6 @@ del-root:
 
 clean-nixos:
 	sudo nix-collect-garbage -d
-	sudo nix-rebuild clean
 	sudo nix-env --delete-generations old
 	sudo nix-store --delete /nix/store/*-*
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
@@ -224,7 +223,6 @@ clean-linux:
 	sudo find /var/log -type f -name "*.log" -mtime +7 -exec rm -f {} \;
 	sudo find /var/log -type f -name "*.log" -mtime +7 -exec gzip {} \;
 	sudo find /tmp -type f -mtime +7 -exec rm -f {} \;
-	sudo find /path/to/cache/directory -type f -mtime +7 -exec rm -f {} \;
 
 hard-clean:
 	make clean-nixos
