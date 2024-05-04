@@ -250,6 +250,10 @@ in
     unstable.anydesk
     unstable.teamviewer
     #unstable.rustdesk
+    #unstable.ciscoPacketTracer8
+    unstable.gns3-gui
+    unstable.gns3-server
+    #stable.vmware-workstation
   ];
 
   fonts.packages = with pkgs; [
@@ -329,7 +333,6 @@ in
   #virtualisation.virtualbox.host.enable = true;
   #virtualisation.virtualbox.host.enableExtensionPack = true;
   #virtualisation.virtualbox.guest.enable = true;
-  #virtualisation.virtualbox.guest.x11 = true;
 
   virtualisation.libvirtd.enable = true;
   programs.dconf.enable = true; # virt-manager requires dconf to remember settings
