@@ -4,7 +4,7 @@ sync-from-user-hard-to-root:
 	make hard-pull-root
 	
 sync-from-user:
-	@echo "Updating redshift and nvim files from user to root"
+	@echo "Updating redshift and nvim files from user to git"
 	cp -r ${HOME}/.config/redshift ./.config/
 	
 	rm -rf ./.config/nvim | true

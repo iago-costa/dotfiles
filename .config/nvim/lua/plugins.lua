@@ -208,4 +208,14 @@ require('packer').startup(function()
   use({
     'NoahTheDuke/vim-just' -- justfile syntax
   })
+
+  use({
+    "iamcco/markdown-preview.nvim",
+    run = function() vim.fn["mkdp#util#install"]() end,
+  })
+
+  use({
+    "nvim-telescope/telescope-file-browser.nvim",
+    requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+  })
 end)
