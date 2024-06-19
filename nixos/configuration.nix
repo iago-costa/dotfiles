@@ -139,7 +139,7 @@ in
   services.blueman.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.defaultUserShell = pkgs.zsh;
+  users.defaultUserShell = unstable.zsh;
   users.users.zen = {
     isNormalUser = true;
     initialPassword = "pw123"; 
@@ -149,8 +149,36 @@ in
       "adbusers" # Enable ‘adb’ for the user.
     ]; 
     packages = with pkgs; [
-      firefox
-      tree
+      unstable.firefox
+      unstable.tree
+      unstable.google-chrome
+      unstable.zellij
+    unstable.gparted
+    stable.logseq
+    #stable.zoom-us
+    unstable.quickemu
+    unstable.quickgui
+    unstable.gns3-gui
+    unstable.gns3-server
+    unstable.anydesk
+    unstable.teamviewer
+    unstable.redshift
+    unstable.gnome.gnome-keyring
+    unstable.vscode
+    unstable.vivaldi
+    unstable.vivaldi-ffmpeg-codecs
+    unstable.xfce.xfce4-clipman-plugin
+    stable.lightlocker
+    unstable.wine64
+    unstable.virt-manager
+    unstable.alacritty
+    (unstable.appimage-run.override {
+     extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
+#unstable.winbox
+#stable.vmware-workstation
+#unstable.ciscoPacketTracer8
+#unstable.rustdesk
+     })
     ];
   };
 
@@ -158,29 +186,18 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    stable.google-chrome
-    stable.lightlocker
     unstable.wget
     unstable.htop
-    unstable.vivaldi
-    unstable.vivaldi-ffmpeg-codecs
-    unstable.xfce.xfce4-clipman-plugin
-    unstable.zellij
     unstable.zsh
-    unstable.alacritty
-    unstable.gnome.gnome-keyring
     unstable.libsecret
-    unstable.gparted
     unstable.ethtool
     unstable.neovim
+    unstable.gh
     unstable.git
     unstable.gnumake
     unstable.gcc
-    unstable.redshift
+    unstable.gcc-unwrapped
     unstable.thefuck
-    (unstable.appimage-run.override {
-      extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
-    })
     unstable.nodejs_22
     unstable.xclip
     unstable.patchelf
@@ -190,28 +207,21 @@ in
     unstable.libGL
     unstable.libGLU
     unstable.libxml2
-    stable.logseq
     unstable.docker
     unstable.docker-compose
     unstable.wrk2
     unstable.dmidecode
     unstable.neofetch
     unstable.direnv
-    unstable.xz
     unstable.nox
     unstable.file
     unstable.wpsoffice
-    #stable.zoom-us
     unstable.openssl
     unstable.ripgrep
     unstable.fd
-    unstable.unzip
     unstable.fasd
-    unstable.gh
     unstable.gatling
     unstable.jmeter
-    unstable.vscode
-    #unstable.etcher
     stable.ghc
     stable.haskellPackages.xmobar
     stable.lux
@@ -224,41 +234,31 @@ in
     stable.xdotool
     unstable.libsForQt5.okular
     unstable.vifm-full
-    unstable.gcc-unwrapped
-    unstable.networkmanager_dmenu
-    unstable.wirelesstools
     unstable.nix-index
     unstable.xorg.xhost
     unstable.wireshark
     unstable.tshark
     unstable.termshark
     unstable.zip
+    unstable.unzip
+    unstable.p7zip
+    unstable.xz
     unstable.just
     unstable.mosh
-    unstable.qemu
-    unstable.quickemu
-    unstable.quickgui
     unstable.tmux
     unstable.emacs
+    unstable.qemu
+    unstable.wirelesstools
+    unstable.networkmanager_dmenu
+    unstable.inetutils
+    unstable.sshfs
+    #unstable.etcher
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup
     #unstable.haskellPackages.base-compat-batteries_0_13_1
     #unstable.haskellPackages.base-compat_0_13_1
     #deprecated.haskellPackages.streamly
-    unstable.sshfs
-    #unstable.winbox
-    unstable.wine64
-    unstable.virt-manager
-    unstable.inetutils
-    unstable.p7zip
-    unstable.anydesk
-    unstable.teamviewer
-    #unstable.rustdesk
-    #unstable.ciscoPacketTracer8
-    unstable.gns3-gui
-    unstable.gns3-server
-    #stable.vmware-workstation
   ];
 
   fonts.packages = with pkgs; [
