@@ -6,9 +6,9 @@ if [ "$answer" != "y" ]; then
 fi
 
 token=$(gh auth token | awk '{print $1}')
-echo "Current token: $token"
+echo "Gh: $token"
 
-if [ -z "$token" ] or [ "$token" == "no" ]; then
+if [ -z "$token" ] || [ "$token" == "no" ]; then
     echo "Token is empty"
     echo "Please, enter the token manually"
     token=""
