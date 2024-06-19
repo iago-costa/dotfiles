@@ -12,6 +12,8 @@ let
         enableWideVine = true;
     };
     permittedInsecurePackages = [
+        "electron"
+        "electron-27.3.11"
         "electron-25.9.0"
     ];
     pulseaudio = true;
@@ -149,29 +151,27 @@ in
       "adbusers" # Enable ‘adb’ for the user.
     ]; 
     packages = with pkgs; [
-      unstable.firefox
       unstable.tree
+      unstable.redshift
+      unstable.xfce.xfce4-clipman-plugin
+      unstable.alacritty
+      unstable.vscode
+      unstable.gnome.gnome-keyring
+      unstable.vivaldi
+      unstable.vivaldi-ffmpeg-codecs
       unstable.google-chrome
+      unstable.firefox
       unstable.zellij
+      unstable.logseq
       unstable.gparted
-      stable.logseq
-      #stable.zoom-us
+      unstable.virt-manager
       unstable.quickemu
       unstable.quickgui
       unstable.gns3-gui
       unstable.gns3-server
       unstable.anydesk
       unstable.teamviewer
-      unstable.redshift
-      unstable.gnome.gnome-keyring
-      unstable.vscode
-      unstable.vivaldi
-      unstable.vivaldi-ffmpeg-codecs
-      unstable.xfce.xfce4-clipman-plugin
       stable.lightlocker
-      unstable.wine64
-      unstable.virt-manager
-      unstable.alacritty
       stable.ghc
       stable.haskellPackages.xmobar
       stable.lux
@@ -182,10 +182,14 @@ in
       stable.yad
       stable.libnotify
       stable.xdotool
+      unstable.wine64
       unstable.libsForQt5.okular
+      unstable.wireshark
+      unstable.wpsoffice
       (unstable.appimage-run.override {
         extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
       })
+      #stable.zoom-us
       #unstable.winbox
       #stable.vmware-workstation
       #unstable.ciscoPacketTracer8
@@ -226,7 +230,6 @@ in
     unstable.direnv
     unstable.nox
     unstable.file
-    unstable.wpsoffice
     unstable.openssl
     unstable.ripgrep
     unstable.fd
@@ -236,7 +239,6 @@ in
     stable.lm_sensors
     unstable.vifm-full
     unstable.nix-index
-    unstable.wireshark
     unstable.tshark
     unstable.termshark
     unstable.zip
@@ -249,7 +251,6 @@ in
     unstable.emacs
     unstable.qemu
     unstable.wirelesstools
-    unstable.networkmanager_dmenu
     unstable.inetutils
     unstable.sshfs
     #unstable.etcher
@@ -334,10 +335,11 @@ in
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "unstable"; # Did you read the comment?
 
-  #users.extraGroups.vboxusers.members = [ "zen" ];
-  #virtualisation.virtualbox.host.enable = true;
-  #virtualisation.virtualbox.host.enableExtensionPack = true;
-  #virtualisation.virtualbox.guest.enable = true;
+  users.extraGroups.vboxusers.members = [ "zen" ];
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.enableExtensionPack = true;
+  virtualisation.virtualbox.guest.enable = true;
+  virtualisation.virtualbox.guest.dragAndDrop = true;
 
   virtualisation.libvirtd.enable = true;
   programs.dconf.enable = true; # virt-manager requires dconf to remember settings
