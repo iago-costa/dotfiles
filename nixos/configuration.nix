@@ -153,32 +153,43 @@ in
       unstable.tree
       unstable.google-chrome
       unstable.zellij
-    unstable.gparted
-    stable.logseq
-    #stable.zoom-us
-    unstable.quickemu
-    unstable.quickgui
-    unstable.gns3-gui
-    unstable.gns3-server
-    unstable.anydesk
-    unstable.teamviewer
-    unstable.redshift
-    unstable.gnome.gnome-keyring
-    unstable.vscode
-    unstable.vivaldi
-    unstable.vivaldi-ffmpeg-codecs
-    unstable.xfce.xfce4-clipman-plugin
-    stable.lightlocker
-    unstable.wine64
-    unstable.virt-manager
-    unstable.alacritty
-    (unstable.appimage-run.override {
-     extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
-#unstable.winbox
-#stable.vmware-workstation
-#unstable.ciscoPacketTracer8
-#unstable.rustdesk
-     })
+      unstable.gparted
+      stable.logseq
+      #stable.zoom-us
+      unstable.quickemu
+      unstable.quickgui
+      unstable.gns3-gui
+      unstable.gns3-server
+      unstable.anydesk
+      unstable.teamviewer
+      unstable.redshift
+      unstable.gnome.gnome-keyring
+      unstable.vscode
+      unstable.vivaldi
+      unstable.vivaldi-ffmpeg-codecs
+      unstable.xfce.xfce4-clipman-plugin
+      stable.lightlocker
+      unstable.wine64
+      unstable.virt-manager
+      unstable.alacritty
+      stable.ghc
+      stable.haskellPackages.xmobar
+      stable.lux
+      stable.xorg.xmessage
+      stable.xorg.xbacklight
+      unstable.xorg.xhost
+      stable.pulseaudio-ctl
+      stable.yad
+      stable.libnotify
+      stable.xdotool
+      unstable.libsForQt5.okular
+      (unstable.appimage-run.override {
+        extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
+      })
+      #unstable.winbox
+      #stable.vmware-workstation
+      #unstable.ciscoPacketTracer8
+      #unstable.rustdesk
     ];
   };
 
@@ -222,20 +233,9 @@ in
     unstable.fasd
     unstable.gatling
     unstable.jmeter
-    stable.ghc
-    stable.haskellPackages.xmobar
-    stable.lux
-    stable.xorg.xmessage
-    stable.xorg.xbacklight
     stable.lm_sensors
-    stable.pulseaudio-ctl
-    stable.yad
-    stable.libnotify
-    stable.xdotool
-    unstable.libsForQt5.okular
     unstable.vifm-full
     unstable.nix-index
-    unstable.xorg.xhost
     unstable.wireshark
     unstable.tshark
     unstable.termshark
