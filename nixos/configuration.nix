@@ -161,7 +161,6 @@ in
       unstable.vivaldi-ffmpeg-codecs
       unstable.google-chrome
       unstable.firefox
-      unstable.zellij
       unstable.logseq
       unstable.gparted
       unstable.virt-manager
@@ -213,14 +212,15 @@ in
     unstable.xclip
     unstable.wget
     unstable.htop
+    unstable.git
+    unstable.gh
     unstable.zsh
-    unstable.libsecret
-    unstable.ethtool
+    unstable.neovim
     unstable.tmux
     unstable.emacs
-    unstable.neovim
-    unstable.gh
-    unstable.git
+    unstable.zellij
+    unstable.libsecret
+    unstable.ethtool
     unstable.ripgrep
     unstable.fd
     unstable.fasd
