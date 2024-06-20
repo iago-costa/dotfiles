@@ -58,10 +58,12 @@ in
   };
 
   services.gnome.gnome-keyring.enable = true;
+  services.gvfs.enable = true;
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  services.flatpak.enable = true;
-  # flatpak install postman compass openlens
+# flatpak to install postman compass openlens
+  services.flatpak.enable = true; 
 
   environment.xfce.excludePackages = [ 
     stable.xfce.xfwm4
@@ -153,10 +155,8 @@ in
     packages = with pkgs; [
       unstable.tree
       unstable.redshift
-      unstable.xfce.xfce4-clipman-plugin
       unstable.alacritty
       unstable.vscode
-      unstable.gnome.gnome-keyring
       unstable.vivaldi
       unstable.vivaldi-ffmpeg-codecs
       unstable.google-chrome
@@ -172,12 +172,10 @@ in
       unstable.anydesk
       unstable.teamviewer
       stable.lightlocker
-      stable.ghc
-      stable.haskellPackages.xmobar
       stable.lux
+      unstable.xorg.xhost
       stable.xorg.xmessage
       stable.xorg.xbacklight
-      unstable.xorg.xhost
       stable.pulseaudio-ctl
       stable.yad
       stable.libnotify
@@ -186,14 +184,16 @@ in
       unstable.libsForQt5.okular
       unstable.wireshark
       unstable.wpsoffice
+      unstable.jmeter
       (unstable.appimage-run.override {
         extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
       })
+      unstable.copyq
       #stable.zoom-us
       #unstable.winbox
-      #stable.vmware-workstation
       #unstable.ciscoPacketTracer8
       #unstable.rustdesk
+      unstable.gnome.gnome-keyring
     ];
   };
 
@@ -201,20 +201,48 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    stable.haskellPackages.xmobar
+    stable.ghc
+    unstable.dmidecode
+    unstable.wirelesstools
+    unstable.inetutils
+    unstable.openssl
+    stable.lm_sensors
+    unstable.sshfs
+    unstable.qemu
+    unstable.xclip
     unstable.wget
     unstable.htop
     unstable.zsh
     unstable.libsecret
     unstable.ethtool
+    unstable.tmux
+    unstable.emacs
     unstable.neovim
     unstable.gh
     unstable.git
+    unstable.ripgrep
+    unstable.fd
+    unstable.fasd
+    unstable.vifm-full
+    unstable.tshark
+    unstable.termshark
+    unstable.neofetch
+    unstable.wrk2
+    unstable.file
+    unstable.direnv
+    unstable.zip
+    unstable.unzip
+    unstable.p7zip
+    unstable.xz
+    unstable.just
+    unstable.thefuck
+    unstable.mosh
+    unstable.nox
     unstable.gnumake
     unstable.gcc
     unstable.gcc-unwrapped
-    unstable.thefuck
     unstable.nodejs_22
-    unstable.xclip
     unstable.patchelf
     unstable.steam-run
     unstable.fuse
@@ -224,35 +252,8 @@ in
     unstable.libxml2
     unstable.docker
     unstable.docker-compose
-    unstable.wrk2
-    unstable.dmidecode
-    unstable.neofetch
-    unstable.direnv
-    unstable.nox
-    unstable.file
-    unstable.openssl
-    unstable.ripgrep
-    unstable.fd
-    unstable.fasd
     unstable.gatling
-    unstable.jmeter
-    stable.lm_sensors
-    unstable.vifm-full
     unstable.nix-index
-    unstable.tshark
-    unstable.termshark
-    unstable.zip
-    unstable.unzip
-    unstable.p7zip
-    unstable.xz
-    unstable.just
-    unstable.mosh
-    unstable.tmux
-    unstable.emacs
-    unstable.qemu
-    unstable.wirelesstools
-    unstable.inetutils
-    unstable.sshfs
     #unstable.etcher
     #unstable.distrobox
     #unstable.busybox
@@ -340,6 +341,8 @@ in
   virtualisation.virtualbox.host.enableExtensionPack = true;
   virtualisation.virtualbox.guest.enable = true;
   virtualisation.virtualbox.guest.dragAndDrop = true;
+
+  virtualisation.vmware.host.enable = true;
 
   virtualisation.libvirtd.enable = true;
   programs.dconf.enable = true; # virt-manager requires dconf to remember settings
