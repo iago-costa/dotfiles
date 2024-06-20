@@ -3,7 +3,7 @@ local lspconfig = require('lspconfig')
 
 -- Config for eslint lsp
 lspconfig.eslint.setup {
-  cmd = { "eslint-langserver", "--stdio" },
+  cmd = { "vscode-eslint-language-server", "--stdio" },
   filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
   root_dir = lspconfig.util.root_pattern(".git"),
 }
