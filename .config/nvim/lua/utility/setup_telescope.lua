@@ -1,7 +1,7 @@
 -- local actions = require("telescope.actions")
-local trouble = require("trouble.providers.telescope")
-
+-- local trouble = require("trouble.providers.telescope")
 local telescope = require("telescope")
+local open_with_trouble = require("trouble.sources.telescope").open
 
 telescope.setup {
   defaults = {
@@ -10,8 +10,8 @@ telescope.setup {
     -- vimgrep_arguments = {
     --   'rg', '--ignore', '--hidden' },
     mappings = {
-      i = { ["<c-t>"] = trouble.open_with_trouble },
-      n = { ["<c-t>"] = trouble.open_with_trouble },
+      i = { ["<c-t>"] = open_with_trouble },
+      n = { ["<c-t>"] = open_with_trouble },
     },
   },
   extensions = {
