@@ -12,15 +12,15 @@ let
         enableWideVine = true;
     };
     permittedInsecurePackages = [
-        "electron"
+        "electron-28.3.3"
         "electron-27.3.11"
         "electron-25.9.0"
     ];
     pulseaudio = true;
   };
-  stable = import <nixos-23.11> { config = baseconfig; };
+  stable = import <nixos-24.05> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
-  deprecated = import <nixos-23.05> { config = baseconfig; };
+  deprecated = import <nixos-23.11> { config = baseconfig; };
 in
 {
   imports =
@@ -57,7 +57,7 @@ in
     criticalPowerAction = "Hibernate";
   };
 
-  services.gnome.gnome-keyring.enable = true;
+  # services.gnome.gnome-keyring.enable = true;
   services.gvfs.enable = true;
 
   # Enable the OpenSSH daemon.
@@ -72,6 +72,9 @@ in
     stable.xfce.xfce4-terminal
     stable.xfce.xfce4-whiskermenu-plugin
   ];
+
+  # Spice VDAgent
+  services.spice-vdagentd.enable = true;
 
   # Enable the X11 windowing system.
   services.displayManager.defaultSession = "xfce+xmonad";
@@ -152,9 +155,9 @@ in
       "wheel" # Enable ‘sudo’ for the user.
       "adbusers" # Enable ‘adb’ for the user.
     ]; 
-    packages = with pkgs; [
-      unstable.tree
-      unstable.redshift
+    packages = [
+      stable.tree
+      stable.redshift
       unstable.alacritty
       unstable.vscode
       unstable.vivaldi
@@ -162,17 +165,16 @@ in
       unstable.google-chrome
       unstable.firefox
       unstable.logseq
-      unstable.gparted
-      unstable.virt-manager
-      unstable.quickemu
-      unstable.quickgui
-      unstable.gns3-gui
-      unstable.gns3-server
-      unstable.anydesk
-      unstable.teamviewer
+      stable.gparted
+      stable.virt-manager
+      stable.quickemu
+      stable.quickgui
+      stable.gns3-gui
+      stable.gns3-server
+      stable.anydesk
       stable.lightlocker
       stable.lux
-      unstable.xorg.xhost
+      stable.xorg.xhost
       stable.xorg.xmessage
       stable.xorg.xbacklight
       stable.pulseaudio-ctl
@@ -180,80 +182,75 @@ in
       stable.libnotify
       stable.xdotool
       unstable.wine64
-      unstable.libsForQt5.okular
-      unstable.wireshark
-      unstable.wpsoffice
-      unstable.jmeter
-      (unstable.appimage-run.override {
-        extraPkgs = pkgs: [ pkgs.xorg.libxshmfence ];
+      stable.libsForQt5.okular
+      stable.wireshark
+      stable.wpsoffice
+      stable.jmeter
+      (stable.appimage-run.override {
+        extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
       })
-      unstable.copyq
+      stable.copyq
       #stable.zoom-us
       #unstable.winbox
       #unstable.ciscoPacketTracer8
       #unstable.rustdesk
-      unstable.gnome.gnome-keyring
     ];
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  environment.systemPackages = [
+    stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    stable.gnome.gnome-keyring
+    stable.teamviewer
     stable.haskellPackages.xmobar
     stable.ghc
-    unstable.dmidecode
-    unstable.wirelesstools
-    unstable.inetutils
-    unstable.openssl
+    stable.dmidecode
+    stable.wirelesstools
+    stable.inetutils
     stable.lm_sensors
-    unstable.sshfs
-    unstable.qemu
-    unstable.xclip
-    unstable.wget
-    unstable.htop
-    unstable.git
-    unstable.gh
-    unstable.zsh
-    unstable.neovim
-    unstable.tmux
-    unstable.emacs
-    unstable.zellij
-    unstable.libsecret
-    unstable.ethtool
-    unstable.ripgrep
-    unstable.fd
-    unstable.fasd
-    unstable.vifm-full
-    unstable.tshark
-    unstable.termshark
-    unstable.neofetch
-    unstable.wrk2
-    unstable.file
-    unstable.direnv
-    unstable.zip
-    unstable.unzip
-    unstable.p7zip
-    unstable.xz
-    unstable.just
-    unstable.thefuck
-    unstable.mosh
-    unstable.nox
-    unstable.gnumake
-    unstable.gcc
-    unstable.gcc-unwrapped
+    stable.sshfs
+    stable.qemu
+    stable.xclip
+    stable.curl
+    stable.wget
+    stable.htop
+    stable.git
+    stable.gh
+    stable.zsh
+    stable.neovim
+    stable.tmux
+    stable.emacs
+    stable.zellij
+    stable.libsecret
+    stable.ethtool
+    stable.ripgrep
+    stable.fd
+    stable.fasd
+    stable.vifm-full
+    stable.tshark
+    stable.termshark
+    stable.neofetch
+    stable.wrk2
+    stable.file
+    stable.direnv
+    stable.zip
+    stable.unzip
+    stable.p7zip
+    stable.xz
+    stable.just
+    stable.thefuck
+    stable.mosh
+    stable.gnumake
     unstable.nodejs_22
-    unstable.patchelf
-    unstable.steam-run
-    unstable.fuse
-    unstable.fuse3
-    unstable.libGL
-    unstable.libGLU
-    unstable.libxml2
+    stable.patchelf
+    stable.steam-run
     unstable.docker
     unstable.docker-compose
-    unstable.gatling
-    unstable.nix-index
+    stable.gatling
+    stable.nox
+    stable.nix-index
+    stable.nmap
     #unstable.etcher
     #unstable.distrobox
     #unstable.busybox
@@ -263,18 +260,18 @@ in
     #deprecated.haskellPackages.streamly
   ];
 
-  fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
-    mplus-outline-fonts.githubRelease
-    dina-font
-    proggyfonts
-    unstable.meslo-lgs-nf
-    unstable.vistafonts
+  fonts.packages = [
+    stable.noto-fonts
+    stable.noto-fonts-cjk
+    stable.noto-fonts-emoji
+    stable.liberation_ttf
+    stable.fira-code
+    stable.fira-code-symbols
+    stable.mplus-outline-fonts.githubRelease
+    stable.dina-font
+    stable.proggyfonts
+    stable.meslo-lgs-nf
+    stable.vistafonts
     stable.corefonts
   ];
   
@@ -288,21 +285,24 @@ in
       enableSSHSupport = true;
     };
     nix-ld.enable = true;
-    nix-ld.libraries = with pkgs; [
+    nix-ld.libraries = [
       # Add any missing dynamic libraries for unpackaged programs
       # here, NOT in environment.systemPackages
       # add stdlibc++.so.6
-      unstable.stdenv.cc.cc.lib
-      unstable.gcc-unwrapped.lib
-      unstable.zlib
-      unstable.fuse3
-      unstable.icu
-      unstable.zlib
-      unstable.nss
-      unstable.openssl
-      unstable.curl
-      unstable.expat
-      unstable.libgcc.lib
+      stable.glibc
+      unstable.libGL
+      unstable.libGLU
+      unstable.libxml2
+      stable.stdenv.cc.cc.lib
+      stable.gcc-unwrapped.lib
+      stable.zlib
+      stable.fuse3
+      stable.icu
+      stable.zlib
+      stable.nss
+      stable.openssl
+      stable.expat
+      stable.libgcc.lib
     ];
     xfconf.enable = true;
     light.brightnessKeys.enable = true;
@@ -334,7 +334,7 @@ in
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "unstable"; # Did you read the comment?
+  system.stateVersion = "stable"; # Did you read the comment?
 
   users.extraGroups.vboxusers.members = [ "zen" ];
   virtualisation.virtualbox.host.enable = true;
