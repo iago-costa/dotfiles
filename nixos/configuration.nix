@@ -215,13 +215,12 @@ in
     stable.curl
     stable.wget
     stable.htop
-    stable.git
+    unstable.git
     stable.gh
-    stable.zsh
-    stable.neovim
-    stable.tmux
+    unstable.neovim
+    unstable.tmux
     stable.emacs
-    stable.zellij
+    unstable.zellij
     stable.libsecret
     stable.ethtool
     stable.ripgrep
