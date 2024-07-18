@@ -138,7 +138,7 @@ in
   services.printing.enable = true;
 
   # Enable sound.
-  sound.enable = true;
+  # sound.enable = true;
   hardware.pulseaudio.enable = true;
   
   hardware.bluetooth.enable = true; # enables support for Bluetooth
@@ -250,6 +250,17 @@ in
     stable.nox
     stable.nix-index
     stable.nmap
+    stable.glibc
+    unstable.libGL
+    unstable.libGLU
+    unstable.libxml2
+    stable.zlib
+    stable.fuse3
+    stable.icu
+    stable.nss
+    stable.openssl
+    stable.expat
+
     #unstable.etcher
     #unstable.distrobox
     #unstable.busybox
@@ -288,19 +299,8 @@ in
       # Add any missing dynamic libraries for unpackaged programs
       # here, NOT in environment.systemPackages
       # add stdlibc++.so.6
-      stable.glibc
-      unstable.libGL
-      unstable.libGLU
-      unstable.libxml2
       stable.stdenv.cc.cc.lib
       stable.gcc-unwrapped.lib
-      stable.zlib
-      stable.fuse3
-      stable.icu
-      stable.zlib
-      stable.nss
-      stable.openssl
-      stable.expat
       stable.libgcc.lib
     ];
     xfconf.enable = true;
