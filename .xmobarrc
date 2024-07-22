@@ -11,7 +11,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%battery% %multicpu% %memory% %dynnetwork% }{ (%window% %workspace%) %default:Master% %SBMA% %date% %kbd%"
+   , template = "%battery% %memory% %dynnetwork% %multicpu% }{ Volume(%volume%) WorkSpace(%workspace%/%window%/CurrentWin{%windowInfo%}) Datetime(%date%) | %kbd% |"
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -36,13 +36,8 @@ Config {
    --   color can be set by enclosing in <fc></fc> tags. For more details
    --   see http://projects.haskell.org/xmobar/#system-monitor-plugins.
    , commands = 
-
-        -- weather monitor
-        [ Run Weather "SBMA" [ "--template", "(<skyCondition> <fc=#4682B4><tempC></fc>°C <fc=#4682B4><rh></fc>% <fc=#4682B4><pressure></fc>hPa)"
-                             ] 36000
-
         -- network activity monitor (dynamic interface resolution)
-        , Run DynNetwork     [ "--template" , "<dev>(Tx<tx>kB/s Rx<rx>kB/s)"
+        [ Run DynNetwork     [ "--template" , "<dev>(Tx<tx>kB/s Rx<rx>kB/s)"
                              , "--Low"      , "1000"       -- units: B/s
                              , "--High"     , "5000"       -- units: B/s
                              , "--low"      , "darkgreen"
@@ -59,15 +54,6 @@ Config {
                              , "--high"     , "darkred"
                              ] 10
 
-        -- cpu core temperature monitor
-        --, Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C"
-        --                     , "--Low"      , "70"        -- units: °C
-        --                     , "--High"     , "80"        -- units: °C
-        --                     , "--low"      , "darkgreen"
-        --                     , "--normal"   , "darkorange"
-        --                     , "--high"     , "darkred"
-        --                     ] 50
-                          
         -- memory usage monitor
         , Run Memory         [ "--template" ,"Mem(<usedratio>%)"
                              , "--Low"      , "20"        -- units: %
@@ -77,15 +63,8 @@ Config {
                              , "--high"     , "darkred"
                              ] 10
 
-        -- volume monitor
-        , Run Volume "default" "Master" [ "--template" , "Vol(<volume>% <status>)"
-                                        , "--"
-                                        , "--on"       , "<fc=#FFFF00>On</fc>"
-                                        , "--off"      , "<fc=#FF0000>Off</fc>"
-                                        ] 10
-
         -- battery monitor
-        , Run Battery        [ "--template" , "Batt(<acstatus> <watts>wts <left>%)"
+        , Run Battery        [ "--template" , "Batt(<acstatus>)"
                              , "--Low"      , "10"        -- units: %
                              , "--High"     , "80"        -- units: %
                              , "--low"      , "darkred"
@@ -103,7 +82,7 @@ Config {
 
         -- time and date indicator 
         --   (%F = y-m-d date, %A:%ud = day of week, %T = h:m:s time)
-        , Run Date           "<fc=#FFFFFF>%F (%A/%wd/%Uw) %T</fc>" "date" 10
+        , Run Date           "<fc=#FFFFFF>%F %A/%wd/%Uw %T</fc>" "date" 10
 
         -- keyboard layout indicator
         , Run Kbd            [ ("us(dvorak)" , "<fc=#00008B>DV</fc>")
@@ -114,9 +93,9 @@ Config {
         
         , Run Com "tail" ["-n1", "/tmp/.xmonad-active-windows"] "window" 10
 
-        , Run Brightness [ "-t", "<ipat>"
-                          , "--"
-                          , "--brightness-icon-pattern", "<icon=bright_%%.xpm/>"
-                          ] 10
+        , Run Com "pulseaudio-ctl" ["full-status"] "volume" 10
+        
+        , Run Com "xdotool" ["getwindowfocus getwindowname"] "windowInfo" 10
+        
         ]
    }
