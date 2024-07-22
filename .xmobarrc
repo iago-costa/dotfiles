@@ -11,7 +11,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%battery% %memory% %dynnetwork% %multicpu% }{ Volume(%volume%) WorkSpace(%workspace%/%window%/CurrentWin{%windowInfo%}) Datetime(%date%) | %kbd% |"
+   , template = "%battery% %memory% %dynnetwork% %multicpu% }{ Vol(%volume%) WSpace(%workspace%/%window%/CName{<fc=#00ff1e>%windowInfo%</fc>}) Date(%date%) | %kbd% |"
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -95,7 +95,7 @@ Config {
 
         , Run Com "pulseaudio-ctl" ["full-status"] "volume" 10
         
-        , Run Com "xdotool" ["getwindowfocus getwindowname"] "windowInfo" 10
+        , Run Com "xdotool" ["getwindowfocus", "getwindowname"] "windowInfo" 10
         
         ]
    }
