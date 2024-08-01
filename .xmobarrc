@@ -11,7 +11,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%battery% %memory% %dynnetwork% %multicpu% Vol(%volume%) Date(%date%) | %kbd% | WSpace(%workspace%/%window%/CName{<fc=#00ff1e>%windowInfo%</fc>})"
+   , template = "Date(<fc=#00ff1e>%date%</fc>) | %battery% | %kbd% | Vol(%volume%) | %memory% %dynnetwork% %multicpu% | WSpace(%workspace%/%window%/CName{<fc=#00ff1e>%windowInfo%</fc>})"
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
