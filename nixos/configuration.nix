@@ -189,7 +189,6 @@ in
       (stable.appimage-run.override {
         extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
       })
-      stable.copyq
       #stable.zoom-us
       #unstable.winbox
       #unstable.ciscoPacketTracer8
@@ -250,7 +249,7 @@ in
     stable.nox
     stable.nix-index
     stable.nmap
-    stable.glibc
+    unstable.glibc
     unstable.libGL
     unstable.libGLU
     unstable.libxml2
@@ -260,7 +259,7 @@ in
     stable.nss
     stable.openssl
     stable.expat
-
+    stable.copyq
     #unstable.etcher
     #unstable.distrobox
     #unstable.busybox
@@ -335,13 +334,13 @@ in
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "stable"; # Did you read the comment?
 
-  users.extraGroups.vboxusers.members = [ "zen" ];
-  virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.host.enableExtensionPack = true;
-  virtualisation.virtualbox.guest.enable = true;
-  virtualisation.virtualbox.guest.dragAndDrop = true;
+  # users.extraGroups.vboxusers.members = [ "zen" ];
+  # virtualisation.virtualbox.host.enable = true;
+  # virtualisation.virtualbox.host.enableExtensionPack = true;
+  # virtualisation.virtualbox.guest.enable = true;
+  # virtualisation.virtualbox.guest.dragAndDrop = true;
 
-  virtualisation.vmware.host.enable = true;
+  # virtualisation.vmware.host.enable = true;
 
   virtualisation.libvirtd.enable = true;
   programs.dconf.enable = true; # virt-manager requires dconf to remember settings

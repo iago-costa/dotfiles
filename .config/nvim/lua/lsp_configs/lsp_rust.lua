@@ -81,7 +81,7 @@ require('crates').setup {
   curl_args = { "-sL", "--retry", "1" },
   max_parallel_requests = 80,
   expand_crate_moves_cursor = true,
-  open_programs = { "xdg-open", "open" },
+  -- open_programs = { "xdg-open", "open" },
   disable_invalid_feature_diagnostic = false,
   enable_update_available_warning = true,
   text = {
