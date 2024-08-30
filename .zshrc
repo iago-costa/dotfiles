@@ -124,7 +124,6 @@ plugins=(
   zellij
   gh
   alias-finder
-  adb
   ansible
   aws
   azure
@@ -133,7 +132,6 @@ plugins=(
   minikube
   terraform
   yarn
-  vault
   nmap
   helm
   gradle
