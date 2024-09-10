@@ -9,7 +9,7 @@ lspconfig.eslint.setup {
 }
 
 -- Config for typescript lsp
-lspconfig.tsserver.setup {
+lspconfig.ts_ls.setup {
   cmd = { "typescript-language-server", "--stdio" },
   filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
   root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
