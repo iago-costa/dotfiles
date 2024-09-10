@@ -139,7 +139,7 @@ in
 
   # Enable sound.
   # sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.enable = false;
   
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
@@ -159,6 +159,7 @@ in
       stable.tree
       stable.redshift
       unstable.alacritty
+      stable.gnome.gnome-keyring
       unstable.vscode
       unstable.vivaldi
       unstable.vivaldi-ffmpeg-codecs
@@ -260,6 +261,7 @@ in
     stable.openssl
     stable.expat
     stable.copyq
+    unstable.vscode
     #unstable.etcher
     #unstable.distrobox
     #unstable.busybox
