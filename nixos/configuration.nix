@@ -12,7 +12,7 @@ let
         enableWideVine = true;
     };
     permittedInsecurePackages = [
-        # "electron-31.6.0"
+        "electron-27.3.11"
     ];
     pulseaudio = true;
   };
