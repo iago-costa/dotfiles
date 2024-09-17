@@ -12,9 +12,7 @@ let
         enableWideVine = true;
     };
     permittedInsecurePackages = [
-        "electron-28.3.3"
-        "electron-27.3.11"
-        "electron-25.9.0"
+        # "electron-31.6.0"
     ];
     pulseaudio = true;
   };
@@ -137,10 +135,11 @@ in
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  hardware.opengl.enable = true;
+  
   # Enable sound.
   # sound.enable = true;
   hardware.pulseaudio.enable = false;
-  
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
@@ -165,7 +164,7 @@ in
       unstable.vivaldi-ffmpeg-codecs
       unstable.google-chrome
       unstable.firefox
-      unstable.logseq
+      stable.logseq
       stable.gparted
       stable.virt-manager
       stable.quickemu
@@ -200,6 +199,16 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = [
+    # stable.obs-studio
+    # (pkgs.wrapOBS {
+    #    plugins = with pkgs.obs-studio-plugins; [
+    #     wlrobs
+    #     obs-vkcapture
+    #     obs-gstreamer
+    #     obs-backgroundremoval
+    #     obs-pipewire-audio-capture
+    #    ];
+    # })
     stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     stable.gnome.gnome-keyring
     stable.teamviewer
@@ -241,7 +250,7 @@ in
     stable.thefuck
     stable.mosh
     stable.gnumake
-    unstable.nodejs_22
+    # stable.nodejs
     stable.patchelf
     stable.steam-run
     unstable.docker
@@ -262,6 +271,8 @@ in
     stable.expat
     stable.copyq
     unstable.vscode
+    unstable.google-chrome
+    stable.lazygit
     #unstable.etcher
     #unstable.distrobox
     #unstable.busybox

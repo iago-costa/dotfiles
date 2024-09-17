@@ -3,7 +3,7 @@ require('packer').startup(function()
   -- Example: use 'username/repo'
   use('nvim-tree/nvim-web-devicons') -- optional icons for nvim-tree
   use('andymass/vim-matchup')        -- highlight matching words under cursor
-  use('github/copilot.vim')          -- copilot
+  -- use('github/copilot.vim')          -- copilot
 
   use({
     'VonHeikemen/lsp-zero.nvim', -- LSP support
