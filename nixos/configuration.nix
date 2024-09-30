@@ -16,18 +16,20 @@ let
     ];
     pulseaudio = true;
   };
+  anydesk = pkgs.callPackage /home/zen/anydesk.nix {};
+
   stable = import <nixos-24.05> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
-  deprecated = import <nixos-23.11> { config = baseconfig; };
+  deprecated = import <nixos-23.05> { config = baseconfig; };
 in
 {
+  nixpkgs.config.allowUnfree = true;
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./hybrid-sleep-and-hibernate.nix
     ];
-
-  nixpkgs.config.allowUnfree = true;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -136,6 +138,7 @@ in
   services.printing.enable = true;
 
   hardware.opengl.enable = true;
+  hardware.opengl.driSupport32Bit = true;
   
   # Enable sound.
   # sound.enable = true;
@@ -148,6 +151,7 @@ in
   users.defaultUserShell = unstable.zsh;
   users.users.zen = {
     isNormalUser = true;
+    # isSystemUser = true;
     initialPassword = "pw123"; 
     group = "users";
     extraGroups = [ 
@@ -155,9 +159,14 @@ in
       "adbusers" # Enable ‘adb’ for the user.
     ]; 
     packages = [
-      stable.tree
-      stable.redshift
-      unstable.alacritty
+    ];
+  };
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = [
+      # packages graphical 
+      anydesk
       stable.gnome.gnome-keyring
       unstable.vscode
       unstable.vivaldi
@@ -171,7 +180,8 @@ in
       stable.quickgui
       stable.gns3-gui
       stable.gns3-server
-      stable.anydesk
+      stable.gtk_engines
+      stable.gtk-engine-murrine
       stable.lightlocker
       stable.lux
       stable.xorg.xhost
@@ -187,18 +197,13 @@ in
       stable.wpsoffice
       stable.jmeter
       (stable.appimage-run.override {
-        extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
-      })
-      #stable.zoom-us
-      #unstable.winbox
-      #unstable.ciscoPacketTracer8
-      #unstable.rustdesk
-    ];
-  };
+       extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
+       })
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = [
+    #stable.zoom-us
+    #unstable.winbox
+    #unstable.ciscoPacketTracer8
+    #unstable.rustdesk
     # stable.obs-studio
     # (pkgs.wrapOBS {
     #    plugins = with pkgs.obs-studio-plugins; [
@@ -209,6 +214,10 @@ in
     #     obs-pipewire-audio-capture
     #    ];
     # })
+    
+    stable.redshift
+    unstable.alacritty
+    stable.tree
     stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     stable.gnome.gnome-keyring
     stable.teamviewer
@@ -270,8 +279,6 @@ in
     stable.openssl
     stable.expat
     stable.copyq
-    unstable.vscode
-    unstable.google-chrome
     stable.lazygit
     #unstable.etcher
     #unstable.distrobox
