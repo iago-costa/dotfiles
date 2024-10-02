@@ -214,7 +214,7 @@ in
     #     obs-pipewire-audio-capture
     #    ];
     # })
-    
+    stable.killall
     stable.redshift
     unstable.alacritty
     stable.tree

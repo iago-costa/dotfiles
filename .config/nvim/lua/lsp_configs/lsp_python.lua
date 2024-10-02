@@ -17,6 +17,9 @@ local nvim_lsp = require('lspconfig')
 --   }
 -- }
 
+local lspconfig = require("lspconfig")
+lspconfig.basedpyright.setup {}
+
 -- Configure pylsp for Python
 local venv_path = os.getenv('VIRTUAL_ENV')
 local py_path = nil
