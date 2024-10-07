@@ -259,7 +259,6 @@ in
     stable.thefuck
     stable.mosh
     stable.gnumake
-    # stable.nodejs
     stable.patchelf
     stable.steam-run
     unstable.docker
@@ -280,7 +279,6 @@ in
     stable.expat
     stable.copyq
     stable.lazygit
-    #unstable.etcher
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup
