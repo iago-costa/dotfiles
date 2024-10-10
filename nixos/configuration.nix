@@ -168,7 +168,7 @@ in
       # packages graphical 
       anydesk
       stable.gnome.gnome-keyring
-      unstable.vscode
+      stable.vscode
       unstable.vivaldi
       unstable.vivaldi-ffmpeg-codecs
       unstable.google-chrome
@@ -214,6 +214,9 @@ in
     #     obs-pipewire-audio-capture
     #    ];
     # })
+    stable.tree-sitter
+    stable.gcc
+    stable.nodejs
     stable.killall
     stable.redshift
     unstable.alacritty

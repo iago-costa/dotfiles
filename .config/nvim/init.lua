@@ -131,3 +131,5 @@ require('styles/colors')
 require('global_cmds')
 require('global_opts')
 require('global_keys')
+
+vim.lsp.set_log_level("WARN")
