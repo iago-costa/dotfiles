@@ -28,7 +28,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./hybrid-sleep-and-hibernate.nix
+      # ./hybrid-sleep-and-hibernate.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -101,15 +101,15 @@ in
       };
     };
     displayManager = {
-        #defaultSession = "xfce+xmonad";
-        #defaultSession = "xmonad";
-        #startx.enable = true;
-        sessionCommands = ''
-            xset -dpms  # Disable Energy Star, as we are going to suspend anyway and it may hide "success" on that
-            xset s blank # `noblank` may be useful for debugging 
-            xset s 300 # seconds
-            ${pkgs.lightlocker}/bin/light-locker --idle-hint --lock-on-suspend --lock-on-lid --lock-on-lid-close --lock-after-screensaver 0 &
-        '';
+        defaultSession = "xfce+xmonad";
+        defaultSession = "xmonad";
+        startx.enable = true;
+        # sessionCommands = ''
+        #     xset -dpms  # Disable Energy Star, as we are going to suspend anyway and it may hide "success" on that
+        #     xset s blank # `noblank` may be useful for debugging 
+        #     xset s 300 # seconds
+        #     ${pkgs.lightlocker}/bin/light-locker --idle-hint --lock-on-suspend --lock-on-lid --lock-on-lid-close --lock-after-screensaver 0 &
+        # '';
     };
   };
   
@@ -124,11 +124,11 @@ in
     enable = true;
   };
 
-  systemd.targets.hybrid-sleep.enable = true;
-  services.logind.extraConfig = ''
-    IdleAction=hybrid-sleep
-    IdleActionSec=600s
-  '';
+  # systemd.targets.hybrid-sleep.enable = true;
+  # services.logind.extraConfig = ''
+  #   IdleAction=hybrid-sleep
+  #   IdleActionSec=600s
+  # '';
 
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
