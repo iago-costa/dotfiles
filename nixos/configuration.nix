@@ -101,9 +101,9 @@ in
       };
     };
     displayManager = {
-        defaultSession = "xfce+xmonad";
-        defaultSession = "xmonad";
-        startx.enable = true;
+        # defaultSession = "xfce+xmonad";
+        # defaultSession = "xmonad";
+        # startx.enable = true;
         # sessionCommands = ''
         #     xset -dpms  # Disable Energy Star, as we are going to suspend anyway and it may hide "success" on that
         #     xset s blank # `noblank` may be useful for debugging 
@@ -168,7 +168,7 @@ in
       # packages graphical 
       anydesk
       stable.gnome.gnome-keyring
-      stable.vscode
+      unstable.vscode
       unstable.vivaldi
       unstable.vivaldi-ffmpeg-codecs
       unstable.google-chrome
