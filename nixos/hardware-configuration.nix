@@ -31,7 +31,7 @@
   security.protectKernelImage = false; 
   # sudo filefrag -v /var/lib/swapfile | awk '$1=="0:" {print substr($4, 1, length($4)-2)}'
   # To get the resume_offset  
-  boot.kernelParams = [  "resume=/var/lib/swapfile" "resume_offset=122290176" ];
+  boot.kernelParams = [  "resume=/var/lib/swapfile" "resume_offset=122290176" "kvm.enable_virt_at_load=0" ];
   boot.resumeDevice = "/dev/disk/by-uuid/0babf77e-9d94-4286-b5bb-e6ba16f37288";
 
 

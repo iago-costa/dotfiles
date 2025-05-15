@@ -18,9 +18,9 @@ let
   };
   anydesk = pkgs.callPackage /home/zen/anydesk.nix {};
 
-  stable = import <nixos-24.05> { config = baseconfig; };
+  stable = import <nixos-24.11> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
-  deprecated = import <nixos-23.05> { config = baseconfig; };
+  deprecated = import <nixos-24.05> { config = baseconfig; };
 in
 {
   nixpkgs.config.allowUnfree = true;
@@ -49,6 +49,16 @@ in
   #   keyMap = "us";
   #   useXkbConfig = true; # use xkbOptions in tty.
   # };
+
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+  };
 
   services.upower = {
     enable = true;
@@ -162,6 +172,17 @@ in
     ];
   };
 
+  programs.obs-studio = {
+    enable = true;
+    plugins = with pkgs.obs-studio-plugins; [
+      wlrobs
+      obs-vkcapture
+      obs-gstreamer
+      obs-backgroundremoval
+      obs-pipewire-audio-capture
+    ];
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = [
@@ -204,16 +225,6 @@ in
     #unstable.winbox
     #unstable.ciscoPacketTracer8
     #unstable.rustdesk
-    # stable.obs-studio
-    # (pkgs.wrapOBS {
-    #    plugins = with pkgs.obs-studio-plugins; [
-    #     wlrobs
-    #     obs-vkcapture
-    #     obs-gstreamer
-    #     obs-backgroundremoval
-    #     obs-pipewire-audio-capture
-    #    ];
-    # })
     stable.tree-sitter
     stable.gcc
     stable.nodejs
@@ -282,6 +293,11 @@ in
     stable.expat
     stable.copyq
     stable.lazygit
+    unstable.ollama
+    stable.vlc
+    unstable.pdf4qt
+    stable.code-cursor
+    stable.ffmpeg
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup
@@ -292,7 +308,7 @@ in
 
   fonts.packages = [
     stable.noto-fonts
-    stable.noto-fonts-cjk
+    stable.noto-fonts-cjk-sans
     stable.noto-fonts-emoji
     stable.liberation_ttf
     stable.fira-code
@@ -353,17 +369,12 @@ in
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "stable"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 
-  # users.extraGroups.vboxusers.members = [ "zen" ];
-  # virtualisation.virtualbox.host.enable = true;
-  # virtualisation.virtualbox.host.enableExtensionPack = true;
-  # virtualisation.virtualbox.guest.enable = true;
-  # virtualisation.virtualbox.guest.dragAndDrop = true;
 
   # virtualisation.vmware.host.enable = true;
 
-  virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd.enable = false;
   programs.dconf.enable = true; # virt-manager requires dconf to remember settings
 
   virtualisation.docker.enable = true;
@@ -373,12 +384,18 @@ in
     setSocketVariable = true;
   };
 
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "zen" ];
+  # virtualisation.virtualbox.host.enableExtensionPack = true;
+  virtualisation.virtualbox.guest.enable = true;
+  virtualisation.virtualbox.guest.dragAndDrop = true;
+
   nix.settings.auto-optimise-store = true;
   nix.optimise.automatic = true;
   nix.optimise.dates = [ "12:00" ]; # Optional; allows customizing optimisation schedule
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 4d";
+    options = "--delete-older-than 30d";
   };
 }
