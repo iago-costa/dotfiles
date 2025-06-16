@@ -4,6 +4,29 @@
 
 { config, pkgs, ... }:
 let  
+  buildToolsVersion = "33.0.2";
+  androidenv = pkgs.androidenv.override {
+    licenseAccepted = true;
+  };
+  androidComposition = androidenv.composeAndroidPackages {
+    includeNDK = true;
+    includeSystemImages = true;
+    includeEmulator = true;
+    platformVersions = [ "33" "34" ];
+    buildToolsVersions = [ buildToolsVersion "30.0.3" ];
+    abiVersions = [ "x86_64" ];
+    extraLicenses = [
+      "android-googletv-license"
+        "android-sdk-arm-dbt-license"        
+        "android-sdk-license"
+        "android-sdk-preview-license"
+        "google-gdk-license"
+        "intel-android-extra-license"
+        "intel-android-sysimage-license"
+        "mips-android-sysimage-license"
+    ];
+  };
+
   baseconfig = { 
     allowUnfree = true; 
     #allowBroken = true;
@@ -14,16 +37,39 @@ let
     permittedInsecurePackages = [
         "electron-27.3.11"
     ];
-    pulseaudio = true;
+    android_sdk.accept_license = true;
+    android_sdk.accept_android_sdk_licenses = true;  
+    # environment.sessionVariables = {
+    #   ANDROID_JAVA_HOME=pkgs.jdk.home;
+    #   FLUTTER_PATH = "${pkgs.flutter}/bin";
+    #   DART_PATH = "${pkgs.dart}/bin";
+    #   ANDROID_SDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk";
+    #   ANDROID_NDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk/ndk-bundle";
+    #   # Use the same buildToolsVersion here
+    #   GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidComposition.androidsdk}/libexec/android-sdk/build-tools/${buildToolsVersion}/aapt2";
+    #   CHROME_EXECUTABLE = "${pkgs.google-chrome}/bin/google-chrome-stable";
+    # };
   };
   anydesk = pkgs.callPackage /home/zen/anydesk.nix {};
+  # flutter = pkgs.callPackage /home/zen/flutter.nix {};
 
-  stable = import <nixos-24.11> { config = baseconfig; };
+  stable = import <nixos-25.05> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
-  deprecated = import <nixos-24.05> { config = baseconfig; };
+  deprecated = import <nixos-24.11> { config = baseconfig; };
 in
 {
   nixpkgs.config.allowUnfree = true;
+
+  environment.sessionVariables = {
+    ANDROID_JAVA_HOME=pkgs.jdk.home;
+    FLUTTER_PATH = "${pkgs.flutter}/bin";
+    DART_PATH = "${pkgs.dart}/bin";
+    ANDROID_SDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk";
+    ANDROID_NDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk/ndk-bundle";
+    # Use the same buildToolsVersion here
+    GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidComposition.androidsdk}/libexec/android-sdk/build-tools/${buildToolsVersion}/aapt2";
+    CHROME_EXECUTABLE = "${pkgs.google-chrome}/bin/google-chrome-stable";
+  };
 
   imports =
     [ # Include the results of the hardware scan.
@@ -150,9 +196,6 @@ in
   hardware.opengl.enable = true;
   hardware.opengl.driSupport32Bit = true;
   
-  # Enable sound.
-  # sound.enable = true;
-  hardware.pulseaudio.enable = false;
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
@@ -169,6 +212,7 @@ in
       "adbusers" # Enable ‘adb’ for the user.
     ]; 
     packages = [
+      
     ];
   };
 
@@ -183,44 +227,55 @@ in
     ];
   };
 
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = [
-      # packages graphical 
-      anydesk
-      stable.gnome.gnome-keyring
-      unstable.vscode
-      unstable.vivaldi
-      unstable.vivaldi-ffmpeg-codecs
-      unstable.google-chrome
-      unstable.firefox
-      stable.logseq
-      stable.gparted
-      stable.virt-manager
-      stable.quickemu
-      stable.quickgui
-      stable.gns3-gui
-      stable.gns3-server
-      stable.gtk_engines
-      stable.gtk-engine-murrine
-      stable.lightlocker
-      stable.lux
-      stable.xorg.xhost
-      stable.xorg.xmessage
-      stable.xorg.xbacklight
-      stable.pulseaudio-ctl
-      stable.yad
-      stable.libnotify
-      stable.xdotool
-      unstable.wine64
-      stable.libsForQt5.okular
-      stable.wireshark
-      stable.wpsoffice
-      stable.jmeter
-      (stable.appimage-run.override {
-       extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
-       })
+    androidComposition.androidsdk
+    # androidComposition.ndk-bundle    
+    stable.glibc
+    unstable.flutter329
+    stable.dart
+    stable.jdk17
 
+
+    stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    # packages graphical 
+    anydesk
+    stable.redshift
+    stable.gnome-keyring
+    unstable.vscode
+    unstable.vivaldi
+    unstable.vivaldi-ffmpeg-codecs
+    unstable.google-chrome
+    unstable.firefox
+    stable.logseq
+    stable.gparted
+    stable.virt-manager
+    stable.quickemu
+    stable.quickgui
+    stable.gns3-gui
+    stable.gns3-server
+    stable.gtk_engines
+    stable.gtk-engine-murrine
+    stable.lightlocker
+    stable.lux
+    stable.xorg.xhost
+    stable.xorg.xmessage
+    stable.xorg.xbacklight
+    stable.pulseaudio-ctl
+    stable.yad
+    stable.libnotify
+    stable.xdotool
+    unstable.wine64
+    stable.libsForQt5.okular
+    stable.wireshark
+    stable.wpsoffice
+    stable.jmeter
+    stable.teamviewer
+    (stable.appimage-run.override {
+     extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
+     })
     #stable.zoom-us
     #unstable.winbox
     #unstable.ciscoPacketTracer8
@@ -229,12 +284,8 @@ in
     stable.gcc
     stable.nodejs
     stable.killall
-    stable.redshift
     unstable.alacritty
     stable.tree
-    stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    stable.gnome.gnome-keyring
-    stable.teamviewer
     stable.haskellPackages.xmobar
     stable.ghc
     stable.dmidecode
@@ -298,12 +349,20 @@ in
     unstable.pdf4qt
     stable.code-cursor
     stable.ffmpeg
+    stable.python312Packages.pyngrok
+    unstable.unar
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup
     #unstable.haskellPackages.base-compat-batteries_0_13_1
     #unstable.haskellPackages.base-compat_0_13_1
     #deprecated.haskellPackages.streamly
+
+    stable.xar
+    stable.p7zip
+    stable.pbzx
+    stable.rcodesign
+
   ];
 
   fonts.packages = [
