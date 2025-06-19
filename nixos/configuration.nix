@@ -10,6 +10,9 @@ let
   };
   androidComposition = androidenv.composeAndroidPackages {
     includeNDK = true;
+    ndkVersions = [ "28.1.13356709" ];
+    includeCmake = true;
+    cmakeVersions = [ "3.18.1" ];
     includeSystemImages = true;
     includeEmulator = true;
     platformVersions = [ "33" "34" ];
@@ -17,13 +20,13 @@ let
     abiVersions = [ "x86_64" ];
     extraLicenses = [
       "android-googletv-license"
-        "android-sdk-arm-dbt-license"        
-        "android-sdk-license"
-        "android-sdk-preview-license"
-        "google-gdk-license"
-        "intel-android-extra-license"
-        "intel-android-sysimage-license"
-        "mips-android-sysimage-license"
+      "android-sdk-arm-dbt-license"        
+      "android-sdk-license"
+      "android-sdk-preview-license"
+      "google-gdk-license"
+      "intel-android-extra-license"
+      "intel-android-sysimage-license"
+      "mips-android-sysimage-license"
     ];
   };
 
@@ -39,16 +42,6 @@ let
     ];
     android_sdk.accept_license = true;
     android_sdk.accept_android_sdk_licenses = true;  
-    # environment.sessionVariables = {
-    #   ANDROID_JAVA_HOME=pkgs.jdk.home;
-    #   FLUTTER_PATH = "${pkgs.flutter}/bin";
-    #   DART_PATH = "${pkgs.dart}/bin";
-    #   ANDROID_SDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk";
-    #   ANDROID_NDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk/ndk-bundle";
-    #   # Use the same buildToolsVersion here
-    #   GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidComposition.androidsdk}/libexec/android-sdk/build-tools/${buildToolsVersion}/aapt2";
-    #   CHROME_EXECUTABLE = "${pkgs.google-chrome}/bin/google-chrome-stable";
-    # };
   };
   anydesk = pkgs.callPackage /home/zen/anydesk.nix {};
   # flutter = pkgs.callPackage /home/zen/flutter.nix {};
@@ -65,7 +58,7 @@ in
     FLUTTER_PATH = "${pkgs.flutter}/bin";
     DART_PATH = "${pkgs.dart}/bin";
     ANDROID_SDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk";
-    ANDROID_NDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk/ndk-bundle";
+    # ANDROID_NDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk/ndk-bundle";
     # Use the same buildToolsVersion here
     GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidComposition.androidsdk}/libexec/android-sdk/build-tools/${buildToolsVersion}/aapt2";
     CHROME_EXECUTABLE = "${pkgs.google-chrome}/bin/google-chrome-stable";
@@ -232,15 +225,15 @@ in
   # $ nix search wget
   environment.systemPackages = [
     androidComposition.androidsdk
-    # androidComposition.ndk-bundle    
+    # androidComposition.ndk-bundle
+    # stable.cmake
     stable.glibc
     unstable.flutter329
-    stable.dart
     stable.jdk17
 
 
     stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    # packages graphical 
+    # packages graphical
     anydesk
     stable.redshift
     stable.gnome-keyring
