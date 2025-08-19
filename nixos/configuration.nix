@@ -3,7 +3,8 @@
 # and in the NixOS manual (accessible by running `nixos-help`).
 
 { config, pkgs, ... }:
-let  
+let
+  # Config to install android sdk
   buildToolsVersion = "33.0.2";
   androidenv = pkgs.androidenv.override {
     licenseAccepted = true;
@@ -51,6 +52,8 @@ let
   deprecated = import <nixos-24.11> { config = baseconfig; };
 in
 {
+  nix.settings.trusted-users = [ "root" "zen" ];
+
   nixpkgs.config.allowUnfree = true;
 
   environment.sessionVariables = {
@@ -90,14 +93,15 @@ in
   # };
 
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-  };
+  services.pipewire.enable = false;
+  # services.pipewire = {
+  #   enable = true;
+  #   alsa.enable = true;
+  #   alsa.support32Bit = true;
+  #   pulse.enable = true;
+  #   # If you want to use JACK applications, uncomment this
+  #   jack.enable = true;
+  # };
 
   services.upower = {
     enable = true;
@@ -111,7 +115,7 @@ in
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-# flatpak to install postman compass openlens
+  # flatpak to install postman compass openlens
   services.flatpak.enable = true; 
 
   environment.xfce.excludePackages = [ 
@@ -188,6 +192,12 @@ in
 
   hardware.opengl.enable = true;
   hardware.opengl.driSupport32Bit = true;
+
+  hardware.enableAllFirmware = true;
+  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.support32Bit = true;    ## If compatibility with 32-bit applications is desired.
+  hardware.pulseaudio.package = unstable.pulseaudioFull;
+  hardware.pulseaudio.extraConfig = "load-module module-combine-sink";
   
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
@@ -203,6 +213,7 @@ in
     extraGroups = [ 
       "wheel" # Enable ‘sudo’ for the user.
       "adbusers" # Enable ‘adb’ for the user.
+      "audio"
     ]; 
     packages = [
       
@@ -216,7 +227,7 @@ in
       obs-vkcapture
       obs-gstreamer
       obs-backgroundremoval
-      obs-pipewire-audio-capture
+      #obs-pipewire-audio-capture
     ];
   };
 
@@ -224,138 +235,179 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = [
+    stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+
+    # Flutter and Android SDK
     androidComposition.androidsdk
-    # androidComposition.ndk-bundle
-    # stable.cmake
     stable.glibc
     unstable.flutter329
     stable.jdk17
 
-
-    stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    # packages graphical
-    anydesk
-    stable.redshift
-    stable.gnome-keyring
+    # Graphical tools for development
     unstable.vscode
-    unstable.vivaldi
-    unstable.vivaldi-ffmpeg-codecs
-    unstable.google-chrome
-    unstable.firefox
-    stable.logseq
-    stable.gparted
-    stable.virt-manager
-    stable.quickemu
-    stable.quickgui
-    stable.gns3-gui
-    stable.gns3-server
-    stable.gtk_engines
-    stable.gtk-engine-murrine
-    stable.lightlocker
-    stable.lux
-    stable.xorg.xhost
-    stable.xorg.xmessage
-    stable.xorg.xbacklight
-    stable.pulseaudio-ctl
-    stable.yad
-    stable.libnotify
-    stable.xdotool
-    unstable.wine64
-    stable.libsForQt5.okular
     stable.wireshark
-    stable.wpsoffice
+    stable.quickgui
+    stable.gparted
     stable.jmeter
-    stable.teamviewer
-    (stable.appimage-run.override {
-     extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
-     })
-    #stable.zoom-us
-    #unstable.winbox
     #unstable.ciscoPacketTracer8
-    #unstable.rustdesk
-    stable.tree-sitter
-    stable.gcc
-    stable.nodejs
-    stable.killall
-    unstable.alacritty
-    stable.tree
-    stable.haskellPackages.xmobar
-    stable.ghc
-    stable.dmidecode
-    stable.wirelesstools
-    stable.inetutils
-    stable.lm_sensors
-    stable.sshfs
-    stable.qemu
-    stable.xclip
-    stable.curl
-    stable.wget
-    stable.htop
-    unstable.git
-    stable.gh
+    
+    # Integrated Development Environment
     unstable.neovim
     unstable.tmux
-    stable.emacs
+    unstable.emacs
     unstable.zellij
-    stable.libsecret
-    stable.ethtool
+    unstable.code-cursor
+    stable.devenv
+    unstable.nodejs_24
+
+    # Command line tools for development
+    unstable.git
+    stable.gh
+    unstable.libiconv
+    stable.xclip
+    stable.curl
     stable.ripgrep
     stable.fd
     stable.fasd
     stable.vifm-full
     stable.tshark
     stable.termshark
-    stable.neofetch
-    stable.wrk2
-    stable.file
     stable.direnv
-    stable.zip
-    stable.unzip
-    stable.p7zip
-    stable.xz
+    stable.tree-sitter
     stable.just
     stable.thefuck
     stable.mosh
+    stable.lazygit
+    stable.file
     stable.gnumake
-    stable.patchelf
-    stable.steam-run
+
+    # Command line tools for networking
+    stable.sshfs
+    stable.fuse3
+    stable.nss
+    stable.expat
+    stable.nmap
+    stable.wrk2
+    stable.wget
+    stable.ethtool
+    stable.python312Packages.pyngrok
+    stable.gatling
+
+    # Graphical tools for communication and collaboration
+    anydesk
+    stable.teamviewer
+    #stable.zoom-us
+
+    # Browsers 
+    unstable.vivaldi
+    unstable.vivaldi-ffmpeg-codecs
+    unstable.google-chrome
+    unstable.firefox
+    
+    # tools for graphics and customization of the Operational System
+    stable.gtk_engines
+    stable.gtk-engine-murrine
+    stable.xorg.xhost
+    stable.xorg.xmessage
+    stable.xorg.xbacklight
+    stable.haskellPackages.xmobar    
+    
+    # Graphical tools for writing and reading
+    stable.logseq
+    stable.wpsoffice
+    stable.libsForQt5.okular
+    unstable.pdf4qt
+    
+    unstable.wine64
+    (stable.appimage-run.override {
+     extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
+     })
+    #unstable.winbox
+
+    # Utilities Graphical and Operational System 
+    stable.copyq
+    stable.lightlocker
+    stable.redshift
+
+    # Command line tools to Operational System
+    stable.neofetch
+    stable.icu
+    stable.gcc
+    stable.xdotool
+    stable.libnotify
+    stable.yad
+    stable.lux
+    stable.killall
+    stable.htop
+    stable.tree
+    unstable.alacritty
+    stable.dmidecode
+    stable.wirelesstools
+    stable.inetutils
+    stable.lm_sensors
+    stable.nix-index
+
+    # Command line tools for multimedia
+    stable.zip
+    stable.zlib
+    stable.unzip
+    stable.p7zip
+    stable.xz
+    unstable.unar
+    stable.vlc
+    stable.ffmpeg
+    stable.xar
+    stable.p7zip
+    stable.pbzx
+    stable.rcodesign
+    
+    # Command line tools for virtualization and containers
+    stable.qemu
     unstable.docker
     unstable.docker-compose
-    stable.gatling
-    stable.nox
-    stable.nix-index
-    stable.nmap
+    unstable.podman
+    unstable.podman-compose
+    unstable.lazydocker
+
+    # Command line tools for virtualization with Graphical interface
+    stable.virt-manager
+    stable.quickemu
+    stable.gns3-gui
+    stable.gns3-server
+
+    # Command line tools to run not nix packages
+    stable.patchelf
+    stable.steam-run
+    
+    # Command line tools for encryption 
+    stable.gnome-keyring
+    stable.libsecret
+    stable.openssl
+
+    # Command line tools for graphics
     unstable.glibc
     unstable.libGL
     unstable.libGLU
     unstable.libxml2
-    stable.zlib
-    stable.fuse3
-    stable.icu
-    stable.nss
-    stable.openssl
-    stable.expat
-    stable.copyq
-    stable.lazygit
+
+    # Graphical tools to audio
+    unstable.pavucontrol
+    unstable.pulseaudio
+    unstable.lsof
+    unstable.inxi
+
+    # Command line tools for audio
+    unstable.alsa-utils
+    
+    # Command line tools for AI
     unstable.ollama
-    stable.vlc
-    unstable.pdf4qt
-    stable.code-cursor
-    stable.ffmpeg
-    stable.python312Packages.pyngrok
-    unstable.unar
+
     #unstable.distrobox
     #unstable.busybox
     #deprecated.haskellPackages.ghcup
     #unstable.haskellPackages.base-compat-batteries_0_13_1
     #unstable.haskellPackages.base-compat_0_13_1
     #deprecated.haskellPackages.streamly
-
-    stable.xar
-    stable.p7zip
-    stable.pbzx
-    stable.rcodesign
-
   ];
 
   fonts.packages = [
@@ -423,9 +475,7 @@ in
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-
   # virtualisation.vmware.host.enable = true;
-
   virtualisation.libvirtd.enable = false;
   programs.dconf.enable = true; # virt-manager requires dconf to remember settings
 
