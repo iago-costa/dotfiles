@@ -1,4 +1,5 @@
-sync-from-user-hard-to-root:
+uu:q
+nc-from-user-hard-to-root:
 	@echo "Sync from user and delete all and sync in root"
 	make sync-from-user
 	make hard-pull-root
@@ -16,9 +17,7 @@ sync-from-user:
 
 nixos-link:
 	@echo "Linking nixos configuration"
-	sudo ln /etc/nixos/configuration.nix ./nixos/configuration.nix | true
-	sudo ln /etc/nixos/hardware-configuration.nix ./nixos/hardware-configuration.nix | true
-	sudo ln /etc/nixos/hybrid-sleep-and-hibernate.nix ./nixos/hybrid-sleep-and-hibernate.nix | true
+	sudo ln /etc/nixos/*.nix ./nixos/ | true
 
 nixos-del:
 	@echo "Removing nixos configuration"
