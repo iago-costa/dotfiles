@@ -1,5 +1,4 @@
-uu:q
-nc-from-user-hard-to-root:
+sync-from-user-hard-to-root:
 	@echo "Sync from user and delete all and sync in root"
 	make sync-from-user
 	make hard-pull-root
