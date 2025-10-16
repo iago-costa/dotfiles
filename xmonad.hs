@@ -6,7 +6,7 @@ import XMonad.Layout.ToggleLayouts
 import XMonad.Util.EZConfig (additionalKeys, additionalKeysP)
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Hooks.ManageDocks
-
+import qualified XMonad.Layout.Grid as Grid
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
@@ -22,7 +22,8 @@ myConfig = xfceConfig
     , startupHook = ewmhDesktopsStartup >> setWMName "LG3D"
     , workspaces = myWorkspaces
     , logHook = myLogHook
-    , layoutHook = avoidStruts $ toggleLayouts Full (Tall 1 (3/100) (1/2))
+    -- , layoutHook = avoidStruts $ toggleLayouts Full (Tall 1 (3/100) (1/2))
+    , layoutHook = avoidStruts $ toggleLayouts Full Grid.Grid
     } `additionalKeys` myKeys `additionalKeysP` myKeysP
 
 -- Key bindings

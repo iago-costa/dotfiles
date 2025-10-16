@@ -5,31 +5,6 @@
 { config, pkgs, ... }:
 let
   # Config to install android sdk
-  buildToolsVersion = "33.0.2";
-  androidenv = pkgs.androidenv.override {
-    licenseAccepted = true;
-  };
-  androidComposition = androidenv.composeAndroidPackages {
-    includeNDK = true;
-    ndkVersions = [ "28.1.13356709" ];
-    includeCmake = true;
-    cmakeVersions = [ "3.18.1" ];
-    includeSystemImages = true;
-    includeEmulator = true;
-    platformVersions = [ "33" "34" ];
-    buildToolsVersions = [ buildToolsVersion "30.0.3" ];
-    abiVersions = [ "x86_64" ];
-    extraLicenses = [
-      "android-googletv-license"
-      "android-sdk-arm-dbt-license"        
-      "android-sdk-license"
-      "android-sdk-preview-license"
-      "google-gdk-license"
-      "intel-android-extra-license"
-      "intel-android-sysimage-license"
-      "mips-android-sysimage-license"
-    ];
-  };
 
   baseconfig = { 
     allowUnfree = true; 
@@ -44,8 +19,7 @@ let
     android_sdk.accept_license = true;
     android_sdk.accept_android_sdk_licenses = true;  
   };
-  anydesk = pkgs.callPackage /home/zen/anydesk.nix {};
-  # flutter = pkgs.callPackage /home/zen/flutter.nix {};
+  anydesk = pkgs.callPackage /etc/nixos/anydesk.nix {};
 
   stable = import <nixos-25.05> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
@@ -56,17 +30,6 @@ in
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.sessionVariables = {
-    ANDROID_JAVA_HOME=pkgs.jdk.home;
-    FLUTTER_PATH = "${pkgs.flutter}/bin";
-    DART_PATH = "${pkgs.dart}/bin";
-    ANDROID_SDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk";
-    # ANDROID_NDK_ROOT = "${androidComposition.androidsdk}/libexec/android-sdk/ndk-bundle";
-    # Use the same buildToolsVersion here
-    GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidComposition.androidsdk}/libexec/android-sdk/build-tools/${buildToolsVersion}/aapt2";
-    CHROME_EXECUTABLE = "${pkgs.google-chrome}/bin/google-chrome-stable";
-  };
-
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -76,6 +39,12 @@ in
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # Kernel parameters for gaming performance
+  boot.kernel.sysctl = {
+    "vm.max_map_count" = 2147483642;
+    "fs.file-max" = 524288;
+  };
 
   # Set your time zone.
   time.timeZone = "America/Belem";
@@ -91,8 +60,13 @@ in
   #   keyMap = "us";
   #   useXkbConfig = true; # use xkbOptions in tty.
   # };
+  
+  # Enable the ClamAV antivirus daemon and updater.
+  services.clamav.daemon.enable = true;
+  services.clamav.updater.enable = true;
 
   security.rtkit.enable = true;
+  
   services.pipewire.enable = false;
   # services.pipewire = {
   #   enable = true;
@@ -117,6 +91,7 @@ in
   services.openssh.enable = true;
   # flatpak to install postman compass openlens
   services.flatpak.enable = true; 
+  services.dbus.enable = true;
 
   environment.xfce.excludePackages = [ 
     stable.xfce.xfwm4
@@ -183,6 +158,29 @@ in
   #   IdleActionSec=600s
   # '';
 
+  #systemd.services.nix-security-scan = {
+  #  description = "Weekly system security scan";
+  #  script = pkgs.writeScript "nixos-scan-runner" ''
+  #    #!${pkgs.bash}/bin/bash
+  #    # Copy the full script from above and paste it here
+  #    # Or, if you saved it to a file: /path/to/your/nixos-scan.sh
+  #    /etc/nixos/nixos-scan.sh
+  #  '';
+  #  serviceConfig = {
+  #    Type = "oneshot";
+  #    User = "root";
+  #  };
+  #};
+
+  #systemd.timers.nix-security-scan = {
+  #  description = "Run security scan weekly";
+  #  wantedBy = [ "timers.target" ];
+  #  timerConfig = {
+  #    OnCalendar = "Sun 03:00:00"; # Every Sunday at 3:00 AM
+  #    Persistent = true;
+  #  };
+  #};
+
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e,caps:escape";
@@ -190,8 +188,32 @@ in
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport32Bit = true;
+  # Enable 32-bit support (essential for gaming)
+  # hardware.opengl = {
+  #   enable = true;
+  #   driSupport32Bit = true;
+    
+  #   # Vulkan support
+  #   extraPackages = with pkgs; [
+  #     stable.vulkan-loader
+  #     stable.vulkan-validation-layers
+  #     stable.vulkan-tools
+  #     # AMD specific
+  #     stable.amdvlk
+  #     # Intel specific
+  #     stable.intel-media-driver
+  #     # NVIDIA specific (uncomment if using NVIDIA)
+  #     # nvidia-vaapi-driver
+  #   ];
+    
+  #   extraPackages32 = with pkgs.pkgsi686Linux; [
+  #     stable.vulkan-loader
+  #     # AMD specific
+  #     stable.amdvlk
+  #     # Intel specific
+  #     stable.intel-media-driver
+  #   ];
+  # };
 
   hardware.enableAllFirmware = true;
   hardware.pulseaudio.enable = true;
@@ -231,183 +253,229 @@ in
     ];
   };
 
+  # GameMode for performance optimization
+  programs.gamemode.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = [
-    stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
 
-    # Flutter and Android SDK
-    androidComposition.androidsdk
-    stable.glibc
-    unstable.flutter329
-    stable.jdk17
+# Graphical tools for development
+unstable.vscode
+# unstable.code-cursor
+stable.wireshark
+stable.quickgui
+stable.gparted
+stable.jmeter
+#unstable.ciscoPacketTracer8
 
-    # Graphical tools for development
-    unstable.vscode
-    stable.wireshark
-    stable.quickgui
-    stable.gparted
-    stable.jmeter
-    #unstable.ciscoPacketTracer8
-    
-    # Integrated Development Environment
-    unstable.neovim
-    unstable.tmux
-    unstable.emacs
-    unstable.zellij
-    unstable.code-cursor
-    stable.devenv
-    unstable.nodejs_24
+# Integrated Development Environment
+unstable.neovim
+unstable.tmux
+unstable.emacs
+unstable.zellij
+stable.devenv
+unstable.nodejs_24
 
-    # Command line tools for development
-    unstable.git
-    stable.gh
-    unstable.libiconv
-    stable.xclip
-    stable.curl
-    stable.ripgrep
-    stable.fd
-    stable.fasd
-    stable.vifm-full
-    stable.tshark
-    stable.termshark
-    stable.direnv
-    stable.tree-sitter
-    stable.just
-    stable.thefuck
-    stable.mosh
-    stable.lazygit
-    stable.file
-    stable.gnumake
+# Command line tools for development
+unstable.git
+stable.gh
+unstable.libiconv
+stable.xclip
+stable.curl
+stable.ripgrep
+stable.fd
+stable.fasd
+stable.vifm-full
+stable.tshark
+stable.termshark
+stable.direnv
+stable.tree-sitter
+stable.just
+stable.thefuck
+stable.mosh
+stable.lazygit
+stable.file
+stable.gnumake
 
-    # Command line tools for networking
-    stable.sshfs
-    stable.fuse3
-    stable.nss
-    stable.expat
-    stable.nmap
-    stable.wrk2
-    stable.wget
-    stable.ethtool
-    stable.python312Packages.pyngrok
-    stable.gatling
+# Command line tools for networking
+stable.sshfs
+stable.fuse3
+stable.nss
+stable.expat
+stable.nmap
+stable.wrk2
+stable.wget
+stable.ethtool
+stable.python312Packages.pyngrok
+stable.gatling
 
-    # Graphical tools for communication and collaboration
-    anydesk
-    stable.teamviewer
-    #stable.zoom-us
+# Graphical tools for communication and collaboration
+anydesk
+stable.teamviewer
+#stable.zoom-us
 
-    # Browsers 
-    unstable.vivaldi
-    unstable.vivaldi-ffmpeg-codecs
-    unstable.google-chrome
-    unstable.firefox
-    
-    # tools for graphics and customization of the Operational System
-    stable.gtk_engines
-    stable.gtk-engine-murrine
-    stable.xorg.xhost
-    stable.xorg.xmessage
-    stable.xorg.xbacklight
-    stable.haskellPackages.xmobar    
-    
-    # Graphical tools for writing and reading
-    stable.logseq
-    stable.wpsoffice
-    stable.libsForQt5.okular
-    unstable.pdf4qt
-    
-    unstable.wine64
-    (stable.appimage-run.override {
-     extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
-     })
-    #unstable.winbox
+# Browsers 
+unstable.vivaldi
+unstable.vivaldi-ffmpeg-codecs
+unstable.google-chrome
+unstable.firefox
 
-    # Utilities Graphical and Operational System 
-    stable.copyq
-    stable.lightlocker
-    stable.redshift
+# tools for graphics and customization of the Operational System
+stable.gtk_engines
+stable.gtk-engine-murrine
+stable.xorg.xhost
+stable.xorg.xmessage
+stable.xorg.xbacklight
+stable.haskellPackages.xmobar    
 
-    # Command line tools to Operational System
-    stable.neofetch
-    stable.icu
-    stable.gcc
-    stable.xdotool
-    stable.libnotify
-    stable.yad
-    stable.lux
-    stable.killall
-    stable.htop
-    stable.tree
-    unstable.alacritty
-    stable.dmidecode
-    stable.wirelesstools
-    stable.inetutils
-    stable.lm_sensors
-    stable.nix-index
+# Graphical tools for writing and reading
+stable.logseq
+# stable.wpsoffice
+# stable.libsForQt5.okular
+stable.texstudio    
+# unstable.pdf4qt
 
-    # Command line tools for multimedia
-    stable.zip
-    stable.zlib
-    stable.unzip
-    stable.p7zip
-    stable.xz
-    unstable.unar
-    stable.vlc
-    stable.ffmpeg
-    stable.xar
-    stable.p7zip
-    stable.pbzx
-    stable.rcodesign
-    
-    # Command line tools for virtualization and containers
-    stable.qemu
-    unstable.docker
-    unstable.docker-compose
-    unstable.podman
-    unstable.podman-compose
-    unstable.lazydocker
+# Utilities Graphical and Operational System 
+stable.copyq
+stable.lightlocker
+stable.redshift
 
-    # Command line tools for virtualization with Graphical interface
-    stable.virt-manager
-    stable.quickemu
-    stable.gns3-gui
-    stable.gns3-server
+# Command line tools to run not nix packages
+# stable.patchelf
+# stable.steam-run
 
-    # Command line tools to run not nix packages
-    stable.patchelf
-    stable.steam-run
-    
-    # Command line tools for encryption 
-    stable.gnome-keyring
-    stable.libsecret
-    stable.openssl
+# Command line tools to Operational System
+stable.neofetch
+stable.icu
+stable.gcc
+stable.xdotool
+stable.libnotify
+stable.yad
+stable.lux
+stable.killall
+stable.htop
+stable.tree
+unstable.alacritty
+stable.dmidecode
+stable.wirelesstools
+stable.inetutils
+stable.lm_sensors
+stable.nix-index
 
-    # Command line tools for graphics
-    unstable.glibc
-    unstable.libGL
-    unstable.libGLU
-    unstable.libxml2
+# Command line tools for multimedia
+stable.zip
+stable.zlib
+stable.unzip
+stable.p7zip
+stable.xz
+unstable.unar
+stable.vlc
+stable.ffmpeg
+stable.xar
+stable.p7zip
+stable.pbzx
+stable.rcodesign
 
-    # Graphical tools to audio
-    unstable.pavucontrol
-    unstable.pulseaudio
-    unstable.lsof
-    unstable.inxi
+# Command line tools for virtualization and containers
+stable.qemu
+unstable.docker
+unstable.docker-compose
+unstable.podman
+unstable.podman-compose
+unstable.lazydocker
 
-    # Command line tools for audio
-    unstable.alsa-utils
-    
-    # Command line tools for AI
-    unstable.ollama
+# Command line tools for virtualization with Graphical interface
+stable.virt-manager
+stable.quickemu
+stable.gns3-gui
+stable.gns3-server
 
-    #unstable.distrobox
-    #unstable.busybox
-    #deprecated.haskellPackages.ghcup
-    #unstable.haskellPackages.base-compat-batteries_0_13_1
-    #unstable.haskellPackages.base-compat_0_13_1
-    #deprecated.haskellPackages.streamly
+# Command line tools for encryption 
+stable.gnome-keyring
+stable.libsecret
+stable.openssl
+
+# Command line tools for graphics
+unstable.glibc
+unstable.libGL
+unstable.libGLU
+unstable.libxml2
+
+# Graphical tools to audio
+unstable.pavucontrol
+unstable.pulseaudio
+unstable.lsof
+unstable.inxi
+
+# Command line tools for audio
+unstable.alsa-utils
+
+# Command line tools for AI
+unstable.ollama
+
+# Command line tools for downloading
+unstable.qbittorrent
+
+# Dependencies for Wine Run Apps
+# unstable.jdk
+# unstable.jre_minimal
+
+# Lutris and dependencies
+# unstable.lutris
+# unstable.wineWowPackages.stableFull
+# unstable.wineWowPackages.yabridge
+# unstable.winetricks
+
+# Vulkan tools and validation
+# unstable.vulkan-tools
+# unstable.vulkan-loader
+# unstable.vulkan-headers
+# unstable.vulkan-validation-layers
+
+# Graphics libraries
+# unstable.mesa # Includes Vulkan support
+# unstable.libGL
+# unstable.libGLU
+# unstable.amdvlk # Alternative or additional AMD Vulkan driver
+# (stable.appimage-run.override {
+# extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
+# })
+
+# Kerberos support
+unstable.krb5
+
+# DXVK and VKD3D
+# unstable.dxvk
+# unstable.vkd3d
+
+# Additional Wine dependencies
+# unstable.xorg.libXcursor
+# unstable.xorg.libXi
+# unstable.xorg.libXinerama
+# unstable.xorg.libXrandr
+# unstable.freetype
+# unstable.fontconfig
+
+# System monitoring
+unstable.glxinfo
+
+# Font rendering
+unstable.corefonts
+unstable.liberation_ttf
+
+# Security cli tools
+unstable.vulnix
+unstable.clamav
+unstable.lynis
+
+# Security gui tools
+unstable.kapitano
+
+# Network tools
+unstable.iftop
+unstable.iotop
   ];
 
   fonts.packages = [
@@ -423,6 +491,8 @@ in
     stable.meslo-lgs-nf
     stable.vistafonts
     stable.corefonts
+    stable.dejavu_fonts
+    stable.freefont_ttf
   ];
   
   # Some programs need SUID wrappers, can be configured further or are
@@ -473,7 +543,7 @@ in
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 
   # virtualisation.vmware.host.enable = true;
   virtualisation.libvirtd.enable = false;
@@ -491,6 +561,23 @@ in
   # virtualisation.virtualbox.host.enableExtensionPack = true;
   virtualisation.virtualbox.guest.enable = true;
   virtualisation.virtualbox.guest.dragAndDrop = true;
+
+  # Environment variables for Vulkan and gaming
+  environment.sessionVariables = {
+    # Vulkan ICD selection
+    VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json";
+    
+    # Wine/Lutris optimizations
+    WINE_LARGE_ADDRESS_AWARE = "1";
+    DXVK_HUD = "compiler";
+    
+    # Stack size increase (fixes stack overflow errors)
+    WINEDLLOVERRIDES = "mscoree,mshtml=";
+    WINEFSYNC = "1";
+    
+    # Kerberos fix
+    KRB5_CONFIG = "/etc/krb5.conf";
+  };
 
   nix.settings.auto-optimise-store = true;
   nix.optimise.automatic = true;
