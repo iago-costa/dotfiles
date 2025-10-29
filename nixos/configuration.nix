@@ -84,7 +84,9 @@ in
     criticalPowerAction = "Hibernate";
   };
 
-  # services.gnome.gnome-keyring.enable = true;
+  # Enable PAM integration for automatic unlocking (example for greetd)
+  security.pam.services.login.enableGnomeKeyring = true;
+  services.gnome.gnome-keyring.enable = true;
   services.gvfs.enable = true;
 
   # Enable the OpenSSH daemon.
@@ -263,6 +265,9 @@ stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano 
 
 # Graphical tools for development
 unstable.vscode
+unstable.google-authenticator
+unstable._1password-gui
+unstable.authenticator
 # unstable.code-cursor
 stable.wireshark
 stable.quickgui
@@ -305,11 +310,64 @@ stable.fuse3
 stable.nss
 stable.expat
 stable.nmap
+unstable.tcpdump
 stable.wrk2
 stable.wget
 stable.ethtool
 stable.python312Packages.pyngrok
 stable.gatling
+unstable.iftop
+unstable.iotop
+unstable.dig
+unstable.doggo
+unstable.mitmproxy
+unstable.aria2
+
+# Security cli tools
+unstable.vulnix
+unstable.clamav
+unstable.lynis
+unstable.sqlmap
+unstable.sqlmc
+unstable.laudanum
+unstable.nikto
+unstable.hcxtools
+unstable.hashcat
+unstable.thc-hydra
+unstable.gobuster
+unstable.wireguard-tools
+unstable.metasploit
+unstable.sssd
+unstable.aircrack-ng
+unstable.gittuf
+unstable.dockle
+unstable.checkmate
+unstable.tracee
+unstable.apktool
+unstable.radare2
+unstable.ghidra-bin
+unstable.trivy
+unstable.wapiti
+unstable.wpscan
+unstable.grype
+unstable.octoscan
+unstable.osv-scanner
+unstable.http-scanner
+unstable.secretscanner
+unstable.netscanner
+unstable.mdns-scanner
+unstable.angryipscanner
+
+# Security gui tools
+unstable.kapitano
+unstable.armitage
+unstable.johnny
+unstable.burpsuite
+unstable.eresi
+unstable.cutter
+unstable.degate
+unstable.iaito
+unstable.autopsy
 
 # Graphical tools for communication and collaboration
 anydesk
@@ -465,17 +523,6 @@ unstable.glxinfo
 unstable.corefonts
 unstable.liberation_ttf
 
-# Security cli tools
-unstable.vulnix
-unstable.clamav
-unstable.lynis
-
-# Security gui tools
-unstable.kapitano
-
-# Network tools
-unstable.iftop
-unstable.iotop
   ];
 
   fonts.packages = [
