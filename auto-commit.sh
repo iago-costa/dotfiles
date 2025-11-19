@@ -848,40 +848,41 @@ git_add_file() {
         fi
     fi
     
-    # If direct add failed, find the topmost directory that needs to be added
-    # This handles files in completely untracked directory trees
-    local parent_dir=$(dirname "$file")
+    # If the file is inside an untracked directory tree, we need to find
+    # the top-level untracked directory and add it instead
     
-    # Start from the file's directory and work up
-    while [[ -n "$parent_dir" ]] && [[ "$parent_dir" != "." ]]; do
-        # Check if this directory is tracked in git
-        if git ls-files --error-unmatch "$parent_dir" >/dev/null 2>&1; then
-            # This directory is tracked, no need to go higher
-            break
-        fi
-        
-        # Try adding this directory level
-        if git add -f -- "$parent_dir/" 2>/dev/null; then
-            # Check if our target file was staged
-            if git diff --cached --name-only | grep -qF "$file"; then
-                return 0
-            fi
-        fi
-        
-        # Move up one directory level
-        parent_dir=$(dirname "$parent_dir")
-    done
+    # Get the first directory component
+    local first_dir=$(echo "$file" | cut -d'/' -f1)
     
-    # Last resort: try adding everything from current directory down
-    # This handles edge cases with special characters
-    local base_dir=$(echo "$file" | cut -d'/' -f1)
-    if [[ -d "$base_dir" ]]; then
-        if git add -f "$base_dir" 2>/dev/null; then
-            if git diff --cached --name-only | grep -qF "$file"; then
-                return 0
+    # If the file is in a subdirectory, check if the top directory is tracked
+    if [[ "$file" == *"/"* ]] && [[ -d "$first_dir" ]]; then
+        # Check if this top-level directory is tracked
+        if ! git ls-files "$first_dir" | grep -q .; then
+            # Top directory is completely untracked, add it all at once
+            if git add -f "$first_dir" 2>/dev/null; then
+                # Verify our file was staged
+                if git diff --cached --name-only | grep -qF "$file"; then
+                    return 0
+                fi
             fi
         fi
     fi
+    
+    # Try adding parent directories from bottom to top
+    local parent_dir=$(dirname "$file")
+    
+    while [[ -n "$parent_dir" ]] && [[ "$parent_dir" != "." ]]; do
+        # Try adding this directory
+        if git add -f "$parent_dir" 2>/dev/null; then
+            # Check if our file was staged
+            if git diff --cached --name-only | grep -qF "$file"; then
+                return 0
+            fi
+        fi
+        
+        # Move up one level
+        parent_dir=$(dirname "$parent_dir")
+    done
     
     return 1
 }
