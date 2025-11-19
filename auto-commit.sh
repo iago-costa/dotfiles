@@ -1021,10 +1021,16 @@ process_repository() {
                 add_output=$(git add -- "$subfile" 2>&1)
                 add_status=$?
                 if [[ $add_status -eq 0 ]]; then
-                    if git commit -m "$subcommit_msg" > /dev/null 2>&1; then
+                    commit_output=$(git commit -m "$subcommit_msg" 2>&1)
+                    commit_status=$?
+                    if [[ $commit_status -eq 0 ]]; then
                         echo -e "  ${GREEN}✓ Committed successfully${NC}\n"
                     else
-                        echo -e "  ${RED}✗ Commit failed${NC}\n"
+                        echo -e "  ${RED}✗ Commit failed${NC}"
+                        if [[ -n "$commit_output" ]]; then
+                            echo -e "  ${RED}Error: $commit_output${NC}"
+                        fi
+                        echo ""
                         git reset HEAD -- "$subfile" > /dev/null 2>&1
                     fi
                 else
@@ -1091,10 +1097,16 @@ process_repository() {
         fi
         
         if [[ "$git_success" == true ]]; then
-            if git commit -m "$commit_msg" > /dev/null 2>&1; then
+            commit_output=$(git commit -m "$commit_msg" 2>&1)
+            commit_status=$?
+            if [[ $commit_status -eq 0 ]]; then
                 echo -e "  ${GREEN}✓ Committed successfully${NC}\n"
             else
-                echo -e "  ${RED}✗ Commit failed${NC}\n"
+                echo -e "  ${RED}✗ Commit failed${NC}"
+                if [[ -n "$commit_output" ]]; then
+                    echo -e "  ${RED}Error: $commit_output${NC}"
+                fi
+                echo ""
                 git reset HEAD -- "$file" > /dev/null 2>&1
             fi
         else
