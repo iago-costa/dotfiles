@@ -797,6 +797,45 @@ count_files_to_commit() {
     echo "$file_count"
 }
 
+# Function to count commits to push
+count_commits_to_push() {
+    local repo_path=$1
+    
+    # Get absolute path to repository directory
+    local repo_dir=$(cd "$(dirname "$repo_path")" 2>/dev/null && pwd)
+    
+    if [[ -z "$repo_dir" ]] || [[ ! -d "$repo_dir" ]]; then
+        echo "0"
+        return
+    fi
+    
+    # Change to repository directory
+    cd "$repo_dir" || return 0
+    
+    # Check if remote exists
+    if ! git remote | grep -q .; then
+        echo "0"
+        return
+    fi
+    
+    # Get current branch
+    local current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    
+    if [[ -z "$current_branch" ]]; then
+        echo "0"
+        return
+    fi
+    
+    # Count unpushed commits
+    local unpushed=$(git rev-list --count origin/"$current_branch"..HEAD 2>/dev/null)
+    
+    if [[ -z "$unpushed" ]]; then
+        echo "0"
+    else
+        echo "$unpushed"
+    fi
+}
+
 # Function to decode git quoted filenames (handles octal escape sequences)
 decode_git_filename() {
     local filename="$1"
@@ -1267,25 +1306,31 @@ if [[ "$preview_choice" =~ ^[Yy]$ ]]; then
     echo -e "${BLUE}╚═══════════════════════════════════════════════════════════╝${NC}\n"
     
     total_files_all_repos=0
+    total_commits_to_push=0
+    
     for git_dir in "${git_dirs[@]}"; do
         cd "$original_dir" || exit
         repo_name=$(basename "$(dirname "$git_dir")")
         file_count=$(count_files_to_commit "$git_dir")
+        commits_to_push=$(count_commits_to_push "$git_dir")
         
-        if [[ $file_count -gt 0 ]]; then
+        if [[ $file_count -gt 0 ]] || [[ $commits_to_push -gt 0 ]]; then
             echo -e "${GREEN}  Repository: ${YELLOW}$repo_name${NC}"
-            echo -e "${GREEN}  Files to commit: ${YELLOW}$file_count${NC}\n"
+            echo -e "${GREEN}    Files to commit: ${YELLOW}$file_count${NC}"
+            echo -e "${GREEN}    Commits to push: ${YELLOW}$commits_to_push${NC}\n"
             total_files_all_repos=$((total_files_all_repos + file_count))
+            total_commits_to_push=$((total_commits_to_push + commits_to_push))
         else
             echo -e "${YELLOW}  Repository: $repo_name${NC}"
-            echo -e "${YELLOW}  No files to commit${NC}\n"
+            echo -e "${YELLOW}    No changes to commit or push${NC}\n"
         fi
     done
     
     cd "$original_dir" || exit
     
     echo -e "${GREEN}╔═══════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║ Total files to commit across all repos: ${YELLOW}$total_files_all_repos${GREEN}           ║${NC}"
+    echo -e "${GREEN}║ Total files to commit: ${YELLOW}$total_files_all_repos${NC}"
+    echo -e "${GREEN}║ Total commits to push: ${YELLOW}$total_commits_to_push${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════════════╝${NC}\n"
     
     if [[ "$SILENT_MODE" != true ]]; then
