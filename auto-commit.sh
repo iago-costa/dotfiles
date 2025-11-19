@@ -341,8 +341,6 @@ authenticate_gh() {
 
 # Function to update GitHub token in repository
 update_github_token() {
-    local repo_path=$1
-    
     # Skip if gh is not available or user doesn't want to update tokens
     if [[ "$GH_AVAILABLE" != true ]] || [[ "$UPDATE_TOKENS" != true ]]; then
         return 1
@@ -350,36 +348,17 @@ update_github_token() {
     
     echo -e "${BLUE}  → Updating GitHub token...${NC}"
     
-    # Save current directory
-    local current_dir=$(pwd)
-    
-    # Get the directory containing .git
-    local git_dir=$(dirname "$repo_path")
-    
-    # Try to resolve absolute path
-    local repo_dir=""
-    if cd "$git_dir" 2>/dev/null; then
-        repo_dir=$(pwd)
-        cd "$current_dir" || return 1
-    else
-        echo -e "${YELLOW}  ⊘ Repository directory not found, skipping token update${NC}"
+    # Check if .git/config exists
+    if [[ ! -f ".git/config" ]]; then
+        echo -e "${YELLOW}  ⊘ .git/config not found, skipping token update${NC}"
         return 1
     fi
-    
-    if [[ -z "$repo_dir" ]] || [[ ! -d "$repo_dir" ]]; then
-        echo -e "${YELLOW}  ⊘ Repository directory not accessible, skipping token update${NC}"
-        return 1
-    fi
-    
-    # Change to repository directory
-    cd "$repo_dir" || return 1
     
     # Get token from gh CLI
     local token=$(gh auth token -h github.com -u "$GITHUB_USERNAME" 2>/dev/null)
     
     if [[ -z "$token" ]]; then
-        echo -e "${YELLOW}  ⊘ Failed to get token, skipping token update${NC}"
-        cd "$current_dir" || return 1
+        echo -e "${YELLOW}  ⊘ Failed to get token from gh CLI, skipping token update${NC}"
         return 1
     fi
     
@@ -388,19 +367,16 @@ update_github_token() {
     if grep -q "url = https://$GITHUB_USERNAME:" .git/config 2>/dev/null; then
         # Token already exists, replace it
         sed -i "s|\($GITHUB_USERNAME:\)[^@]*@|\1$token@|" .git/config
-        echo -e "${GREEN}  ✓ Token updated${NC}"
+        echo -e "${GREEN}  ✓ Token updated in .git/config${NC}"
         success=true
     elif grep -q "url = https://github.com/" .git/config 2>/dev/null; then
         # No token yet, add it
         sed -i "s|https://github.com/|https://$GITHUB_USERNAME:$token@github.com/|" .git/config
-        echo -e "${GREEN}  ✓ Token added${NC}"
+        echo -e "${GREEN}  ✓ Token added to .git/config${NC}"
         success=true
     else
-        echo -e "${YELLOW}  ⊘ No GitHub URL found in config${NC}"
+        echo -e "${YELLOW}  ⊘ No GitHub HTTPS URL found in .git/config${NC}"
     fi
-    
-    # Return to original directory
-    cd "$current_dir" || return 1
     
     if [[ "$success" == true ]]; then
         return 0
@@ -821,6 +797,25 @@ count_files_to_commit() {
     echo "$file_count"
 }
 
+# Function to decode git quoted filenames (handles octal escape sequences)
+decode_git_filename() {
+    local filename="$1"
+    
+    # If the filename is quoted, remove quotes and decode escape sequences
+    if [[ "$filename" == \"*\" ]]; then
+        # Remove surrounding quotes
+        filename="${filename#\"}"
+        filename="${filename%\"}"
+        
+        # Use printf to decode octal sequences like \303\207 (Ç)
+        # This handles UTF-8 encoded characters
+        printf '%b' "$filename"
+    else
+        # No encoding, return as-is
+        echo "$filename"
+    fi
+}
+
 # Function to process a single repository
 process_repository() {
     local repo_path=$1
@@ -887,8 +882,8 @@ process_repository() {
         fi
     fi
     
-    # Update GitHub token first
-    update_github_token "$repo_path"
+    # Update GitHub token (we're already in the repo directory)
+    update_github_token
     echo ""
     
     # Get all changed files
@@ -908,9 +903,8 @@ process_repository() {
         status=$(echo "$status" | tr -d ' ')
         file="${line:3}"
         
-        # Remove surrounding quotes if present (git adds them for files with special chars)
-        file="${file#\"}"
-        file="${file%\"}"
+        # Decode git filename (handles quotes and escape sequences like \303\207)
+        file=$(decode_git_filename "$file")
         
         # Skip if file is empty
         [[ -z "$file" ]] && continue
@@ -985,7 +979,9 @@ process_repository() {
                 echo -e "  Message: ${GREEN}$subcommit_msg${NC}"
                 
                 # Add and commit the file
-                if git add -- "$subfile" > /dev/null 2>&1; then
+                add_output=$(git add -- "$subfile" 2>&1)
+                add_status=$?
+                if [[ $add_status -eq 0 ]]; then
                     if git commit -m "$subcommit_msg" > /dev/null 2>&1; then
                         echo -e "  ${GREEN}✓ Committed successfully${NC}\n"
                     else
@@ -993,7 +989,11 @@ process_repository() {
                         git reset HEAD -- "$subfile" > /dev/null 2>&1
                     fi
                 else
-                    echo -e "  ${RED}✗ Failed to add file${NC}\n"
+                    echo -e "  ${RED}✗ Failed to add file${NC}"
+                    if [[ -n "$add_output" ]]; then
+                        echo -e "  ${RED}Error: $add_output${NC}"
+                    fi
+                    echo ""
                 fi
             done < <(find "$file" -type f -not -path "*/.git/*")
             continue
@@ -1035,15 +1035,18 @@ process_repository() {
         
         # Add/remove and commit the file based on status
         local git_success=false
+        local git_error=""
         
         if [[ "$status" == "D" ]]; then
             # For deleted files, use git rm
-            if git rm -- "$file" > /dev/null 2>&1; then
+            git_error=$(git rm -- "$file" 2>&1)
+            if [[ $? -eq 0 ]]; then
                 git_success=true
             fi
         else
             # For added/modified files, use git add
-            if git add -- "$file" > /dev/null 2>&1; then
+            git_error=$(git add -- "$file" 2>&1)
+            if [[ $? -eq 0 ]]; then
                 git_success=true
             fi
         fi
@@ -1056,7 +1059,11 @@ process_repository() {
                 git reset HEAD -- "$file" > /dev/null 2>&1
             fi
         else
-            echo -e "  ${RED}✗ Failed to stage file${NC}\n"
+            echo -e "  ${RED}✗ Failed to stage file${NC}"
+            if [[ -n "$git_error" ]]; then
+                echo -e "  ${RED}Error: $git_error${NC}"
+            fi
+            echo ""
         fi
         
     done <<< "$changed_files"
@@ -1082,11 +1089,18 @@ process_repository() {
         fi
         
         # Push to remote
-        if git push origin "$current_branch" 2>&1 | tee /tmp/git_push_output.log; then
+        echo -e "${BLUE}Pushing to origin/$current_branch...${NC}"
+        
+        # Execute push and capture exit code
+        git push origin "$current_branch" 2>&1
+        local push_exit_code=$?
+        
+        # Check for authentication errors or other failures
+        if [[ $push_exit_code -eq 0 ]]; then
             echo -e "${GREEN}✓ Successfully pushed to remote ($current_branch)${NC}\n"
         else
-            echo -e "${RED}✗ Failed to push to remote${NC}"
-            echo -e "${YELLOW}You may need to push manually or set up remote tracking${NC}\n"
+            echo -e "${RED}✗ Failed to push to remote (exit code: $push_exit_code)${NC}"
+            echo -e "${YELLOW}Check authentication credentials or run with -t to update token${NC}\n"
         fi
     fi
 }
