@@ -1017,21 +1017,27 @@ process_repository() {
                 [[ -n "$subscope" ]] && echo -e "  Scope: ${GREEN}$subscope${NC}"
                 echo -e "  Message: ${GREEN}$subcommit_msg${NC}"
                 
-                # Add and commit the file
-                add_output=$(git add -- "$subfile" 2>&1)
+                # Add and commit the file with force flag
+                add_output=$(git add -f -- "$subfile" 2>&1)
                 add_status=$?
                 if [[ $add_status -eq 0 ]]; then
-                    commit_output=$(git commit -m "$subcommit_msg" 2>&1)
-                    commit_status=$?
-                    if [[ $commit_status -eq 0 ]]; then
-                        echo -e "  ${GREEN}✓ Committed successfully${NC}\n"
-                    else
-                        echo -e "  ${RED}✗ Commit failed${NC}"
-                        if [[ -n "$commit_output" ]]; then
-                            echo -e "  ${RED}Error: $commit_output${NC}"
+                    # Verify the file was actually staged
+                    if git diff --cached --name-only | grep -qF "$subfile"; then
+                        commit_output=$(git commit -m "$subcommit_msg" 2>&1)
+                        commit_status=$?
+                        if [[ $commit_status -eq 0 ]]; then
+                            echo -e "  ${GREEN}✓ Committed successfully${NC}\n"
+                        else
+                            echo -e "  ${RED}✗ Commit failed${NC}"
+                            if [[ -n "$commit_output" ]]; then
+                                echo -e "  ${RED}Error: $commit_output${NC}"
+                            fi
+                            echo ""
+                            git reset HEAD -- "$subfile" > /dev/null 2>&1
                         fi
-                        echo ""
-                        git reset HEAD -- "$subfile" > /dev/null 2>&1
+                    else
+                        echo -e "  ${RED}✗ Failed to stage file${NC}"
+                        echo -e "  ${RED}Error: File was not staged (might be inside untracked directory)${NC}\n"
                     fi
                 else
                     echo -e "  ${RED}✗ Failed to add file${NC}"
@@ -1089,10 +1095,16 @@ process_repository() {
                 git_success=true
             fi
         else
-            # For added/modified files, use git add
-            git_error=$(git add -- "$file" 2>&1)
+            # For added/modified files, use git add with force flag
+            git_error=$(git add -f -- "$file" 2>&1)
             if [[ $? -eq 0 ]]; then
-                git_success=true
+                # Verify the file was actually staged
+                if git diff --cached --name-only | grep -qF "$file"; then
+                    git_success=true
+                else
+                    git_success=false
+                    git_error="File was not staged (might be inside untracked directory)"
+                fi
             fi
         fi
         
