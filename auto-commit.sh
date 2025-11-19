@@ -836,6 +836,49 @@ count_commits_to_push() {
     fi
 }
 
+# Function to add file to git, handling untracked directories
+git_add_file() {
+    local file="$1"
+    
+    # Try to add the file directly first
+    if git add -f -- "$file" 2>/dev/null; then
+        # Verify the file was actually staged
+        if git diff --cached --name-only | grep -qF "$file"; then
+            return 0
+        fi
+    fi
+    
+    # If direct add failed, the file might be in an untracked directory
+    # Find the top-level untracked directory and add it
+    local current_path="$file"
+    local dir_to_add=""
+    
+    while [[ "$current_path" == */* ]]; do
+        current_path=$(dirname "$current_path")
+        
+        # Check if this directory is untracked
+        if git ls-files --error-unmatch "$current_path" >/dev/null 2>&1; then
+            # This directory is tracked, so we found our untracked parent
+            break
+        else
+            # This directory is untracked, mark it as candidate
+            dir_to_add="$current_path"
+        fi
+    done
+    
+    # If we found an untracked directory, add it
+    if [[ -n "$dir_to_add" ]]; then
+        if git add -f -- "$dir_to_add" 2>/dev/null; then
+            # Verify the file was staged
+            if git diff --cached --name-only | grep -qF "$file"; then
+                return 0
+            fi
+        fi
+    fi
+    
+    return 1
+}
+
 # Function to decode git quoted filenames (handles octal escape sequences)
 decode_git_filename() {
     local filename="$1"
@@ -1017,34 +1060,23 @@ process_repository() {
                 [[ -n "$subscope" ]] && echo -e "  Scope: ${GREEN}$subscope${NC}"
                 echo -e "  Message: ${GREEN}$subcommit_msg${NC}"
                 
-                # Add and commit the file with force flag
-                add_output=$(git add -f -- "$subfile" 2>&1)
-                add_status=$?
-                if [[ $add_status -eq 0 ]]; then
-                    # Verify the file was actually staged
-                    if git diff --cached --name-only | grep -qF "$subfile"; then
-                        commit_output=$(git commit -m "$subcommit_msg" 2>&1)
-                        commit_status=$?
-                        if [[ $commit_status -eq 0 ]]; then
-                            echo -e "  ${GREEN}✓ Committed successfully${NC}\n"
-                        else
-                            echo -e "  ${RED}✗ Commit failed${NC}"
-                            if [[ -n "$commit_output" ]]; then
-                                echo -e "  ${RED}Error: $commit_output${NC}"
-                            fi
-                            echo ""
-                            git reset HEAD -- "$subfile" > /dev/null 2>&1
-                        fi
+                # Add and commit the file using smart add function
+                if git_add_file "$subfile"; then
+                    commit_output=$(git commit -m "$subcommit_msg" 2>&1)
+                    commit_status=$?
+                    if [[ $commit_status -eq 0 ]]; then
+                        echo -e "  ${GREEN}✓ Committed successfully${NC}\n"
                     else
-                        echo -e "  ${RED}✗ Failed to stage file${NC}"
-                        echo -e "  ${RED}Error: File was not staged (might be inside untracked directory)${NC}\n"
+                        echo -e "  ${RED}✗ Commit failed${NC}"
+                        if [[ -n "$commit_output" ]]; then
+                            echo -e "  ${RED}Error: $commit_output${NC}"
+                        fi
+                        echo ""
+                        git reset HEAD -- "$subfile" > /dev/null 2>&1
                     fi
                 else
-                    echo -e "  ${RED}✗ Failed to add file${NC}"
-                    if [[ -n "$add_output" ]]; then
-                        echo -e "  ${RED}Error: $add_output${NC}"
-                    fi
-                    echo ""
+                    echo -e "  ${RED}✗ Failed to stage file${NC}"
+                    echo -e "  ${RED}Error: Unable to add file to index${NC}\n"
                 fi
             done < <(find "$file" -type f -not -path "*/.git/*")
             continue
@@ -1095,16 +1127,11 @@ process_repository() {
                 git_success=true
             fi
         else
-            # For added/modified files, use git add with force flag
-            git_error=$(git add -f -- "$file" 2>&1)
-            if [[ $? -eq 0 ]]; then
-                # Verify the file was actually staged
-                if git diff --cached --name-only | grep -qF "$file"; then
-                    git_success=true
-                else
-                    git_success=false
-                    git_error="File was not staged (might be inside untracked directory)"
-                fi
+            # For added/modified files, use smart add function
+            if git_add_file "$file"; then
+                git_success=true
+            else
+                git_error="Failed to stage file (unable to add to index)"
             fi
         fi
         
