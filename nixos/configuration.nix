@@ -274,6 +274,13 @@ stable.quickgui
 stable.gparted
 stable.jmeter
 #unstable.ciscoPacketTracer8
+# unstable.libsForQt5.kdenlive
+stable.kdePackages.kdenlive
+stable.openshot-qt
+stable.libsForQt5.libopenshot
+stable.libsForQt5.libopenshot-audio
+stable.qtractor
+stable.inkscape
 
 # Integrated Development Environment
 unstable.neovim
@@ -356,10 +363,9 @@ unstable.http-scanner
 unstable.secretscanner
 unstable.netscanner
 unstable.mdns-scanner
-unstable.angryipscanner
+# unstable.angryipscanner
 
 # Security gui tools
-unstable.kapitano
 unstable.armitage
 unstable.johnny
 unstable.burpsuite
@@ -371,6 +377,7 @@ unstable.autopsy
 
 # Graphical tools for communication and collaboration
 anydesk
+unstable.remmina
 stable.teamviewer
 #stable.zoom-us
 
@@ -517,7 +524,7 @@ unstable.krb5
 # unstable.fontconfig
 
 # System monitoring
-unstable.glxinfo
+unstable.mesa-demos
 
 # Font rendering
 unstable.corefonts
