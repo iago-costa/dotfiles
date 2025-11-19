@@ -848,28 +848,35 @@ git_add_file() {
         fi
     fi
     
-    # If direct add failed, the file might be in an untracked directory
-    # Find the top-level untracked directory and add it
-    local current_path="$file"
-    local dir_to_add=""
+    # If direct add failed, find the topmost directory that needs to be added
+    # This handles files in completely untracked directory trees
+    local parent_dir=$(dirname "$file")
     
-    while [[ "$current_path" == */* ]]; do
-        current_path=$(dirname "$current_path")
-        
-        # Check if this directory is untracked
-        if git ls-files --error-unmatch "$current_path" >/dev/null 2>&1; then
-            # This directory is tracked, so we found our untracked parent
+    # Start from the file's directory and work up
+    while [[ -n "$parent_dir" ]] && [[ "$parent_dir" != "." ]]; do
+        # Check if this directory is tracked in git
+        if git ls-files --error-unmatch "$parent_dir" >/dev/null 2>&1; then
+            # This directory is tracked, no need to go higher
             break
-        else
-            # This directory is untracked, mark it as candidate
-            dir_to_add="$current_path"
         fi
+        
+        # Try adding this directory level
+        if git add -f -- "$parent_dir/" 2>/dev/null; then
+            # Check if our target file was staged
+            if git diff --cached --name-only | grep -qF "$file"; then
+                return 0
+            fi
+        fi
+        
+        # Move up one directory level
+        parent_dir=$(dirname "$parent_dir")
     done
     
-    # If we found an untracked directory, add it
-    if [[ -n "$dir_to_add" ]]; then
-        if git add -f -- "$dir_to_add" 2>/dev/null; then
-            # Verify the file was staged
+    # Last resort: try adding everything from current directory down
+    # This handles edge cases with special characters
+    local base_dir=$(echo "$file" | cut -d'/' -f1)
+    if [[ -d "$base_dir" ]]; then
+        if git add -f "$base_dir" 2>/dev/null; then
             if git diff --cached --name-only | grep -qF "$file"; then
                 return 0
             fi
