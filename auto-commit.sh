@@ -4,6 +4,20 @@
 # Commits one file at a time with appropriate message based on file type and change
 # Automatically updates GitHub token before pushing
 
+# Usage: ./auto-commit.sh [OPTIONS]
+# Options:
+#   -s, --silent              Silent mode (no prompts, use defaults or provided args)
+#   -l, --language LANG       Set commit language: en, es, pt (default: en)
+#   -u, --username USER       GitHub username for token updates
+#   -t, --update-tokens       Update GitHub tokens (requires -u)
+#   -p, --preview             Show preview before committing
+#   -h, --help                Show this help message
+#
+# Examples:
+#   ./auto-commit.sh -s -l pt -u iago-costa -t
+#   ./auto-commit.sh --silent --language es --preview
+#   ./auto-commit.sh -s -l en
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -16,6 +30,124 @@ GITHUB_USERNAME=""
 
 # Commit message language
 COMMIT_LANGUAGE="en"
+
+# Script options
+SILENT_MODE=false
+SHOW_PREVIEW=false
+UPDATE_TOKENS_ARG=false
+
+# Common ignore patterns (applied even if not in .gitignore)
+COMMON_IGNORE_PATTERNS=(
+    "node_modules"
+    ".env"
+    ".env.local"
+    ".env.*.local"
+    "*.log"
+    ".DS_Store"
+    "Thumbs.db"
+    "__pycache__"
+    "*.pyc"
+    ".pytest_cache"
+    ".venv"
+    "venv"
+    "dist"
+    "build"
+    ".idea"
+    ".vscode"
+    "*.swp"
+    "*.swo"
+    ".cache"
+    ".tmp"
+    "tmp"
+)
+
+# Function to check if file matches common ignore patterns
+is_commonly_ignored() {
+    local file=$1
+    
+    for pattern in "${COMMON_IGNORE_PATTERNS[@]}"; do
+        # Check if file path contains the pattern
+        if [[ "$file" == *"$pattern"* ]] || [[ "$file" == *"/$pattern/"* ]] || [[ "$file" == "$pattern/"* ]]; then
+            return 0  # File matches ignore pattern
+        fi
+        
+        # Check wildcard patterns
+        if [[ "$pattern" == *"*"* ]]; then
+            # Convert pattern to regex-like matching
+            if [[ "$file" == $pattern ]]; then
+                return 0
+            fi
+        fi
+    done
+    
+    return 1  # File doesn't match any ignore pattern
+}
+
+# Function to show help
+show_help() {
+    echo "Auto-commit Script - Multi Repository"
+    echo ""
+    echo "Usage: $0 [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  -s, --silent              Silent mode (no prompts, use defaults or provided args)"
+    echo "  -l, --language LANG       Set commit language: en, es, pt (default: en)"
+    echo "  -u, --username USER       GitHub username for token updates"
+    echo "  -t, --update-tokens       Update GitHub tokens (requires -u)"
+    echo "  -p, --preview             Show preview before committing"
+    echo "  -h, --help                Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  $0 -s -l pt -u iago-costa -t"
+    echo "  $0 --silent --language es --preview"
+    echo "  $0 -s -l en"
+    exit 0
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -s|--silent)
+            SILENT_MODE=true
+            shift
+            ;;
+        -l|--language)
+            COMMIT_LANGUAGE="$2"
+            shift 2
+            ;;
+        -u|--username)
+            GITHUB_USERNAME="$2"
+            shift 2
+            ;;
+        -t|--update-tokens)
+            UPDATE_TOKENS_ARG=true
+            shift
+            ;;
+        -p|--preview)
+            SHOW_PREVIEW=true
+            shift
+            ;;
+        -h|--help)
+            show_help
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use -h or --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
+# Validate language
+case "$COMMIT_LANGUAGE" in
+    en|es|pt)
+        # Valid language
+        ;;
+    *)
+        echo -e "${RED}Error: Invalid language '$COMMIT_LANGUAGE'. Use: en, es, or pt${NC}"
+        exit 1
+        ;;
+esac
 
 # Language templates
 declare -A LANG_TEMPLATES=(
@@ -218,11 +350,24 @@ update_github_token() {
     
     echo -e "${BLUE}  → Updating GitHub token...${NC}"
     
-    # Get absolute path to repository directory
-    local repo_dir=$(cd "$(dirname "$repo_path")" 2>/dev/null && pwd)
+    # Save current directory
+    local current_dir=$(pwd)
+    
+    # Get the directory containing .git
+    local git_dir=$(dirname "$repo_path")
+    
+    # Try to resolve absolute path
+    local repo_dir=""
+    if cd "$git_dir" 2>/dev/null; then
+        repo_dir=$(pwd)
+        cd "$current_dir" || return 1
+    else
+        echo -e "${YELLOW}  ⊘ Repository directory not found, skipping token update${NC}"
+        return 1
+    fi
     
     if [[ -z "$repo_dir" ]] || [[ ! -d "$repo_dir" ]]; then
-        echo -e "${YELLOW}  ⊘ Repository directory not found, skipping token update${NC}"
+        echo -e "${YELLOW}  ⊘ Repository directory not accessible, skipping token update${NC}"
         return 1
     fi
     
@@ -234,22 +379,32 @@ update_github_token() {
     
     if [[ -z "$token" ]]; then
         echo -e "${YELLOW}  ⊘ Failed to get token, skipping token update${NC}"
+        cd "$current_dir" || return 1
         return 1
     fi
     
     # Update .git/config
+    local success=false
     if grep -q "url = https://$GITHUB_USERNAME:" .git/config 2>/dev/null; then
         # Token already exists, replace it
         sed -i "s|\($GITHUB_USERNAME:\)[^@]*@|\1$token@|" .git/config
         echo -e "${GREEN}  ✓ Token updated${NC}"
-        return 0
+        success=true
     elif grep -q "url = https://github.com/" .git/config 2>/dev/null; then
         # No token yet, add it
         sed -i "s|https://github.com/|https://$GITHUB_USERNAME:$token@github.com/|" .git/config
         echo -e "${GREEN}  ✓ Token added${NC}"
-        return 0
+        success=true
     else
         echo -e "${YELLOW}  ⊘ No GitHub URL found in config${NC}"
+    fi
+    
+    # Return to original directory
+    cd "$current_dir" || return 1
+    
+    if [[ "$success" == true ]]; then
+        return 0
+    else
         return 1
     fi
 }
@@ -595,6 +750,16 @@ count_files_to_commit() {
         # Skip if file is empty
         [[ -z "$file" ]] && continue
         
+        # Skip files that match common ignore patterns
+        if is_commonly_ignored "$file"; then
+            continue
+        fi
+        
+        # Skip files that are ignored by git
+        if git check-ignore -q "$file" 2>/dev/null; then
+            continue
+        fi
+        
         # Skip .git directories
         if [[ "$file" == ".git"* ]] || [[ "$file" == *"/.git"* ]] || [[ "$file" == *"/.git" ]]; then
             continue
@@ -610,6 +775,16 @@ count_files_to_commit() {
                     continue
                 fi
                 
+                # Skip files that match common ignore patterns
+                if is_commonly_ignored "$subfile"; then
+                    continue
+                fi
+                
+                # Skip files that are ignored by git
+                if git check-ignore -q "$subfile" 2>/dev/null; then
+                    continue
+                fi
+                
                 # Skip files larger than 100MB
                 local file_size=$(stat -f%z "$subfile" 2>/dev/null || stat -c%s "$subfile" 2>/dev/null)
                 local max_size=$((100 * 1024 * 1024))
@@ -620,6 +795,16 @@ count_files_to_commit() {
                 file_count=$((file_count + 1))
             done < <(find "$file" -type f -not -path "*/.git/*")
         else
+            # Skip files that match common ignore patterns
+            if is_commonly_ignored "$file"; then
+                continue
+            fi
+            
+            # Skip files that are ignored by git (single file check)
+            if git check-ignore -q "$file" 2>/dev/null; then
+                continue
+            fi
+            
             # Skip files larger than 100MB
             if [[ -f "$file" ]]; then
                 local file_size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null)
@@ -730,6 +915,16 @@ process_repository() {
         # Skip if file is empty
         [[ -z "$file" ]] && continue
         
+        # Skip files that match common ignore patterns
+        if is_commonly_ignored "$file"; then
+            continue
+        fi
+        
+        # Skip files that are ignored by git
+        if git check-ignore -q "$file" 2>/dev/null; then
+            continue
+        fi
+        
         # Skip .git directories and their contents
         if [[ "$file" == ".git"* ]] || [[ "$file" == *"/.git"* ]] || [[ "$file" == *"/.git" ]]; then
             continue
@@ -743,6 +938,16 @@ process_repository() {
                 
                 # Skip files inside .git directories
                 if [[ "$subfile" == *"/.git/"* ]] || [[ "$subfile" == ".git/"* ]]; then
+                    continue
+                fi
+                
+                # Skip files that match common ignore patterns
+                if is_commonly_ignored "$subfile"; then
+                    continue
+                fi
+                
+                # Skip files that are ignored by git
+                if git check-ignore -q "$subfile" 2>/dev/null; then
                     continue
                 fi
                 
@@ -828,8 +1033,22 @@ process_repository() {
         [[ -n "$scope" ]] && echo -e "  Scope: ${GREEN}$scope${NC}"
         echo -e "  Message: ${GREEN}$commit_msg${NC}"
         
-        # Add and commit the file
-        if git add -- "$file" > /dev/null 2>&1; then
+        # Add/remove and commit the file based on status
+        local git_success=false
+        
+        if [[ "$status" == "D" ]]; then
+            # For deleted files, use git rm
+            if git rm -- "$file" > /dev/null 2>&1; then
+                git_success=true
+            fi
+        else
+            # For added/modified files, use git add
+            if git add -- "$file" > /dev/null 2>&1; then
+                git_success=true
+            fi
+        fi
+        
+        if [[ "$git_success" == true ]]; then
             if git commit -m "$commit_msg" > /dev/null 2>&1; then
                 echo -e "  ${GREEN}✓ Committed successfully${NC}\n"
             else
@@ -837,7 +1056,7 @@ process_repository() {
                 git reset HEAD -- "$file" > /dev/null 2>&1
             fi
         else
-            echo -e "  ${RED}✗ Failed to add file${NC}\n"
+            echo -e "  ${RED}✗ Failed to stage file${NC}\n"
         fi
         
     done <<< "$changed_files"
@@ -873,51 +1092,73 @@ process_repository() {
 }
 
 # Main script
-echo -e "${GREEN}╔═══════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║          Auto Commit Script - Multi Repository           ║${NC}"
-echo -e "${GREEN}╚═══════════════════════════════════════════════════════════╝${NC}\n"
+if [[ "$SILENT_MODE" != true ]]; then
+    echo -e "${GREEN}╔═══════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║          Auto Commit Script - Multi Repository           ║${NC}"
+    echo -e "${GREEN}╚═══════════════════════════════════════════════════════════╝${NC}\n"
+fi
 
-# Ask for commit message language
-echo -e "${BLUE}Select commit message language:${NC}"
-echo -e "  1) English (en)"
-echo -e "  2) Español (es)"
-echo -e "  3) Português (pt)"
-read -p "Enter choice (1-3) [default: 1]: " lang_choice
+# Ask for commit message language (if not in silent mode and not provided)
+if [[ "$SILENT_MODE" != true ]]; then
+    echo -e "${BLUE}Select commit message language:${NC}"
+    echo -e "  1) English (en)"
+    echo -e "  2) Español (es)"
+    echo -e "  3) Português (pt)"
+    read -p "Enter choice (1-3) [default: 1]: " lang_choice
 
-case "$lang_choice" in
-    2)
-        COMMIT_LANGUAGE="es"
-        echo -e "${GREEN}✓ Language set to: Español${NC}\n"
-        ;;
-    3)
-        COMMIT_LANGUAGE="pt"
-        echo -e "${GREEN}✓ Language set to: Português${NC}\n"
-        ;;
-    *)
-        COMMIT_LANGUAGE="en"
-        echo -e "${GREEN}✓ Language set to: English${NC}\n"
-        ;;
-esac
+    case "$lang_choice" in
+        2)
+            COMMIT_LANGUAGE="es"
+            echo -e "${GREEN}✓ Language set to: Español${NC}\n"
+            ;;
+        3)
+            COMMIT_LANGUAGE="pt"
+            echo -e "${GREEN}✓ Language set to: Português${NC}\n"
+            ;;
+        *)
+            COMMIT_LANGUAGE="en"
+            echo -e "${GREEN}✓ Language set to: English${NC}\n"
+            ;;
+    esac
+else
+    # Silent mode - just show what was selected
+    case "$COMMIT_LANGUAGE" in
+        es)
+            echo -e "${GREEN}✓ Language: Español${NC}"
+            ;;
+        pt)
+            echo -e "${GREEN}✓ Language: Português${NC}"
+            ;;
+        *)
+            echo -e "${GREEN}✓ Language: English${NC}"
+            ;;
+    esac
+fi
 
 # Check if gh CLI is installed
 GH_AVAILABLE=false
 if ! command -v gh &> /dev/null; then
-    echo -e "${YELLOW}GitHub CLI (gh) not found${NC}"
-    read -p "Do you want to install GitHub CLI? (y/n): " install_choice
-    
-    if [[ "$install_choice" =~ ^[Yy]$ ]]; then
-        echo ""
-        install_gh_cli
+    if [[ "$SILENT_MODE" != true ]]; then
+        echo -e "${YELLOW}GitHub CLI (gh) not found${NC}"
+        read -p "Do you want to install GitHub CLI? (y/n): " install_choice
         
-        if [[ $? -eq 0 ]]; then
-            GH_AVAILABLE=true
+        if [[ "$install_choice" =~ ^[Yy]$ ]]; then
+            echo ""
+            install_gh_cli
+            
+            if [[ $? -eq 0 ]]; then
+                GH_AVAILABLE=true
+            else
+                echo -e "${RED}Failed to install GitHub CLI${NC}"
+                echo -e "${YELLOW}Continuing without token update functionality...${NC}\n"
+            fi
         else
-            echo -e "${RED}Failed to install GitHub CLI${NC}"
+            echo -e "${YELLOW}Skipping GitHub CLI installation${NC}"
             echo -e "${YELLOW}Continuing without token update functionality...${NC}\n"
         fi
     else
-        echo -e "${YELLOW}Skipping GitHub CLI installation${NC}"
-        echo -e "${YELLOW}Continuing without token update functionality...${NC}\n"
+        # Silent mode - skip installation
+        echo -e "${YELLOW}✓ GitHub CLI not found - skipping token updates${NC}"
     fi
 else
     GH_AVAILABLE=true
@@ -926,39 +1167,65 @@ fi
 # Check if authenticated with gh (only if gh is available)
 if [[ "$GH_AVAILABLE" == true ]]; then
     if ! gh auth status &> /dev/null; then
-        echo -e "${YELLOW}Not authenticated with GitHub CLI${NC}\n"
-        authenticate_gh
+        if [[ "$SILENT_MODE" != true ]]; then
+            echo -e "${YELLOW}Not authenticated with GitHub CLI${NC}\n"
+            authenticate_gh
+        else
+            echo -e "${YELLOW}✓ Not authenticated with GitHub CLI - skipping token updates${NC}"
+            GH_AVAILABLE=false
+        fi
     else
-        echo -e "${GREEN}✓ GitHub CLI authenticated${NC}\n"
+        if [[ "$SILENT_MODE" != true ]]; then
+            echo -e "${GREEN}✓ GitHub CLI authenticated${NC}\n"
+        else
+            echo -e "${GREEN}✓ GitHub CLI authenticated${NC}"
+        fi
     fi
 fi
 
 # Ask if user wants to update tokens
 UPDATE_TOKENS=false
 if [[ "$GH_AVAILABLE" == true ]]; then
-    read -p "Do you want to update GitHub tokens in repositories? (y/n): " update_tokens_choice
-    
-    if [[ "$update_tokens_choice" =~ ^[Yy]$ ]]; then
-        UPDATE_TOKENS=true
+    if [[ "$SILENT_MODE" != true ]]; then
+        read -p "Do you want to update GitHub tokens in repositories? (y/n): " update_tokens_choice
         
-        # Ask for GitHub username
-        read -p "GitHub username: " GITHUB_USERNAME
-        
-        if [[ -z "$GITHUB_USERNAME" ]]; then
-            echo -e "${RED}Error: Username cannot be empty${NC}"
-            exit 1
+        if [[ "$update_tokens_choice" =~ ^[Yy]$ ]]; then
+            UPDATE_TOKENS=true
+            
+            # Ask for GitHub username
+            read -p "GitHub username: " GITHUB_USERNAME
+            
+            if [[ -z "$GITHUB_USERNAME" ]]; then
+                echo -e "${RED}Error: Username cannot be empty${NC}"
+                exit 1
+            fi
+        else
+            echo -e "${YELLOW}Skipping token updates${NC}"
         fi
+        echo ""
     else
-        echo -e "${YELLOW}Skipping token updates${NC}"
+        # Silent mode - use provided arguments
+        if [[ "$UPDATE_TOKENS_ARG" == true ]]; then
+            if [[ -n "$GITHUB_USERNAME" ]]; then
+                UPDATE_TOKENS=true
+                echo -e "${GREEN}✓ Will update tokens for user: $GITHUB_USERNAME${NC}"
+            else
+                echo -e "${YELLOW}✓ Username not provided - skipping token updates${NC}"
+            fi
+        else
+            echo -e "${YELLOW}✓ Token updates disabled${NC}"
+        fi
     fi
-    echo ""
 fi
 
 # Save current directory
 original_dir=$(pwd)
 
 # Find all .git directories
-echo -e "${YELLOW}Searching for git repositories...${NC}\n"
+if [[ "$SILENT_MODE" != true ]]; then
+    echo -e "${YELLOW}Searching for git repositories...${NC}\n"
+fi
+
 git_dirs=()
 while IFS= read -r git_dir; do
     git_dirs+=("$git_dir")
@@ -972,8 +1239,13 @@ fi
 echo -e "${GREEN}Found ${#git_dirs[@]} git repository(ies)${NC}\n"
 
 # Preview mode - count files in each repository
-read -p "Do you want to preview the number of files to commit? (y/n): " preview_choice
-echo ""
+preview_choice="n"
+if [[ "$SILENT_MODE" != true ]]; then
+    read -p "Do you want to preview the number of files to commit? (y/n): " preview_choice
+    echo ""
+elif [[ "$SHOW_PREVIEW" == true ]]; then
+    preview_choice="y"
+fi
 
 if [[ "$preview_choice" =~ ^[Yy]$ ]]; then
     echo -e "${BLUE}╔═══════════════════════════════════════════════════════════╗${NC}"
@@ -1002,12 +1274,14 @@ if [[ "$preview_choice" =~ ^[Yy]$ ]]; then
     echo -e "${GREEN}║ Total files to commit across all repos: ${YELLOW}$total_files_all_repos${GREEN}           ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════════════╝${NC}\n"
     
-    read -p "Do you want to proceed with committing? (y/n): " proceed_choice
-    echo ""
-    
-    if [[ ! "$proceed_choice" =~ ^[Yy]$ ]]; then
-        echo -e "${YELLOW}Operation cancelled by user${NC}"
-        exit 0
+    if [[ "$SILENT_MODE" != true ]]; then
+        read -p "Do you want to proceed with committing? (y/n): " proceed_choice
+        echo ""
+        
+        if [[ ! "$proceed_choice" =~ ^[Yy]$ ]]; then
+            echo -e "${YELLOW}Operation cancelled by user${NC}"
+            exit 0
+        fi
     fi
 fi
 
@@ -1018,6 +1292,10 @@ for git_dir in "${git_dirs[@]}"; do
     cd "$original_dir" || exit
 done
 
-echo -e "${GREEN}╔═══════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║              All Repositories Processed!                 ║${NC}"
-echo -e "${GREEN}╚═══════════════════════════════════════════════════════════╝${NC}"
+if [[ "$SILENT_MODE" != true ]]; then
+    echo -e "${GREEN}╔═══════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║              All Repositories Processed!                 ║${NC}"
+    echo -e "${GREEN}╚═══════════════════════════════════════════════════════════╝${NC}"
+else
+    echo -e "${GREEN}✓ All repositories processed${NC}"
+fi
