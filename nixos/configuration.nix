@@ -27,6 +27,8 @@ let
 in
 {
   nix.settings.trusted-users = [ "root" "zen" ];
+  # Enable experimental features
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -264,7 +266,12 @@ in
 stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
 
 # Graphical tools for development
+# Add antigravity-nix from GitHub
+(builtins.getFlake "github:jacopone/antigravity-nix").packages.x86_64-linux.google-antigravity
+unstable.zed-editor
+unstable.code-cursor
 unstable.vscode
+unstable.windsurf
 unstable.google-authenticator
 unstable._1password-gui
 unstable.authenticator
@@ -329,8 +336,10 @@ unstable.dig
 unstable.doggo
 unstable.mitmproxy
 unstable.aria2
+unstable.cifs-utils
 
 # Security cli tools
+unstable.uv
 unstable.vulnix
 unstable.clamav
 unstable.lynis
@@ -355,7 +364,7 @@ unstable.radare2
 unstable.ghidra-bin
 unstable.trivy
 unstable.wapiti
-unstable.wpscan
+# unstable.wpscan
 unstable.grype
 unstable.octoscan
 unstable.osv-scanner
@@ -633,6 +642,7 @@ unstable.liberation_ttf
     KRB5_CONFIG = "/etc/krb5.conf";
   };
 
+  # Optimise Nix store
   nix.settings.auto-optimise-store = true;
   nix.optimise.automatic = true;
   nix.optimise.dates = [ "12:00" ]; # Optional; allows customizing optimisation schedule
