@@ -315,6 +315,7 @@ stable.just
 stable.thefuck
 stable.mosh
 stable.lazygit
+stable.jq
 stable.file
 stable.gnumake
 

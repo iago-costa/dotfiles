@@ -419,6 +419,9 @@ binds {
     Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
     Mod+Shift+Ctrl+L { move-column-to-monitor-right; }
 
+    // === Swap Workspaces Between Monitors ===
+    Mod+Shift+S hotkey-overlay-title="Swap Workspaces" { spawn "bash" "/home/zen/.config/niri/scripts/swap-workspaces.sh"; }
+
     // === Workspaces (like XMonad) ===
     Mod+1 { focus-workspace 1; }
     Mod+2 { focus-workspace 2; }
@@ -462,5 +465,5 @@ binds {
 
     // === System ===
     Mod+Shift+E { quit; }
-    Mod+Shift+W { spawn-sh "niri msg action load-config-file"; }
+    Mod+Shift+W { spawn-sh "niri msg action load-config-file && dms restart; dms restart;"; }
 }
