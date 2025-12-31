@@ -449,6 +449,7 @@ unstable.xwayland-satellite
 unstable.polkit_gnome
 unstable.quickshell
 unstable.dms-shell
+unstable.dgop  # System monitoring backend for DMS (CPU, memory, network, GPU)
 
 
 # Command line tools for multimedia
