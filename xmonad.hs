@@ -9,6 +9,8 @@ import XMonad.Hooks.ManageDocks
 import qualified XMonad.Layout.Grid as Grid
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
+import XMonad.Layout.Spacing (spacing)
+import XMonad.Actions.CycleWS (nextWS, prevWS)
 
 -- The main function.
 main = 
@@ -23,7 +25,8 @@ myConfig = xfceConfig
     , workspaces = myWorkspaces
     , logHook = myLogHook
     -- , layoutHook = avoidStruts $ toggleLayouts Full (Tall 1 (3/100) (1/2))
-    , layoutHook = avoidStruts $ toggleLayouts Full Grid.Grid
+    , layoutHook = avoidStruts $ toggleLayouts Full (spacing 10 $ Tall 1 (3/100) (1/2))
+    , mouseBindings = myMouseBindings
     } `additionalKeys` myKeys `additionalKeysP` myKeysP
 
 -- Key bindings
@@ -35,6 +38,15 @@ myKeysP = [
     ("M-x w", spawn "xmessage 'woohoo!'")
     -- key to toggle full view layout for active window
     , ("M-f", sendMessage (Toggle "Full"))
+    , ("M-d", spawn "xfce4-appfinder")
+    ]
+
+myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
+    [ ((modm, button1), (\w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster))
+    , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
+    , ((modm, button3), (\w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster))
+    , ((modm, button4), (\_ -> prevWS))
+    , ((modm, button5), (\_ -> nextWS))
     ]
 
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]

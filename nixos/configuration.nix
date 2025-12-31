@@ -109,7 +109,7 @@ in
   services.spice-vdagentd.enable = true;
 
   # Enable the X11 windowing system.
-  services.displayManager.defaultSession = "xfce+xmonad";
+  services.displayManager.defaultSession = "niri";
   services.xserver = {
     enable = true;   
     desktopManager = {
@@ -382,7 +382,7 @@ unstable.eresi
 unstable.cutter
 unstable.degate
 unstable.iaito
-unstable.autopsy
+#unstable.autopsy
 
 # Graphical tools for communication and collaboration
 anydesk
@@ -437,6 +437,19 @@ stable.wirelesstools
 stable.inetutils
 stable.lm_sensors
 stable.nix-index
+
+# Niri / Wayland tools
+unstable.fuzzel
+unstable.waybar
+unstable.wlsunset
+unstable.swaylock
+unstable.swaybg
+unstable.swaynotificationcenter
+unstable.xwayland-satellite
+unstable.polkit_gnome
+unstable.quickshell
+unstable.dms-shell
+
 
 # Command line tools for multimedia
 stable.zip
@@ -579,6 +592,7 @@ unstable.liberation_ttf
     xfconf.enable = true;
     light.brightnessKeys.enable = true;
     adb.enable = true;
+    niri.enable = true;
   };
   # List services that you want to enable:
   xdg.portal.enable = true;
