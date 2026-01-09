@@ -277,6 +277,9 @@ spawn-at-startup "xfce4-power-manager"
 spawn-at-startup "nm-applet"
 spawn-at-startup "blueman-applet"
 
+// Clipboard Manager
+spawn-at-startup "copyq" "--start-server"
+
 // Notification daemon
 spawn-at-startup "swaync"
 
@@ -382,12 +385,16 @@ binds {
     // === Application Launchers (XMonad style) ===
     Mod+Return { spawn "alacritty"; }
     Mod+D { spawn "fuzzel"; }
+    Mod+C hotkey-overlay-title="Clipboard Inline" { spawn "copyq" "menu"; }
+    Mod+Shift+C hotkey-overlay-title="Clipboard History" { spawn "copyq" "toggle"; }
+    Mod+Space hotkey-overlay-title="Window Switcher" { spawn "dms" "ipc" "call" "spotlight" "open"; }
 
     // === Window Management ===
     Mod+Q { close-window; }
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
     Mod+V { toggle-window-floating; }
+    Mod+T hotkey-overlay-title="Toggle Float" { toggle-window-floating; }
 
     // === Focus Navigation (vim keys) ===
     Mod+H { focus-column-left; }
@@ -453,6 +460,9 @@ binds {
     Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
 
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { focus-column-right; }
+    Mod+Ctrl+WheelScrollUp cooldown-ms=150 { focus-column-left; }
+
     // === Media Keys ===
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05-"; }
@@ -461,7 +471,14 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
 
     // === Screenshots ===
-    Print { screenshot; }
+    // Full screen capture -> edit with swappy
+    Print hotkey-overlay-title="Screenshot + Edit" { spawn-sh "grim - | swappy -f -"; }
+    // Region selection -> edit with swappy
+    Shift+Print hotkey-overlay-title="Region Screenshot + Edit" { spawn-sh "grim -g \"$(slurp)\" - | swappy -f -"; }
+    // Quick save (no editor)
+    Ctrl+Print hotkey-overlay-title="Quick Screenshot" { screenshot; }
+    // Active window screenshot -> edit with swappy
+    Mod+Print hotkey-overlay-title="Window Screenshot + Edit" { spawn-sh "grim -g \"$(niri msg -j focused-window | jq -r '.\"geometry\" | \"\\(.x),\\(.y) \\(.width)x\\(.height)\"')\" - | swappy -f -"; }
 
     // === System ===
     Mod+Shift+E { quit; }

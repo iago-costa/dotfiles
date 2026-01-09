@@ -42,10 +42,19 @@ in
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Kernel parameters for gaming performance
+  # Kernel parameters for performance optimization
   boot.kernel.sysctl = {
+    # Gaming / application support
     "vm.max_map_count" = 2147483642;
     "fs.file-max" = 524288;
+    
+    # Memory management - prefer RAM over swap
+    "vm.swappiness" = 10;
+    "vm.vfs_cache_pressure" = 50;
+    
+    # Disk I/O optimization - write dirty pages earlier for SSD longevity
+    "vm.dirty_ratio" = 10;
+    "vm.dirty_background_ratio" = 5;
   };
 
   # Set your time zone.
@@ -68,16 +77,17 @@ in
   services.clamav.updater.enable = true;
 
   security.rtkit.enable = true;
+  security.polkit.enable = true;  # Required for Quickshell/Niri network management
   
-  services.pipewire.enable = false;
-  # services.pipewire = {
-  #   enable = true;
-  #   alsa.enable = true;
-  #   alsa.support32Bit = true;
-  #   pulse.enable = true;
-  #   # If you want to use JACK applications, uncomment this
-  #   jack.enable = true;
-  # };
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    jack.enable = true;
+    wireplumber.enable = true;
+  };
 
   services.upower = {
     enable = true;
@@ -103,6 +113,7 @@ in
     stable.xfce.xfce4-power-manager
     stable.xfce.xfce4-terminal
     stable.xfce.xfce4-whiskermenu-plugin
+    stable.xfce.thunar
   ];
 
   # Spice VDAgent
@@ -156,11 +167,16 @@ in
     enable = true;
   };
 
-  # systemd.targets.hybrid-sleep.enable = true;
-  # services.logind.extraConfig = ''
-  #   IdleAction=hybrid-sleep
-  #   IdleActionSec=600s
-  # '';
+  # Enable logind for power management (required for Quickshell/DMS power buttons)
+  services.logind = {
+    lidSwitch = "suspend";
+    lidSwitchExternalPower = "lock";
+    powerKey = "poweroff";
+    powerKeyLongPress = "poweroff";
+    suspendKey = "suspend";
+    hibernateKey = "hibernate";
+    rebootKey = "reboot";
+  };
 
   #systemd.services.nix-security-scan = {
   #  description = "Weekly system security scan";
@@ -220,10 +236,8 @@ in
   # };
 
   hardware.enableAllFirmware = true;
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.support32Bit = true;    ## If compatibility with 32-bit applications is desired.
-  hardware.pulseaudio.package = unstable.pulseaudioFull;
-  hardware.pulseaudio.extraConfig = "load-module module-combine-sink";
+  # Disabled PulseAudio in favor of PipeWire for Wayland/Niri compatibility
+  hardware.pulseaudio.enable = false;
   
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
@@ -237,9 +251,10 @@ in
     initialPassword = "pw123"; 
     group = "users";
     extraGroups = [ 
-      "wheel" # Enable ‘sudo’ for the user.
-      "adbusers" # Enable ‘adb’ for the user.
+      "wheel" # Enable 'sudo' for the user.
+      "adbusers" # Enable 'adb' for the user.
       "audio"
+      "networkmanager" # Allow GUI network management
     ]; 
     packages = [
       
@@ -288,6 +303,14 @@ stable.libsForQt5.libopenshot
 stable.libsForQt5.libopenshot-audio
 stable.qtractor
 stable.inkscape
+stable.gimp  # Full-featured image editor
+
+# Screenshot capture and quick editing (Wayland/Niri compatible)
+unstable.grim      # Screenshot capture for Wayland
+unstable.slurp     # Region selection for screenshots
+unstable.swappy    # Quick screenshot annotation/editing
+unstable.flameshot # Feature-rich screenshot with annotations
+stable.ksnip       # Screenshot tool with annotation features
 
 # Integrated Development Environment
 unstable.neovim
@@ -299,6 +322,7 @@ unstable.nodejs_24
 
 # Command line tools for development
 unstable.git
+unstable.git-lfs
 stable.gh
 unstable.libiconv
 stable.xclip
@@ -316,6 +340,7 @@ stable.thefuck
 stable.mosh
 stable.lazygit
 stable.jq
+stable.bc
 stable.file
 stable.gnumake
 
@@ -376,19 +401,20 @@ unstable.mdns-scanner
 # unstable.angryipscanner
 
 # Security gui tools
-unstable.armitage
+# unstable.armitage  # BROKEN - fails to build in unstable
 unstable.johnny
 unstable.burpsuite
-unstable.eresi
+# unstable.eresi
 unstable.cutter
 unstable.degate
 unstable.iaito
-#unstable.autopsy
+# unstable.autopsy
 
 # Graphical tools for communication and collaboration
 anydesk
 unstable.remmina
 stable.teamviewer
+# stable.rustdesk  # Disabled: no binary cache, compiles from source every time
 #stable.zoom-us
 
 # Browsers 
@@ -416,6 +442,10 @@ stable.texstudio
 stable.copyq
 stable.lightlocker
 stable.redshift
+
+# File Manager
+unstable.nautilus
+unstable.gnome-disk-utility
 
 # Command line tools to run not nix packages
 # stable.patchelf
@@ -451,6 +481,7 @@ unstable.polkit_gnome
 unstable.quickshell
 unstable.dms-shell
 unstable.dgop  # System monitoring backend for DMS (CPU, memory, network, GPU)
+unstable.wtype # Wayland keyboard input simulator
 
 
 # Command line tools for multimedia
@@ -466,6 +497,9 @@ stable.xar
 stable.p7zip
 stable.pbzx
 stable.rcodesign
+
+# Android development tools
+stable.android-tools
 
 # Command line tools for virtualization and containers
 stable.qemu
@@ -593,13 +627,21 @@ unstable.liberation_ttf
     ];
     xfconf.enable = true;
     light.brightnessKeys.enable = true;
-    adb.enable = true;
+
     niri.enable = true;
   };
   # List services that you want to enable:
   xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg.portal.extraPortals = [ 
+    pkgs.xdg-desktop-portal-gtk 
+    pkgs.xdg-desktop-portal-gnome
+    pkgs.xdg-desktop-portal-wlr  # Screen sharing for Wayland (AnyDesk, etc)
+  ];
   xdg.portal.config.common.default = "gtk";
+  xdg.portal.wlr.enable = true;  # Enable wlroots portal for screen capture
+  
+  # Ensure Nautilus file picker works in browsers
+  services.gnome.sushi.enable = true;  # Quick file previewer
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -660,11 +702,26 @@ unstable.liberation_ttf
 
   # Optimise Nix store
   nix.settings.auto-optimise-store = true;
+  nix.settings.max-jobs = "auto";  # Use all available cores for builds
+  nix.settings.cores = 0;          # Use all cores per job
   nix.optimise.automatic = true;
-  nix.optimise.dates = [ "12:00" ]; # Optional; allows customizing optimisation schedule
+  nix.optimise.dates = [ "12:00" ];
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 30d";
+    options = "--delete-older-than 14d";  # More aggressive cleanup
+  };
+
+  # SSD Optimization - periodic TRIM
+  services.fstrim = {
+    enable = true;
+    interval = "weekly";
+  };
+
+  # ZRAM Swap - compressed RAM swap for better memory utilization
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
   };
 }
