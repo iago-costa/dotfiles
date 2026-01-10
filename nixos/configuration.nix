@@ -282,8 +282,8 @@ stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano 
 
 # Graphical tools for development
 # Add antigravity-nix from GitHub
-(builtins.getFlake "github:jacopone/antigravity-nix").packages.x86_64-linux.google-antigravity
-unstable.zed-editor
+unstable.antigravity-fhs
+# unstable.zed-editor
 unstable.code-cursor
 unstable.vscode
 unstable.windsurf
@@ -537,6 +537,7 @@ unstable.alsa-utils
 
 # Command line tools for AI
 unstable.ollama
+unstable.gemini-cli
 
 # Command line tools for downloading
 unstable.qbittorrent

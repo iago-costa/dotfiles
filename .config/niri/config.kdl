@@ -384,10 +384,12 @@ binds {
 
     // === Application Launchers (XMonad style) ===
     Mod+Return { spawn "alacritty"; }
-    Mod+D { spawn "fuzzel"; }
+    Mod+D { spawn-sh "pkill -x fuzzel || fuzzel --config /home/zen/GITS/INC_FILES/STUDY_PROGRAMMING/dotfiles/.config/fuzzel/fuzzel.ini"; }
     Mod+C hotkey-overlay-title="Clipboard Inline" { spawn "copyq" "menu"; }
     Mod+Shift+C hotkey-overlay-title="Clipboard History" { spawn "copyq" "toggle"; }
-    Mod+Space hotkey-overlay-title="Window Switcher" { spawn "dms" "ipc" "call" "spotlight" "open"; }
+    // Mod+Space hotkey-overlay-title="Window Switcher" { spawn "dms" "ipc" "call" "spotlight" "open"; }
+    Mod+Space hotkey-overlay-title="Window Search/Switch" { spawn-sh "pkill -x fuzzel || bash /home/zen/.config/niri/scripts/switch-window.sh"; }
+    Mod+G hotkey-overlay-title="Search Folders" { spawn-sh "pkill -x fuzzel || bash /home/zen/.config/niri/scripts/open-folder.sh"; }
 
     // === Window Management ===
     Mod+Q { close-window; }
@@ -457,11 +459,14 @@ binds {
     Mod+Equal { set-column-width "+10%"; }
 
     // === Mouse Wheel (workspace like XMonad) ===
-    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
-    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
-
     Mod+Ctrl+WheelScrollDown cooldown-ms=150 { focus-column-right; }
     Mod+Ctrl+WheelScrollUp cooldown-ms=150 { focus-column-left; }
+
+    Mod+Alt+WheelScrollDown cooldown-ms=150 { focus-column-right; }
+    Mod+Alt+WheelScrollUp cooldown-ms=150 { focus-column-left; }
+
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
 
     // === Media Keys ===
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0"; }
@@ -472,9 +477,9 @@ binds {
 
     // === Screenshots ===
     // Full screen capture -> edit with swappy
-    Print hotkey-overlay-title="Screenshot + Edit" { spawn-sh "grim - | swappy -f -"; }
+    Shift+Print hotkey-overlay-title="Screenshot + Edit" { spawn-sh "grim - | swappy -f -"; }
     // Region selection -> edit with swappy
-    Shift+Print hotkey-overlay-title="Region Screenshot + Edit" { spawn-sh "grim -g \"$(slurp)\" - | swappy -f -"; }
+    Print hotkey-overlay-title="Region Screenshot + Edit" { spawn-sh "grim -g \"$(slurp)\" - | swappy -f -"; }
     // Quick save (no editor)
     Ctrl+Print hotkey-overlay-title="Quick Screenshot" { screenshot; }
     // Active window screenshot -> edit with swappy
