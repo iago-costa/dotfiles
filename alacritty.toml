@@ -1,54 +1,295 @@
-general.import = ["/home/gup/.config/alacritty/themes/themes/hyper.toml"]
+# =============================================================================
+# Alacritty Configuration - Enhanced with Best Features
+# =============================================================================
+
+# Theme import (update path as needed)
+# general.import = ["/home/zen/.config/alacritty/themes/themes/hyper.toml"]
 
 general.live_config_reload = true
 
-[cursor]
-style = "Beam"
-
+# =============================================================================
+# Environment
+# =============================================================================
 [env]
 TERM = "xterm-256color"
 
-[font]
-size = 9.0
-# [font.normal]
-# family = "MesloLGS NF Regular"
-
-# [[hints.enabled]]
-# command = { program = "xclip", args = ["-selection", "clipboard"], input = "replace" }
-
-[font.offset]
-x = 1
-y = 1
-
-[[hints.enabled]]
-command         = "xdg-open" # On Linux/BSD
-# command       = "open" # On macOS
-# command       = { program = "cmd", args = [ "/c", "start", "" ] } # On Windows
-hyperlinks      = true
-post_processing = true
-persist         = false
-mouse.enabled   = true
-binding         = { key = "U", mods = "Control|Shift" }
-regex           = "(ipfs:|ipns:|magnet:|mailto:|gemini://|go‐pher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
-
-[scrolling]
-history = 50000
-
-[selection]
-save_to_clipboard = true
-
+# =============================================================================
+# Window Settings
+# =============================================================================
 [window]
 title = "Alacritty"
 decorations = "None"
-dynamic_padding = false
-opacity = 0.9
+dynamic_padding = true
+opacity = 0.92
+blur = true  # Enable blur on supported compositors (Wayland)
+startup_mode = "Windowed"  # Options: Windowed, Maximized, Fullscreen
+
+[window.dimensions]
+columns = 120
+lines = 36
+
+[window.padding]
+x = 8
+y = 8
 
 [window.class]
 general = "Alacritty"
 instance = "Alacritty"
 
-[window.padding]
-x = 6
-y = 6
+# =============================================================================
+# Scrolling
+# =============================================================================
+[scrolling]
+history = 100000
+multiplier = 3  # Scroll speed
 
+# =============================================================================
+# Font Configuration
+# =============================================================================
+[font]
+size = 10.0
 
+[font.normal]
+family = "MesloLGS NF"
+style = "Regular"
+
+[font.bold]
+family = "MesloLGS NF"
+style = "Bold"
+
+[font.italic]
+family = "MesloLGS NF"
+style = "Italic"
+
+[font.bold_italic]
+family = "MesloLGS NF"
+style = "Bold Italic"
+
+[font.offset]
+x = 0
+y = 1
+
+[font.glyph_offset]
+x = 0
+y = 0
+
+# =============================================================================
+# Cursor
+# =============================================================================
+[cursor]
+blink_interval = 500
+blink_timeout = 0  # 0 = never stop blinking
+unfocused_hollow = true
+vi_mode_style = "Block"
+
+[cursor.style]
+shape = "Beam"
+blinking = "On"
+
+# =============================================================================
+# Selection
+# =============================================================================
+[selection]
+save_to_clipboard = true
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+
+# =============================================================================
+# Mouse - Ctrl+Click to open links
+# =============================================================================
+[mouse]
+hide_when_typing = true
+
+# =============================================================================
+# Hints - Clickable URLs with Ctrl+Click
+# =============================================================================
+[[hints.enabled]]
+command = "xdg-open"
+hyperlinks = true
+post_processing = true
+persist = false
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\\u0000-\\u001F\\u007F-\\u009F<>\"\\s{-}\\^⟨⟩`]+"
+
+[hints.enabled.binding]
+key = "U"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Control"  # Ctrl+Click to open URLs
+
+# Hints - Clickable file paths with Ctrl+Click
+[[hints.enabled]]
+command = "xdg-open"
+hyperlinks = true
+post_processing = true
+persist = false
+# Matches absolute paths (/home/...), relative paths (./...), and home paths (~/..)
+regex = "(~|\\.|/)[a-zA-Z0-9_\\-./]+\\.[a-zA-Z0-9]+"
+
+[hints.enabled.binding]
+key = "O"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Control"  # Ctrl+Click to open file paths
+
+# =============================================================================
+# Keyboard Bindings
+# =============================================================================
+[[keyboard.bindings]]
+action = "Paste"
+key = "V"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "Copy"
+key = "C"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "PasteSelection"
+key = "Insert"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "ResetFontSize"
+key = "Key0"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Plus"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Equals"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "DecreaseFontSize"
+key = "Minus"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ToggleFullscreen"
+key = "F11"
+mods = "None"
+
+[[keyboard.bindings]]
+action = "ClearHistory"
+key = "K"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "ScrollPageUp"
+key = "PageUp"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "ScrollPageDown"
+key = "PageDown"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "ScrollToTop"
+key = "Home"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "ScrollToBottom"
+key = "End"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "Space"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "SearchForward"
+key = "F"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "SearchBackward"
+key = "B"
+mods = "Control|Shift"
+
+# Create new Alacritty instance
+[[keyboard.bindings]]
+key = "N"
+mods = "Control|Shift"
+command = { program = "alacritty", args = ["--working-directory", "."] }
+
+# =============================================================================
+# Colors - Dracula Theme (built-in, no import needed)
+# =============================================================================
+[colors.primary]
+background = "#000000"
+foreground = "#cdd6f4"
+dim_foreground = "#7f849c"
+bright_foreground = "#cdd6f4"
+
+[colors.cursor]
+text = "#1e1e2e"
+cursor = "#f5e0dc"
+
+[colors.vi_mode_cursor]
+text = "#1e1e2e"
+cursor = "#b4befe"
+
+[colors.search.matches]
+foreground = "#1e1e2e"
+background = "#a6adc8"
+
+[colors.search.focused_match]
+foreground = "#1e1e2e"
+background = "#a6e3a1"
+
+[colors.footer_bar]
+foreground = "#1e1e2e"
+background = "#a6adc8"
+
+[colors.hints.start]
+foreground = "#1e1e2e"
+background = "#f9e2af"
+
+[colors.hints.end]
+foreground = "#1e1e2e"
+background = "#a6adc8"
+
+[colors.selection]
+text = "#1e1e2e"
+background = "#f5e0dc"
+
+[colors.normal]
+black = "#45475a"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#f5c2e7"
+cyan = "#94e2d5"
+white = "#bac2de"
+
+[colors.bright]
+black = "#585b70"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#f5c2e7"
+cyan = "#94e2d5"
+white = "#a6adc8"
+
+[colors.dim]
+black = "#45475a"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#f5c2e7"
+cyan = "#94e2d5"
+white = "#bac2de"

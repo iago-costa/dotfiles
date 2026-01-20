@@ -208,32 +208,31 @@ in
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  # Enable 32-bit support (essential for gaming)
-  # hardware.opengl = {
-  #   enable = true;
-  #   driSupport32Bit = true;
+  # Enable OpenGL/Vulkan graphics (required for VMs, quickgui, gaming)
+  # Note: NixOS 25.05+ uses hardware.graphics instead of hardware.opengl
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;  # 32-bit support for Wine, games, etc.
     
-  #   # Vulkan support
-  #   extraPackages = with pkgs; [
-  #     stable.vulkan-loader
-  #     stable.vulkan-validation-layers
-  #     stable.vulkan-tools
-  #     # AMD specific
-  #     stable.amdvlk
-  #     # Intel specific
-  #     stable.intel-media-driver
-  #     # NVIDIA specific (uncomment if using NVIDIA)
-  #     # nvidia-vaapi-driver
-  #   ];
+    # Extra packages for Vulkan and hardware video acceleration
+    extraPackages = with pkgs; [
+      vulkan-loader
+      vulkan-validation-layers
+      vulkan-tools
+      # Mesa VA-API driver (hardware video decode)
+      mesa.drivers
+      # Intel specific (uncomment if using Intel GPU)
+      # intel-media-driver
+      # intel-vaapi-driver
+      # AMD specific (uncomment if using AMD GPU)
+      # amdvlk
+    ];
     
-  #   extraPackages32 = with pkgs.pkgsi686Linux; [
-  #     stable.vulkan-loader
-  #     # AMD specific
-  #     stable.amdvlk
-  #     # Intel specific
-  #     stable.intel-media-driver
-  #   ];
-  # };
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      vulkan-loader
+      mesa.drivers
+    ];
+  };
 
   hardware.enableAllFirmware = true;
   # Disabled PulseAudio in favor of PipeWire for Wayland/Niri compatibility
@@ -255,6 +254,8 @@ in
       "adbusers" # Enable 'adb' for the user.
       "audio"
       "networkmanager" # Allow GUI network management
+      "libvirtd" # Enable libvirt/QEMU VM management
+      "kvm" # Enable KVM hardware acceleration
     ]; 
     packages = [
       
@@ -515,6 +516,11 @@ stable.quickemu
 stable.gns3-gui
 stable.gns3-server
 
+# Windows VM support - VirtIO drivers and SPICE for optimized graphics
+stable.virtio-win            # VirtIO drivers ISO for Windows guest (storage, network, GPU)
+stable.spice-gtk             # SPICE client with 3D OpenGL acceleration
+stable.looking-glass-client  # Low-latency display capture for GPU passthrough (optional)
+
 # Command line tools for encryption 
 stable.gnome-keyring
 stable.libsecret
@@ -668,7 +674,18 @@ unstable.liberation_ttf
   system.stateVersion = "25.05"; # Did you read the comment?
 
   # virtualisation.vmware.host.enable = true;
-  virtualisation.libvirtd.enable = false;
+  
+  # Libvirt/QEMU for Windows 10 VM with optimized graphics
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      # Note: OVMF UEFI firmware is now included by default in NixOS 26.05+
+      swtpm.enable = true;          # TPM emulation for Windows 11 compatibility
+      runAsRoot = false;
+    };
+  };
+  
   programs.dconf.enable = true; # virt-manager requires dconf to remember settings
 
   virtualisation.docker.enable = true;

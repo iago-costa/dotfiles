@@ -171,6 +171,10 @@ alias xmonadinit='pkill -f "xmonad" | true | xmonad --recompile &> /dev/null | t
 alias xmobarinit='pkill -f "xmobar" | true && xmobar &'
 alias xmoinit='xmonadinit; xmobarinit;'
 
+# VM aliases
+alias win10='~/GITS/INC_FILES/STUDY_PROGRAMMING/dotfiles/scripts/win10-vm.sh'
+alias macos='~/GITS/INC_FILES/STUDY_PROGRAMMING/dotfiles/scripts/macos-vm.sh'
+
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -TFl --group-directories-first --icons --git -L 2 --no-user $realpath'
 zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
 zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
