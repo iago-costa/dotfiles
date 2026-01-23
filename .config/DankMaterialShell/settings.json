@@ -117,8 +117,6 @@
   "appLauncherGridColumns": 8,
   "spotlightCloseNiriOverview": false,
   "niriOverviewOverlayEnabled": false,
-  "weatherLocation": "New York, NY",
-  "weatherCoordinates": "40.7128,-74.0060",
   "useAutoLocation": true,
   "weatherEnabled": true,
   "networkPreference": "ethernet",
@@ -329,5 +327,6 @@
       "maximizeDetection": true
     }
   ],
-  "configVersion": 2
+  "configVersion": 5,
+  "desktopWidgetInstances": []
 }
