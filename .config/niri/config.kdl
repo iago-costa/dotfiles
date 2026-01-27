@@ -290,8 +290,8 @@ spawn-at-startup "swaybg" "-c" "#000000"
 // Status bar (disabled - using quickshell/dms instead)
 // spawn-at-startup "waybar"
 
-// Night Light
-spawn-at-startup "wlsunset" "-t" "3000"
+// Night Light - disabled auto-start, use Mod+N to toggle manually
+// spawn-at-startup "wlsunset" "-t" "3000" "-T" "3000"
 
 // DankMaterialShell (Dashboard)
 spawn-at-startup "dms" "run"
@@ -379,7 +379,8 @@ window-rule {
 
 binds {
     // === Hotkey Overlay ===
-    Mod+Tab repeat=false hotkey-overlay-title="Toggle Overview" { toggle-overview; }
+    // Zoom/Overview to see all windows
+    Mod+Tab repeat=false hotkey-overlay-title="Zoom Overview" { toggle-overview; }
     Mod+Shift+Slash hotkey-overlay-title="Show Hotkey Overlay" { show-hotkey-overlay; }
 
     // === Application Launchers (XMonad style) ===
@@ -397,6 +398,11 @@ binds {
     Mod+Shift+F { fullscreen-window; }
     Mod+V { toggle-window-floating; }
     Mod+T hotkey-overlay-title="Toggle Float" { toggle-window-floating; }
+    Mod+N hotkey-overlay-title="Toggle Night Mode" { spawn "bash" "/home/zen/.config/niri/scripts/toggle-nightmode.sh"; }
+    Mod+Shift+N hotkey-overlay-title="Night Temp Menu" { spawn "bash" "/home/zen/.config/niri/scripts/night-menu.sh"; }
+
+    Mod+M hotkey-overlay-title="Toggle Dark Mode" { spawn "bash" "/home/zen/.config/niri/scripts/toggle-darkmode.sh"; }
+    Mod+Shift+M hotkey-overlay-title="Theme Menu" { spawn "bash" "/home/zen/.config/niri/scripts/dark-mode-menu.sh"; }
 
     // === Focus Navigation (vim keys) ===
     Mod+H { focus-column-left; }
