@@ -1,30 +1,35 @@
 -- Config for javascript lsp
-local lspconfig = require('lspconfig')
+-- local lspconfig = require('lspconfig')
+local util = require('lspconfig.util')
 
 -- Config for eslint lsp
-lspconfig.eslint.setup {
+vim.lsp.config['eslint'] = {
   cmd = { "vscode-eslint-language-server", "--stdio" },
   filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-  root_dir = lspconfig.util.root_pattern(".git"),
+  root_dir = util.root_pattern(".git"),
 }
+vim.lsp.enable('eslint')
 
 -- Config for typescript lsp
-lspconfig.ts_ls.setup {
+vim.lsp.config['ts_ls'] = {
   cmd = { "typescript-language-server", "--stdio" },
   filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-  root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
+  root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
 }
+vim.lsp.enable('ts_ls')
 
 -- Config for html lsp
-lspconfig.html.setup {
+vim.lsp.config['html'] = {
   cmd = { "html-lsp", "--stdio" },
   filetypes = { "html" },
-  root_dir = lspconfig.util.root_pattern(".git"),
+  root_dir = util.root_pattern(".git"),
 }
+vim.lsp.enable('html')
 
 -- Config for json lsp
-lspconfig.jsonls.setup {
+vim.lsp.config['jsonls'] = {
   cmd = { "json-lsp", "--stdio" },
   filetypes = { "json" },
-  root_dir = lspconfig.util.root_pattern(".git"),
+  root_dir = util.root_pattern(".git"),
 }
+vim.lsp.enable('jsonls')

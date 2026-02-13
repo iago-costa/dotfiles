@@ -1,8 +1,8 @@
 -- Config lsp for css
-local lspconfig = require('lspconfig')
+-- local lspconfig = require('lspconfig')
 
 -- Config for css lsp
-lspconfig.cssls.setup {
+vim.lsp.config['cssls'] = {
     cmd = { "css-lsp", "--stdio" },
     filetypes = { "css", "scss", "less" },
     settings = {
@@ -17,3 +17,4 @@ lspconfig.cssls.setup {
         },
     },
 }
+vim.lsp.enable('cssls')

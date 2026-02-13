@@ -1,11 +1,13 @@
 -- Configure Rust Analyzer
-local nvim_lsp = require('lspconfig')
+-- Use vim.lsp.config (Nvim 0.11+)
+-- local nvim_lsp = require('lspconfig') -- Deprecated
 
 local on_attach = function(client)
   require 'completion'.on_attach(client)
 end
 
-nvim_lsp.rust_analyzer.setup({
+-- define config manually for vim.lsp.config
+vim.lsp.config['rust_analyzer'] = {
   on_attach = on_attach,
   settings = {
     ["rust-analyzer"] = {
@@ -25,47 +27,48 @@ nvim_lsp.rust_analyzer.setup({
       },
     }
   }
-})
+}
+vim.lsp.enable('rust_analyzer')
 
 
-local rust_tools = require('rust-tools')
-rust_tools.setup({
-  server = {
-    on_attach = function(client, bufnr)
-      -- Hover actions
-      vim.keymap.set("n", "<C-space>", rust_tools.hover_actions.hover_actions, { buffer = bufnr })
-      -- Code action groups
-      vim.keymap.set("n", "<Leader>a", rust_tools.code_action_group.code_action_group, { buffer = bufnr })
-      -- -- DAP :lua require('dap').continue() keymap
-      -- vim.keymap.set("n", "<Leader>dc", rust_tools.dap_continue.continue, { buffer = bufnr })
-    end,
-    standalone = false,
-    hover_actions = {
-      auto_focus = true,
-    },
-    server = {
-      settings = {
-        ["rust-analyzer"] = {
-          checkOnSave = {
-            command = "clippy"
-          }
-        }
-      },
-    },
-  }
-})
+-- local rust_tools = require('rust-tools')
+-- rust_tools.setup({
+--   server = {
+--     on_attach = function(client, bufnr)
+--       -- Hover actions
+--       vim.keymap.set("n", "<C-space>", rust_tools.hover_actions.hover_actions, { buffer = bufnr })
+--       -- Code action groups
+--       vim.keymap.set("n", "<Leader>a", rust_tools.code_action_group.code_action_group, { buffer = bufnr })
+--       -- -- DAP :lua require('dap').continue() keymap
+--       -- vim.keymap.set("n", "<Leader>dc", rust_tools.dap_continue.continue, { buffer = bufnr })
+--     end,
+--     standalone = false,
+--     hover_actions = {
+--       auto_focus = true,
+--     },
+--     server = {
+--       settings = {
+--         ["rust-analyzer"] = {
+--           checkOnSave = {
+--             command = "clippy"
+--           }
+--         }
+--       },
+--     },
+--   }
+-- })
 
-rust_tools.runnables.runnables()
-rust_tools.hover_actions.hover_actions()
-rust_tools.parent_module.parent_module()
+-- rust_tools.runnables.runnables()
+-- rust_tools.hover_actions.hover_actions()
+-- rust_tools.parent_module.parent_module()
 
-local map = vim.keymap.set
-local opts = { noremap = true, silent = true }
--- Command:
--- RustMoveItemUp
--- RustMoveItemDown
-map('n', '<Leader>ru', '<cmd>RustMoveItemUp<CR>', opts)
-map('n', '<Leader>rd', '<cmd>RustMoveItemDown<CR>', opts)
+-- local map = vim.keymap.set
+-- local opts = { noremap = true, silent = true }
+-- -- Command:
+-- -- RustMoveItemUp
+-- -- RustMoveItemDown
+-- map('n', '<Leader>ru', '<cmd>RustMoveItemUp<CR>', opts)
+-- map('n', '<Leader>rd', '<cmd>RustMoveItemDown<CR>', opts)
 
 
 require('crates').setup {
@@ -195,10 +198,10 @@ require('crates').setup {
       jump_back = { "<c-o>", "<C-RightMouse>" },
     },
   },
-  null_ls = {
-    enabled = false,
-    name = "Crates",
-  },
+  -- null_ls = {
+  --   enabled = false,
+  --   name = "Crates",
+  -- },
   on_attach = function(bufnr) end,
 }
 

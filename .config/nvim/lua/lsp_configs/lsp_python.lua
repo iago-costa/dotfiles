@@ -1,7 +1,8 @@
-local nvim_lsp = require('lspconfig')
+-- Configure Python LSPs using vim.lsp.config (Nvim 0.11+)
+-- local nvim_lsp = require('lspconfig') -- Deprecated
 
--- Configure Pyright for Python
--- nvim_lsp.pyright.setup {
+-- Configure Pyright for Python (Commented out in original)
+-- vim.lsp.config['pyright'] = {
 --   cmd = { "pyright" },
 --   filetypes = { "python" },
 --   settings = {
@@ -16,9 +17,11 @@ local nvim_lsp = require('lspconfig')
 --     }
 --   }
 -- }
+-- vim.lsp.enable('pyright')
 
-local lspconfig = require("lspconfig")
-lspconfig.basedpyright.setup {}
+-- Configure basedpyright
+vim.lsp.config['basedpyright'] = {}
+vim.lsp.enable('basedpyright')
 
 -- Configure pylsp for Python
 local venv_path = os.getenv('VIRTUAL_ENV')
@@ -30,7 +33,7 @@ else
   py_path = vim.g.python3_host_prog
 end
 
-nvim_lsp.pylsp.setup {
+vim.lsp.config['pylsp'] = {
   cmd = { "pylsp" },
   filetypes = { "python" },
   settings = {
@@ -63,3 +66,4 @@ nvim_lsp.pylsp.setup {
     debounce_text_changes = 200,
   },
 }
+vim.lsp.enable('pylsp')

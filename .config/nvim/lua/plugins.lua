@@ -66,15 +66,10 @@ require('packer').startup(function()
           'stevearc/dressing.nvim', -- optional for vim.ui.select
         },
       },
-
-      use { 'jose-elias-alvarez/null-ls.nvim', -- null-ls for formatting and linting support
-        ft = "go",
-        opts = function()
-          return require("lsp_comfigs/null-ls")
-        end,
-      },
     }
   })
+
+
 
   -- install live grep and telescope
   use({

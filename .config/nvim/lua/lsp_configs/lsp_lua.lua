@@ -1,8 +1,8 @@
 -- Config for lua lsp
-local lspconfig = require('lspconfig')
+-- local lspconfig = require('lspconfig')
 
 -- Config for lua lsp
-lspconfig.lua_ls.setup {
+vim.lsp.config['lua_ls'] = {
     cmd = { "lua-language-server" },
     settings = {
         Lua = {
@@ -18,3 +18,4 @@ lspconfig.lua_ls.setup {
         },
     },
 }
+vim.lsp.enable('lua_ls')

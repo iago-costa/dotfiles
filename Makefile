@@ -5,14 +5,11 @@ sync-from-user-hard-to-root:
 	
 sync-from-user:
 	@echo "Updating redshift and nvim files from user to git"
-	cp -r ${HOME}/.config/redshift ./.config/
+	mkdir -p .config/redshift
+	rsync -av --delete ${HOME}/.config/redshift/ ./.config/redshift/
 	
-	rm -rf ./.config/nvim | true
-	mkdir -p ./.config/nvim/lua | true
-	mkdir -p ./.config/nvim/ftplugin | true
-	cp -r ${HOME}/.config/nvim/lua ./.config/nvim/ | true
-	cp -r ${HOME}/.config/nvim/init.lua ./.config/nvim/	| true
-	cp -r ${HOME}/.config/nvim/ftplugin ./.config/nvim/ | true
+	mkdir -p .config/nvim
+	rsync -av --delete --exclude 'undodir' --exclude '.git' --exclude 'plugin' ${HOME}/.config/nvim/ ./.config/nvim/
 
 nixos-link:
 	@echo "Linking nixos configuration"

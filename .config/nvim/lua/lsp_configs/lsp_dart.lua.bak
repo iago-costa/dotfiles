@@ -1,5 +1,5 @@
--- Set dart lsp using vim.lsp.config (Nvim 0.11+)
--- local lspconfig = require('lspconfig') -- Deprecated
+-- Set dart lsp using lspconfig
+local lspconfig = require('lspconfig')
 
 -- Set the path to the dart sdk
 local dart_sdk_path = os.getenv('DART_SDK')
@@ -8,10 +8,7 @@ local dart_sdk_path = os.getenv('DART_SDK')
 local flutter_sdk_path = os.getenv('FLUTTER_SDK')
 
 -- Configure the dart language server
--- Helper to get root directory
-local root_pattern = require('lspconfig.util').root_pattern
-
-vim.lsp.config['dartls'] = {
+lspconfig.dartls.setup {
   init_options = {
     closingLabels = true,
     flutterOutline = true,
@@ -20,7 +17,7 @@ vim.lsp.config['dartls'] = {
     suggestFromUnimportedLibraries = true,
   },
   filetypes = { 'dart' },
-  root_dir = root_pattern('pubspec.yaml', '.git'),
+  root_dir = lspconfig.util.root_pattern('pubspec.yaml', '.git'),
   settings = {
     dart = {
       analysisExcludedFolders = { 'build', '.dart_tool' },
@@ -32,5 +29,3 @@ vim.lsp.config['dartls'] = {
     },
   },
 }
-
-vim.lsp.enable('dartls')
