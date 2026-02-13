@@ -658,7 +658,7 @@ cleanup_containers() {
 cleanup_dev_tools() {
     header "13. Limpeza de Ferramentas de Desenvolvimento"
     
-    # VSCode / Windsurf / Cursor
+    # 1. Extensões e Dados (Home Directories)
     local ide_dirs=(
         "$REAL_HOME/.vscode"
         "$REAL_HOME/.windsurf"
@@ -667,26 +667,56 @@ cleanup_dev_tools() {
     
     for ide_dir in "${ide_dirs[@]}"; do
         if [[ -d "$ide_dir" ]]; then
-            local size=$(get_size "$ide_dir")
-            log "$(basename $ide_dir): $(format_size $size)"
+            log "Verificando $(basename $ide_dir)..."
+            # Limpeza segura de arquivos temporários de extensões sem confirmação explícita
+            # ou inclua na confirmação abaixo se preferir
+            rm -rf "$ide_dir/extensions/.obsolete" 2>/dev/null || true
+            find "$ide_dir/extensions" -type d -name ".cache" -exec rm -rf {} \; 2>/dev/null || true
+            find "$ide_dir/extensions" -type d -name "node_modules/.cache" -exec rm -rf {} \; 2>/dev/null || true
+            find "$ide_dir" -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
+        fi
+    done
+
+    # 2. Caches de Aplicação (Config Directories)
+    # Aqui residem os caches do Electron, GPU, etc.
+    local ide_config_dirs=(
+        "$REAL_HOME/.config/Code"
+        "$REAL_HOME/.config/Windsurf"
+        "$REAL_HOME/.config/Cursor"
+        "$REAL_HOME/.config/VSCodium"
+    )
+    
+    for config_dir in "${ide_config_dirs[@]}"; do
+        if [[ -d "$config_dir" ]]; then
+            local size=$(get_size "$config_dir")
+            log "Config/Cache $(basename $config_dir): $(format_size $size)"
             
-            if confirm "Limpar caches do $(basename $ide_dir)"; then
-                # Extensões obsoletas
-                rm -rf "$ide_dir/extensions/.obsolete" 2>/dev/null || true
+            if confirm "Limpar caches do $(basename $config_dir)"; then
+                # Lista de diretórios de cache comuns em Electron/VSCode-based
+                local caches=(
+                    "CachedData"
+                    "CachedExtensionVSIXs"
+                    "CachedExtensions"
+                    "Code Cache"
+                    "Crashpad"
+                    "DawnCache"
+                    "DawnGraphiteCache"
+                    "DawnWebGPUCache"
+                    "GPUCache"
+                    "logs"
+                    "Service Worker/CacheStorage"
+                    "Service Worker/ScriptCache"
+                    "blob_storage"
+                    "Cache"
+                )
                 
-                # Caches dentro de extensões
-                find "$ide_dir/extensions" -type d -name ".cache" -exec rm -rf {} \; 2>/dev/null || true
-                find "$ide_dir/extensions" -type d -name "node_modules/.cache" -exec rm -rf {} \; 2>/dev/null || true
+                for cache in "${caches[@]}"; do
+                    if [[ -d "$config_dir/$cache" ]]; then
+                        rm -rf "$config_dir/$cache"/* 2>/dev/null || true
+                    fi
+                done
                 
-                # Logs antigos
-                find "$ide_dir" -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
-                
-                # Cache data
-                rm -rf "$ide_dir/CachedData"/* 2>/dev/null || true
-                rm -rf "$ide_dir/CachedExtensions"/* 2>/dev/null || true
-                rm -rf "$ide_dir/CachedExtensionVSIXs"/* 2>/dev/null || true
-                
-                success "Caches do $(basename $ide_dir) limpos"
+                success "Caches do $(basename $config_dir) limpos"
             fi
         fi
     done
