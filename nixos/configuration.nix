@@ -552,33 +552,22 @@ unstable.qbittorrent
 # unstable.jdk
 # unstable.jre_minimal
 
-# Lutris and dependencies
-# unstable.lutris
-# unstable.wineWowPackages.stableFull
-# unstable.wineWowPackages.yabridge
-# unstable.winetricks
+# Lutris and Gaming Dependencies
+unstable.lutris
+unstable.wineWow64Packages.waylandFull
+unstable.winetricks
+unstable.gamemode
+unstable.mangohud
 
 # Vulkan tools and validation
-# unstable.vulkan-tools
-# unstable.vulkan-loader
-# unstable.vulkan-headers
-# unstable.vulkan-validation-layers
+unstable.vulkan-tools
+unstable.vulkan-loader
+unstable.vulkan-validation-layers
+unstable.vulkan-extension-layer
 
 # Graphics libraries
-# unstable.mesa # Includes Vulkan support
-# unstable.libGL
-# unstable.libGLU
-# unstable.amdvlk # Alternative or additional AMD Vulkan driver
-# (stable.appimage-run.override {
-# extraPkgs = pkgs: [ stable.xorg.libxshmfence ];
-# })
-
-# Kerberos support
-unstable.krb5
-
-# DXVK and VKD3D
-# unstable.dxvk
-# unstable.vkd3d
+unstable.mesa # RADV (default AMD driver)
+unstable.dxvk
 
 # Additional Wine dependencies
 # unstable.xorg.libXcursor

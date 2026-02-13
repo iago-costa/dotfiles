@@ -26,7 +26,7 @@ LOG_FILE="/tmp/disk-cleanup-$(date +%Y%m%d_%H%M%S).log"
 if [[ -n "${SUDO_USER:-}" ]]; then
     REAL_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
 else
-    REAL_HOME="$REAL_HOME"
+    REAL_HOME="${HOME}"
 fi
 
 #===============================================================================
@@ -95,6 +95,38 @@ confirm() {
     [[ $REPLY =~ ^[Ss]$ ]]
 }
 
+show_progress() {
+    # $1: current
+    # $2: total
+    # $3: label (optional)
+    local current=$1
+    local total=$2
+    local label="${3:-}"
+    local width=50
+    local percent=$((current * 100 / total))
+    local filled=$((current * width / total))
+    local empty=$((width - filled))
+    
+    # Create the bar [=====>.....]
+    local bar="["
+    if [ $filled -gt 0 ]; then
+        bar+=$(printf "%${filled}s" | tr ' ' '=')
+    fi
+    if [ $empty -gt 0 ]; then
+        bar+=$(printf "%${empty}s" | tr ' ' '.')
+    fi
+    bar+="]"
+    
+    # Print progress with carriage return to overwrite line
+    echo -ne "\r${CYAN}${bar} ${percent}% ${NC}${label}"
+    
+    # If done, print newline
+    if [ "$current" -eq "$total" ]; then
+        echo ""
+    fi
+}
+
+
 #===============================================================================
 # 1. LIMPEZA DO NIX STORE (MAIOR IMPACTO)
 #===============================================================================
@@ -110,8 +142,6 @@ cleanup_nix_generations() {
     local user_gens=$(ls ~/.local/state/nix/profiles/profile-*-link 2>/dev/null | wc -l || echo 0)
     log "Gerações do usuário encontradas: $user_gens"
     
-    # Tamanho antes
-    local before=$(get_size /nix/store)
     
     echo -e "${YELLOW}ATENÇÃO: Manter apenas as últimas 3 gerações do sistema.${NC}"
     echo -e "${YELLOW}Isso irá liberar MUITO espaço mas remover opções de rollback antigas.${NC}"
@@ -427,15 +457,30 @@ cleanup_git_repos() {
     
     if confirm "Executar git gc --aggressive em todos os repos (compactar)"; then
         log "Compactando repositórios Git..."
-        find "$git_dir" -name ".git" -type d 2>/dev/null | while read gitdir; do
+        
+        # Collect repos into array
+        local repos=()
+        while read -r gitdir; do
+            repos+=("$gitdir")
+        done < <(find "$git_dir" -name ".git" -type d 2>/dev/null)
+        
+        local total=${#repos[@]}
+        local current=0
+        
+        for gitdir in "${repos[@]}"; do
             local repo=$(dirname "$gitdir")
-            log "  Compactando: $(basename $repo)"
+            local repo_name=$(basename "$repo")
+            
+            ((current++))
+            show_progress "$current" "$total" " $repo_name"
+            
             (
                 cd "$repo" 2>/dev/null || exit
                 git reflog expire --expire=now --all 2>/dev/null || true
                 git gc --aggressive --prune=now 2>/dev/null || true
-            )
+            ) &>/dev/null
         done
+        echo "" # Ensure newline after progress bar
         success "Repos Git compactados!"
     fi
     
@@ -480,81 +525,26 @@ cleanup_node_modules() {
     log "Total em node_modules: $(format_size ${total:-0})"
     
     if confirm "Remover TODOS os node_modules (você pode reinstalar com npm install)"; then
-        find "$search_dir" -name "node_modules" -type d -prune -exec rm -rf {} \; 2>/dev/null || true
+        local dirs=()
+        while read -r d; do
+            dirs+=("$d")
+        done < <(find "$search_dir" -name "node_modules" -type d -prune 2>/dev/null)
+        
+        local total=${#dirs[@]}
+        local current=0
+        
+        for d in "${dirs[@]}"; do
+            ((current++))
+            local label=" $(basename $(dirname "$d"))"
+            show_progress "$current" "$total" "$label"
+            rm -rf "$d" 2>/dev/null || true
+        done
+        echo "" # Newline
         success "node_modules removidos!"
         TOTAL_FREED=$((TOTAL_FREED + ${total:-0}))
     fi
 }
 
-cleanup_downloads() {
-    header "17. Limpeza de Downloads"
-    
-    local downloads_dir="$REAL_HOME/Downloads"
-    
-    if [[ ! -d "$downloads_dir" ]]; then
-        warn "Pasta Downloads não encontrada"
-        return
-    fi
-    
-    local size=$(get_size "$downloads_dir")
-    log "Pasta Downloads: $(format_size $size)"
-    
-    echo ""
-    log "Maiores arquivos/pastas em Downloads:"
-    du -sh "$downloads_dir"/* 2>/dev/null | sort -hr | head -15 || true
-    
-    # Find and remove OLD folders
-    echo ""
-    if find "$downloads_dir" -maxdepth 1 -type d -name "OLD*" 2>/dev/null | grep -q .; then
-        log "Pastas OLD encontradas:"
-        find "$downloads_dir" -maxdepth 1 -type d -name "OLD*" 2>/dev/null | while read -r old; do
-            du -sh "$old" 2>/dev/null || true
-        done
-        
-        if confirm "Remover TODAS as pastas OLD em Downloads"; then
-            find "$downloads_dir" -maxdepth 1 -type d -name "OLD*" -exec rm -rf {} \; 2>/dev/null || true
-            success "Pastas OLD removidas!"
-        fi
-    else
-        log "Nenhuma pasta OLD encontrada"
-    fi
-    
-    # Find and offer to remove large files
-    echo ""
-    log "Arquivos grandes (> 50MB):"
-    find "$downloads_dir" -maxdepth 1 -type f -size +50M 2>/dev/null | while read -r file; do
-        du -sh "$file" 2>/dev/null || true
-    done
-    
-    if confirm "Remover TODOS os arquivos > 50MB em Downloads"; then
-        local freed=$(find "$downloads_dir" -maxdepth 1 -type f -size +50M -exec du -sb {} \; 2>/dev/null | awk '{sum+=$1} END {print sum}')
-        find "$downloads_dir" -maxdepth 1 -type f -size +50M -delete 2>/dev/null || true
-        success "Arquivos grandes removidos! Liberado: $(format_size ${freed:-0})"
-    fi
-    
-    # Clean files older than 30 days
-    echo ""
-    local old_count=$(find "$downloads_dir" -maxdepth 1 -type f -mtime +30 2>/dev/null | wc -l)
-    if (( old_count > 0 )); then
-        log "Arquivos com mais de 30 dias: $old_count arquivos"
-        if confirm "Remover arquivos em Downloads com mais de 30 dias"; then
-            local freed=$(find "$downloads_dir" -maxdepth 1 -type f -mtime +30 -exec du -sb {} \; 2>/dev/null | awk '{sum+=$1} END {print sum}')
-            find "$downloads_dir" -maxdepth 1 -type f -mtime +30 -delete 2>/dev/null || true
-            success "Arquivos antigos removidos! Liberado: $(format_size ${freed:-0})"
-        fi
-    else
-        log "Nenhum arquivo com mais de 30 dias encontrado"
-    fi
-    
-    # Option to empty entire Downloads
-    echo ""
-    if confirm "Esvaziar COMPLETAMENTE a pasta Downloads (CUIDADO!)"; then
-        local freed=$(get_size "$downloads_dir")
-        rm -rf "$downloads_dir"/* 2>/dev/null || true
-        success "Downloads esvaziado! Liberado: $(format_size $freed)"
-        TOTAL_FREED=$((TOTAL_FREED + freed))
-    fi
-}
 
 cleanup_flatpak() {
     header "18. Limpeza de Flatpak"
@@ -961,7 +951,6 @@ main() {
         analyze_config_dir
         cleanup_git_repos
         cleanup_node_modules
-        # cleanup_downloads  # Desabilitado - contém arquivos críticos
         cleanup_flatpak
     fi
     
