@@ -729,6 +729,6 @@ unstable.liberation_ttf
   zramSwap = {
     enable = true;
     algorithm = "zstd";
-    memoryPercent = 50;
+    memoryPercent = 7;
   };
 }
