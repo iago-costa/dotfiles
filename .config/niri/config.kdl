@@ -391,6 +391,9 @@ binds {
     // Mod+Space hotkey-overlay-title="Window Switcher" { spawn "dms" "ipc" "call" "spotlight" "open"; }
     Mod+Space hotkey-overlay-title="Window Search/Switch" { spawn-sh "pkill -x fuzzel || bash /home/zen/.config/niri/scripts/switch-window.sh"; }
     Mod+G hotkey-overlay-title="Search Folders" { spawn-sh "pkill -x fuzzel || bash /home/zen/.config/niri/scripts/open-folder.sh"; }
+    Mod+B hotkey-overlay-title="Terminal in Folder" { spawn-sh "pkill -x fuzzel || bash /home/zen/.config/niri/scripts/open-terminal-in-folder.sh"; }
+    Mod+A hotkey-overlay-title="Antigravity in Folder" { spawn-sh "pkill -x fuzzel || bash /home/zen/.config/niri/scripts/open-antigravity-in-folder.sh"; }
+    Mod+S hotkey-overlay-title="Cursor in Folder" { spawn-sh "pkill -x fuzzel || bash /home/zen/.config/niri/scripts/open-cursor-in-folder.sh"; }
 
     // === Window Management ===
     Mod+Q { close-window; }
@@ -427,6 +430,15 @@ binds {
     Mod+Shift+Right { move-column-right; }
     Mod+Shift+Up { move-column-to-workspace-up; }
     Mod+Shift+Down { move-column-to-workspace-down; }
+
+    // === Window Grouping (Consume/Expel) ===
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+
+    // === Advanced Navigation ===
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+    Mod+Backslash { center-column; }
 
     // === Monitor Navigation ===
     Mod+Ctrl+H { focus-monitor-left; }
