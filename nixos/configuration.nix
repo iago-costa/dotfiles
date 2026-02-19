@@ -93,7 +93,8 @@ in
     enable = true;
     usePercentageForPolicy = true;
     percentageAction = 15;
-    criticalPowerAction = "Hibernate";
+    criticalPowerAction = "Ignore";
+    allowRiskyCriticalPowerAction = true;
   };
 
   # Enable PAM integration for automatic unlocking (example for greetd)
@@ -723,12 +724,5 @@ unstable.liberation_ttf
   services.fstrim = {
     enable = true;
     interval = "weekly";
-  };
-
-  # ZRAM Swap - compressed RAM swap for better memory utilization
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 7;
   };
 }
