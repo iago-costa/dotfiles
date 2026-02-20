@@ -114,44 +114,11 @@ in
   services.flatpak.enable = true; 
   services.dbus.enable = true;
 
-  # ── Legacy X11/Xfce/Xmonad (DISABLED) ──────────────────────────
-  # environment.xfce.excludePackages = [ 
-  #   stable.xfce.xfwm4
-  #   stable.xfce.xfce4-panel
-  #   stable.xfce.xfce4-power-manager
-  #   stable.xfce.xfce4-terminal
-  #   stable.xfce.xfce4-whiskermenu-plugin
-  #   stable.xfce.thunar
-  # ];
-
   # Spice VDAgent
   services.spice-vdagentd.enable = true;
 
   # Display manager — Niri is the default session
   services.displayManager.defaultSession = "niri";
-
-  # services.xserver = {
-  #   enable = true;   
-  #   desktopManager = {
-  #     xfce = {
-  #        enable = true;
-  #        noDesktop = true;
-  #        enableXfwm = false;
-  #        enableScreensaver = false;
-  #     };
-  #   };
-  #   windowManager = {
-  #     xmonad = {
-  #       enable = true;
-  #       enableContribAndExtras = true;
-  #       extraPackages = haskellPackages : [
-  #         haskellPackages.xmonad-contrib
-  #         haskellPackages.xmonad-extras
-  #         haskellPackages.xmonad
-  #       ];
-  #     };
-  #   };
-  # };
 
   # Pure Wayland Login Manager (greetd + tuigreet)
   services.greetd = {
@@ -208,10 +175,6 @@ in
   #    Persistent = true;
   #  };
   #};
-
-  # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -460,8 +423,6 @@ in
     unstable.mitmproxy         # HTTP/HTTPS proxy
     unstable.python312Packages.pyngrok
     unstable.cifs-utils
-    unstable.nss
-    unstable.expat
     stable.wireshark
     unstable.tshark
     unstable.termshark
@@ -471,7 +432,6 @@ in
     # ══════════════════════════════════════════════════════════
     unstable.uv                # Python package manager
     unstable.vulnix            # Nix vulnerability scanner
-    unstable.clamav            # Antivirus
     unstable.lynis             # System audit
     unstable.sqlmap            # SQL injection tool
     unstable.sqlmc
@@ -564,7 +524,6 @@ in
     unstable.google-authenticator
     unstable._1password-gui
     unstable.authenticator
-    unstable.gnome-keyring
     unstable.libsecret
     unstable.openssl
 
@@ -585,8 +544,7 @@ in
     stable.qtractor            # Audio workstation
     stable.inkscape            # Vector graphics
     stable.gimp                # Image editor
-    unstable.pavucontrol       # PulseAudio volume control
-    unstable.pulseaudio        # Audio utilities
+    unstable.pavucontrol       # Audio volume control
     unstable.alsa-utils        # ALSA utilities
     unstable.qbittorrent       # Torrent client
     unstable.lux               # Video downloader
@@ -596,7 +554,6 @@ in
     # ══════════════════════════════════════════════════════════
     unstable.zip
     unstable.unzip
-    unstable.p7zip             # Duplicate removed
     unstable.xz
     unstable.unar
     unstable.xar
@@ -628,13 +585,7 @@ in
     unstable.pay-respects      # Correct previous command
     unstable.direnv            # Per-directory env vars
     unstable.fasd              # Quick directory access
-    unstable.libiconv          # Character encoding
     unstable.rcodesign         # Apple code signing
-    unstable.glibc
-    unstable.libGL
-    unstable.libGLU
-    unstable.libxml2
-    unstable.icu
 
     # ══════════════════════════════════════════════════════════
     # Specialized Tools
@@ -649,21 +600,13 @@ in
     unstable.lutris
     unstable.wineWow64Packages.waylandFull
     unstable.winetricks
-    unstable.gamemode
     unstable.mangohud
-    unstable.vulkan-tools
-    unstable.vulkan-loader
-    unstable.vulkan-validation-layers
     unstable.vulkan-extension-layer
     unstable.mesa              # RADV (default AMD driver)
     unstable.mesa-demos
     unstable.dxvk              # DirectX -> Vulkan
 
     # ══════════════════════════════════════════════════════════
-    # Fonts
-    # ══════════════════════════════════════════════════════════
-    unstable.corefonts         # Duplicate removed
-    unstable.liberation_ttf    # Duplicate removed
 
   ];
 
@@ -701,6 +644,15 @@ in
       unstable.stdenv.cc.cc.lib
       unstable.gcc-unwrapped.lib
       unstable.libgcc.lib
+      unstable.glibc
+      unstable.libGL
+      unstable.libGLU
+      unstable.libxml2
+      unstable.icu
+      unstable.libiconv
+      unstable.zlib
+      unstable.expat
+      unstable.nss
     ];
     # xfconf.enable = true;
 
