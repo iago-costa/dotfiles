@@ -15,22 +15,28 @@ let
     };
     permittedInsecurePackages = [
         "electron-27.3.11"
+        "qtwebengine-5.15.19"
     ];
     android_sdk.accept_license = true;
     android_sdk.accept_android_sdk_licenses = true;  
   };
   anydesk = pkgs.callPackage /etc/nixos/anydesk.nix {};
 
-  stable = import <nixos-25.05> { config = baseconfig; };
+  stable = import <nixos-25.11> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
-  deprecated = import <nixos-24.11> { config = baseconfig; };
+  deprecated = import <nixos-25.05> { config = baseconfig; };
 in
 {
   nix.settings.trusted-users = [ "root" "zen" ];
   # Enable experimental features
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.substituters = [ "https://cache.nixos.org/" ];
+  nix.settings.trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "qtwebengine-5.15.19"
+  ];
 
   imports =
     [ # Include the results of the hardware scan.
@@ -104,7 +110,7 @@ in
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  # flatpak to install postman compass openlens
+  # flatpak to install additional apps if needed
   services.flatpak.enable = true; 
   services.dbus.enable = true;
 
@@ -280,328 +286,331 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = [
-stable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    unstable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
 
-# Graphical tools for development
-# Add antigravity-nix from GitHub
-unstable.antigravity-fhs
-# unstable.zed-editor
-unstable.code-cursor
-unstable.vscode
-unstable.windsurf
-unstable.google-authenticator
-unstable._1password-gui
-unstable.authenticator
-# unstable.code-cursor
-stable.wireshark
-stable.quickgui
-stable.gparted
-stable.jmeter
-#unstable.ciscoPacketTracer8
-# unstable.libsForQt5.kdenlive
-stable.kdePackages.kdenlive
-stable.openshot-qt
-stable.libsForQt5.libopenshot
-stable.libsForQt5.libopenshot-audio
-stable.qtractor
-stable.inkscape
-stable.gimp  # Full-featured image editor
+    # Graphical tools for development
+    # Add antigravity-nix from GitHub
+    unstable.antigravity-fhs
+    # unstable.zed-editor
+    unstable.code-cursor
+    unstable.vscode
+    unstable.windsurf
+    unstable.google-authenticator
+    unstable._1password-gui
+    unstable.authenticator
+    # unstable.code-cursor
+    stable.wireshark
+    unstable.quickgui
+    unstable.postman
+    unstable.mongodb-compass
+    unstable.freelens-bin
+    unstable.gparted
+    unstable.jmeter
+    #unstable.ciscoPacketTracer8
+    # unstable.libsForQt5.kdenlive
+    stable.kdePackages.kdenlive
+    # stable.openshot-qt
+    # stable.libsForQt5.libopenshot
+    # stable.libsForQt5.libopenshot-audio
+    stable.qtractor
+    stable.inkscape
+    stable.gimp  # Full-featured image editor
 
-# Screenshot capture and quick editing (Wayland/Niri compatible)
-unstable.grim      # Screenshot capture for Wayland
-unstable.slurp     # Region selection for screenshots
-unstable.swappy    # Quick screenshot annotation/editing
-unstable.flameshot # Feature-rich screenshot with annotations
-stable.ksnip       # Screenshot tool with annotation features
+    # Screenshot capture and quick editing (Wayland/Niri compatible)
+    unstable.grim      # Screenshot capture for Wayland
+    unstable.slurp     # Region selection for screenshots
+    unstable.swappy    # Quick screenshot annotation/editing
+    unstable.flameshot # Feature-rich screenshot with annotations
+    # unstable.ksnip       # Screenshot tool with annotation features
 
-# Integrated Development Environment
-unstable.neovim
-unstable.tmux
-unstable.emacs
-unstable.zellij
-stable.devenv
-unstable.nodejs_24
+    # Integrated Development Environment
+    unstable.neovim
+    unstable.tmux
+    unstable.emacs
+    unstable.zellij
+    unstable.devenv
+    unstable.nodejs_24
 
-# Command line tools for development
-unstable.git
-unstable.git-lfs
-stable.gh
-unstable.libiconv
-stable.xclip
-stable.curl
-stable.ripgrep
-stable.fd
-stable.fasd
-stable.vifm-full
-stable.tshark
-stable.termshark
-stable.direnv
-stable.tree-sitter
-stable.just
-stable.thefuck
-stable.mosh
-stable.lazygit
-stable.jq
-stable.bc
-stable.file
-stable.gnumake
+    # Command line tools for development
+    unstable.git
+    unstable.git-lfs
+    unstable.gh
+    unstable.libiconv
+    unstable.xclip
+    unstable.curl
+    unstable.ripgrep
+    unstable.fd
+    unstable.fasd
+    unstable.vifm-full
+    unstable.tshark
+    unstable.termshark
+    unstable.direnv
+    unstable.tree-sitter
+    unstable.just
+    unstable.pay-respects
+    unstable.mosh
+    unstable.lazygit
+    unstable.jq
+    unstable.bc
+    unstable.file
+    unstable.gnumake
 
-# Command line tools for networking
-stable.sshfs
-stable.fuse3
-stable.nss
-stable.expat
-stable.nmap
-unstable.tcpdump
-stable.wrk2
-stable.wget
-stable.ethtool
-stable.python312Packages.pyngrok
-stable.gatling
-unstable.iftop
-unstable.iotop
-unstable.dig
-unstable.doggo
-unstable.mitmproxy
-unstable.aria2
-unstable.cifs-utils
+    # Command line tools for networking
+    unstable.sshfs
+    unstable.fuse3
+    unstable.nss
+    unstable.expat
+    unstable.nmap
+    unstable.tcpdump
+    unstable.wrk2
+    unstable.wget
+    unstable.ethtool
+    unstable.python312Packages.pyngrok
+    unstable.gatling
+    unstable.iftop
+    unstable.iotop
+    unstable.dig
+    unstable.doggo
+    unstable.mitmproxy
+    unstable.aria2
+    unstable.cifs-utils
 
-# Security cli tools
-unstable.uv
-unstable.vulnix
-unstable.clamav
-unstable.lynis
-unstable.sqlmap
-unstable.sqlmc
-unstable.laudanum
-unstable.nikto
-unstable.hcxtools
-unstable.hashcat
-unstable.thc-hydra
-unstable.gobuster
-unstable.wireguard-tools
-unstable.metasploit
-unstable.sssd
-unstable.aircrack-ng
-unstable.gittuf
-unstable.dockle
-unstable.checkmate
-unstable.tracee
-unstable.apktool
-unstable.radare2
-unstable.ghidra-bin
-unstable.trivy
-unstable.wapiti
-# unstable.wpscan
-unstable.grype
-unstable.octoscan
-unstable.osv-scanner
-unstable.http-scanner
-unstable.secretscanner
-unstable.netscanner
-unstable.mdns-scanner
-# unstable.angryipscanner
+    # Security cli tools
+    unstable.uv
+    unstable.vulnix
+    unstable.clamav
+    unstable.lynis
+    unstable.sqlmap
+    unstable.sqlmc
+    unstable.laudanum
+    unstable.nikto
+    unstable.hcxtools
+    unstable.hashcat
+    unstable.thc-hydra
+    unstable.gobuster
+    unstable.wireguard-tools
+    stable.metasploit
+    unstable.sssd
+    unstable.aircrack-ng
+    unstable.gittuf
+    unstable.dockle
+    unstable.checkmate
+    unstable.tracee
+    unstable.apktool
+    unstable.radare2
+    unstable.ghidra-bin
+    unstable.trivy
+    unstable.wapiti
+    # unstable.wpscan
+    unstable.grype
+    unstable.octoscan
+    unstable.osv-scanner
+    unstable.http-scanner
+    unstable.secretscanner
+    unstable.netscanner
+    unstable.mdns-scanner
+    # unstable.angryipscanner
 
-# Security gui tools
-# unstable.armitage  # BROKEN - fails to build in unstable
-unstable.johnny
-unstable.burpsuite
-# unstable.eresi
-unstable.cutter
-unstable.degate
-unstable.iaito
-# unstable.autopsy
+    # Security gui tools
+    # unstable.armitage  # BROKEN - fails to build in unstable
+    unstable.johnny
+    unstable.burpsuite
+    # unstable.eresi
+    unstable.cutter
+    unstable.degate
+    unstable.iaito
+    # unstable.autopsy
 
-# Graphical tools for communication and collaboration
-anydesk
-unstable.remmina
-stable.teamviewer
-# stable.rustdesk  # Disabled: no binary cache, compiles from source every time
-#stable.zoom-us
+    # Graphical tools for communication and collaboration
+    anydesk
+    unstable.remmina
+    unstable.teamviewer
+    # stable.rustdesk  # Disabled: no binary cache, compiles from source every time
+    #stable.zoom-us
 
-# Browsers 
-unstable.vivaldi
-unstable.vivaldi-ffmpeg-codecs
-unstable.google-chrome
-unstable.firefox
+    # Browsers 
+    stable.vivaldi
+    stable.vivaldi-ffmpeg-codecs
+    stable.google-chrome
+    stable.firefox
 
-# tools for graphics and customization of the Operational System
-stable.gtk_engines
-stable.gtk-engine-murrine
-stable.xorg.xhost
-stable.xorg.xmessage
-stable.xorg.xbacklight
-stable.haskellPackages.xmobar    
+    # tools for graphics and customization of the Operational System
+    stable.gtk_engines
+    stable.gtk-engine-murrine
+    stable.xorg.xhost
+    stable.xorg.xmessage
+    stable.xorg.xbacklight
+    stable.haskellPackages.xmobar    
 
-# Graphical tools for writing and reading
-stable.logseq
-# stable.wpsoffice
-# stable.libsForQt5.okular
-stable.texstudio    
-# unstable.pdf4qt
+    # Graphical tools for writing and reading
+    stable.logseq
+    # stable.wpsoffice
+    # stable.libsForQt5.okular
+    stable.texstudio    
+    # unstable.pdf4qt
 
-# Utilities Graphical and Operational System 
-stable.copyq
-stable.lightlocker
-stable.redshift
+    # Utilities Graphical and Operational System 
+    stable.copyq
+    stable.lightlocker
+    stable.redshift
 
-# File Manager
-unstable.nautilus
-unstable.gnome-disk-utility
+    # File Manager
+    unstable.nautilus
+    unstable.gnome-disk-utility
 
-# Command line tools to run not nix packages
-# stable.patchelf
-# stable.steam-run
+    # Command line tools to run not nix packages
+    # unstable.patchelf
+    # unstable.steam-run
 
-# Command line tools to Operational System
-stable.neofetch
-stable.icu
-stable.gcc
-stable.xdotool
-stable.libnotify
-stable.yad
-stable.lux
-stable.killall
-stable.htop
-stable.tree
-unstable.alacritty
-stable.dmidecode
-stable.wirelesstools
-stable.inetutils
-stable.lm_sensors
-stable.nix-index
+    # Command line tools to Operational System
+    unstable.neofetch
+    unstable.icu
+    unstable.gcc
+    unstable.xdotool
+    unstable.libnotify
+    unstable.yad
+    unstable.lux
+    unstable.killall
+    unstable.htop
+    unstable.tree
+    unstable.alacritty
+    unstable.dmidecode
+    unstable.wirelesstools
+    unstable.inetutils
+    unstable.lm_sensors
+    unstable.nix-index
 
-# Niri / Wayland tools
-unstable.fuzzel
-unstable.waybar
-unstable.wlsunset
-unstable.swaylock
-unstable.swaybg
-unstable.swaynotificationcenter
-unstable.xwayland-satellite
-unstable.polkit_gnome
-unstable.quickshell
-unstable.dms-shell
-unstable.dgop  # System monitoring backend for DMS (CPU, memory, network, GPU)
-unstable.wtype # Wayland keyboard input simulator
+    # Niri / Wayland tools
+    unstable.fuzzel
+    unstable.waybar
+    unstable.wlsunset
+    unstable.swaylock
+    unstable.swaybg
+    unstable.swaynotificationcenter
+    unstable.xwayland-satellite
+    unstable.polkit_gnome
+    unstable.quickshell
+    unstable.dms-shell
+    unstable.dgop  # System monitoring backend for DMS (CPU, memory, network, GPU)
+    unstable.wtype # Wayland keyboard input simulator
 
 
-# Command line tools for multimedia
-stable.zip
-stable.zlib
-stable.unzip
-stable.p7zip
-stable.xz
-unstable.unar
-stable.vlc
-stable.ffmpeg
-stable.xar
-stable.p7zip
-stable.pbzx
-stable.rcodesign
+    # Command line tools for multimedia
+    unstable.zip
+    unstable.zlib
+    unstable.unzip
+    unstable.p7zip
+    unstable.xz
+    unstable.unar
+    stable.vlc
+    stable.ffmpeg
+    unstable.xar
+    unstable.p7zip
+    unstable.pbzx
+    unstable.rcodesign
 
-# Android development tools
-stable.android-tools
+    # Android development tools
+    unstable.android-tools
 
-# Command line tools for virtualization and containers
-stable.qemu
-unstable.docker
-unstable.docker-compose
-unstable.podman
-unstable.podman-compose
-unstable.lazydocker
+    # Command line tools for virtualization and containers
+    stable.qemu
+    unstable.docker
+    unstable.docker-compose
+    unstable.podman
+    unstable.podman-compose
+    unstable.lazydocker
 
-# Command line tools for virtualization with Graphical interface
-stable.virt-manager
-stable.quickemu
-stable.gns3-gui
-stable.gns3-server
+    # Command line tools for virtualization with Graphical interface
+    stable.virt-manager
+    stable.quickemu
+    unstable.gns3-gui
+    unstable.gns3-server
 
-# Windows VM support - VirtIO drivers and SPICE for optimized graphics
-stable.virtio-win            # VirtIO drivers ISO for Windows guest (storage, network, GPU)
-stable.spice-gtk             # SPICE client with 3D OpenGL acceleration
-stable.looking-glass-client  # Low-latency display capture for GPU passthrough (optional)
+    # Windows VM support - VirtIO drivers and SPICE for optimized graphics
+    unstable.virtio-win            # VirtIO drivers ISO for Windows guest (storage, network, GPU)
+    unstable.spice-gtk             # SPICE client with 3D OpenGL acceleration
+    unstable.looking-glass-client  # Low-latency display capture for GPU passthrough (optional)
 
-# Command line tools for encryption 
-stable.gnome-keyring
-stable.libsecret
-stable.openssl
+    # Command line tools for encryption 
+    unstable.gnome-keyring
+    unstable.libsecret
+    unstable.openssl
 
-# Command line tools for graphics
-unstable.glibc
-unstable.libGL
-unstable.libGLU
-unstable.libxml2
+    # Command line tools for graphics
+    unstable.glibc
+    unstable.libGL
+    unstable.libGLU
+    unstable.libxml2
 
-# Graphical tools to audio
-unstable.pavucontrol
-unstable.pulseaudio
-unstable.lsof
-unstable.inxi
+    # Graphical tools to audio
+    unstable.pavucontrol
+    unstable.pulseaudio
+    unstable.lsof
+    unstable.inxi
 
-# Command line tools for audio
-unstable.alsa-utils
+    # Command line tools for audio
+    unstable.alsa-utils
 
-# Command line tools for AI
-unstable.ollama
-unstable.gemini-cli
+    # Command line tools for AI
+    unstable.ollama
+    unstable.gemini-cli
 
-# Command line tools for downloading
-unstable.qbittorrent
+    # Command line tools for downloading
+    unstable.qbittorrent
 
-# Dependencies for Wine Run Apps
-# unstable.jdk
-# unstable.jre_minimal
+    # Dependencies for Wine Run Apps
+    # unstable.jdk
+    # unstable.jre_minimal
 
-# Lutris and Gaming Dependencies
-unstable.lutris
-unstable.wineWow64Packages.waylandFull
-unstable.winetricks
-unstable.gamemode
-unstable.mangohud
+    # Lutris and Gaming Dependencies
+    unstable.lutris
+    unstable.wineWow64Packages.waylandFull
+    unstable.winetricks
+    unstable.gamemode
+    unstable.mangohud
 
-# Vulkan tools and validation
-unstable.vulkan-tools
-unstable.vulkan-loader
-unstable.vulkan-validation-layers
-unstable.vulkan-extension-layer
+    # Vulkan tools and validation
+    unstable.vulkan-tools
+    unstable.vulkan-loader
+    unstable.vulkan-validation-layers
+    unstable.vulkan-extension-layer
 
-# Graphics libraries
-unstable.mesa # RADV (default AMD driver)
-unstable.dxvk
+    # Graphics libraries
+    unstable.mesa # RADV (default AMD driver)
+    unstable.dxvk
 
-# Additional Wine dependencies
-# unstable.xorg.libXcursor
-# unstable.xorg.libXi
-# unstable.xorg.libXinerama
-# unstable.xorg.libXrandr
-# unstable.freetype
-# unstable.fontconfig
+    # Additional Wine dependencies
+    # unstable.xorg.libXcursor
+    # unstable.xorg.libXi
+    # unstable.xorg.libXinerama
+    # unstable.xorg.libXrandr
+    # unstable.freetype
+    # unstable.fontconfig
 
-# System monitoring
-unstable.mesa-demos
+    # System monitoring
+    unstable.mesa-demos
 
-# Font rendering
-unstable.corefonts
-unstable.liberation_ttf
+    # Font rendering
+    unstable.corefonts
+    unstable.liberation_ttf
 
   ];
 
   fonts.packages = [
-    stable.noto-fonts
-    stable.noto-fonts-cjk-sans
-    stable.noto-fonts-emoji
-    stable.liberation_ttf
-    stable.fira-code
-    stable.fira-code-symbols
-    stable.mplus-outline-fonts.githubRelease
-    stable.dina-font
-    stable.proggyfonts
-    stable.meslo-lgs-nf
-    stable.vistafonts
-    stable.corefonts
-    stable.dejavu_fonts
-    stable.freefont_ttf
+    unstable.noto-fonts
+    unstable.noto-fonts-cjk-sans
+    unstable.noto-fonts-color-emoji
+    unstable.liberation_ttf
+    unstable.fira-code
+    unstable.fira-code-symbols
+    unstable.mplus-outline-fonts.githubRelease
+    unstable.dina-font
+    unstable.proggyfonts
+    unstable.meslo-lgs-nf
+    unstable.vista-fonts
+    unstable.corefonts
+    unstable.dejavu_fonts
+    unstable.freefont_ttf
   ];
   
   # Some programs need SUID wrappers, can be configured further or are
@@ -618,9 +627,9 @@ unstable.liberation_ttf
       # Add any missing dynamic libraries for unpackaged programs
       # here, NOT in environment.systemPackages
       # add stdlibc++.so.6
-      stable.stdenv.cc.cc.lib
-      stable.gcc-unwrapped.lib
-      stable.libgcc.lib
+      unstable.stdenv.cc.cc.lib
+      unstable.gcc-unwrapped.lib
+      unstable.libgcc.lib
     ];
     xfconf.enable = true;
     light.brightnessKeys.enable = true;
@@ -661,7 +670,7 @@ unstable.liberation_ttf
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 
   # virtualisation.vmware.host.enable = true;
   
@@ -717,8 +726,15 @@ unstable.liberation_ttf
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 14d";  # More aggressive cleanup
+    options = "--delete-older-than 7d";  # Even more aggressive cleanup
   };
+
+  # Systemd Journal Optimization
+  services.journald.extraConfig = ''
+    SystemMaxUse=100M
+    SystemMaxFileSize=20M
+    RuntimeMaxUse=50M
+  '';
 
   # SSD Optimization - periodic TRIM
   services.fstrim = {

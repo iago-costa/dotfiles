@@ -1,0 +1,139 @@
+// ============================================================
+// Usability — Niri / DMS
+// Recommended UX improvements: animations, overview, gestures,
+// scroll behaviour, and focus policy.
+// ============================================================
+
+
+// ============================================================
+// ANIMATIONS
+// Smooth, Material-inspired motion curves.
+// Remove `off` from any section to disable it individually.
+// ============================================================
+animations {
+    // Global speed multiplier. < 1 = faster, > 1 = slower.
+    // 0.8 gives a snappy but still polished feel.
+    slowdown 0.8
+
+    // Window open/close
+    window-open {
+        duration-ms 200
+        curve "ease-out-expo"
+    }
+    window-close {
+        duration-ms 150
+        curve "ease-in-quad"
+    }
+
+    // Window movement (column drag & resize)
+    window-movement {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+
+    // Resize while tiling
+    window-resize {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+
+    // Column scrolling (horizontal workspace navigation)
+    horizontal-view-movement {
+        duration-ms 220
+        curve "ease-out-cubic"
+    }
+
+    // Workspace switching (vertical)
+    workspace-switch {
+        duration-ms 250
+        curve "ease-out-cubic"
+    }
+
+    // Overview animation (Mod+Tab)
+    overview-open {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+    overview-close {
+        duration-ms 150
+        curve "ease-in-cubic"
+    }
+
+    // Config reload fade
+    config-notification-open-close {
+        duration-ms 300
+        curve "ease-out-cubic"
+    }
+}
+
+
+// ============================================================
+// OVERVIEW (Mod+Tab workspace zoom-out)
+// ============================================================
+overview {
+    // Zoom out to 30% so all workspaces are clearly visible
+    zoom 0.3
+
+    // Show workspace names in overview
+    // workspace-shadow — inherits from layout shadow settings
+}
+
+
+// ============================================================
+// HOTKEY OVERLAY
+// The pop-up shown on first launch listing all keybindings.
+// ============================================================
+hotkey-overlay {
+    // Comment the next line to re-enable the startup overlay.
+    skip-at-startup
+}
+
+
+// ============================================================
+// LAYER RULES — Panel / Overlay Usability
+// Ensures notifications and bars don't steal focus unexpectedly.
+// ============================================================
+
+// Notification daemon (swaync): allow interactivity but don't grab focus
+layer-rule {
+    match namespace="swaync-control-center"
+    // Keep above regular windows but below system chrome
+    // place-within-backdrop false  // default
+}
+
+// Fuzzel launcher: block keyboard during open (default behaviour — explicit)
+layer-rule {
+    match namespace="fuzzel"
+    // Fuzzel handles focus itself; no additional rules needed.
+}
+
+// DMS shell: live behind everything as the backdrop
+layer-rule {
+    match namespace="dms:blurwallpaper"
+    place-within-backdrop true
+}
+
+// Waybar: if re-enabled, don't pop above fullscreen windows
+layer-rule {
+    match namespace="waybar"
+    // place-within-backdrop false
+}
+
+
+// ============================================================
+// WINDOW RULES — Additional Usability Behaviours
+// (Complements dms/windowrules.kdl)
+// ============================================================
+
+// Prefer no client-side decorations — niri draws the focus ring
+// properly around ALL windows instead of having them draw their own.
+// This removes double-borders and reduces visual noise.
+// NOTE: restart apps after toggling this.
+// prefer-no-csd  ← kept off here; enable in config.kdl if desired
+
+// Center-focused-column: "on-overflow" gives smart centering —
+// columns are only centred when they'd otherwise go partially off-screen.
+// (Defined in config.kdl layout block; reference here for documentation.)
+
+// Focus follows mouse — already enabled in config.kdl input section.
+// max-scroll-amount="0%" limits warp to windows already fully visible.

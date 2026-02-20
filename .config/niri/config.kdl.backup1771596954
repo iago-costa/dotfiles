@@ -258,7 +258,12 @@ environment {
     XCURSOR_THEME "Adwaita"
 }
 
-// Cursor configuration moved to dms/cursor.kdl
+// Cursor configuration for proper state-based icon changes
+cursor {
+    // Cursor theme and size
+    xcursor-theme "Adwaita"
+    xcursor-size 18
+}
 
 // Add lines like this to spawn processes at startup.
 // Note that running niri as a session supports xdg-desktop-autostart,
@@ -299,7 +304,10 @@ spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-size" "
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
 
-// hotkey-overlay moved to dms/usability.kdl
+hotkey-overlay {
+    // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
+    // skip-at-startup
+}
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
@@ -319,7 +327,13 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // Animation settings.
 // The wiki explains how to configure individual animations:
 // https://yalter.github.io/niri/Configuration:-Animations
-// animations moved to dms/usability.kdl
+animations {
+    // Uncomment to turn off all animations.
+    // off
+
+    // Slow down all animations by this factor. Values below 1 speed them up instead.
+    // slowdown 3.0
+}
 
 // Window rules let you adjust behavior for individual windows.
 // Find more information on the wiki:
@@ -493,8 +507,3 @@ binds {
     Mod+Shift+E { quit; }
     Mod+Shift+W { spawn-sh "niri msg action load-config-file && dms restart; dms restart;"; }
 }
-
-include "dms/colors.kdl"
-include "dms/cursor.kdl"
-include "dms/usability.kdl"
-include "dms/windowrules.kdl"
