@@ -113,7 +113,6 @@ plugins=(
   rbenv
 	ruby
   npm
-	thefuck
 	docker
 	docker-compose
 	timer
@@ -166,7 +165,6 @@ alias zz='fasd_cd -d -i' # cd with interactive selection
 alias op="fzf --print0 | xargs -0 -o xdg-open $1"
 alias opd="find / -type d | fzf --print0 | xargs -0 -o xdg-open $1"
 
-alias thefix='fuck'
 alias xmonadinit='pkill -f "xmonad" | true | xmonad --recompile &> /dev/null | true && xmonad --replace &'
 alias xmobarinit='pkill -f "xmobar" | true && xmobar &'
 alias xmoinit='xmonadinit; xmobarinit;'

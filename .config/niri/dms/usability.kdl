@@ -12,47 +12,47 @@
 // ============================================================
 animations {
     // Global speed multiplier. < 1 = faster, > 1 = slower.
-    // 0.8 gives a snappy but still polished feel.
-    slowdown 0.8
+    // 0.7 gives a very snappy and high-performance feel.
+    slowdown 0.7
 
     // Window open/close
     window-open {
-        duration-ms 200
+        duration-ms 180
         curve "ease-out-expo"
     }
     window-close {
-        duration-ms 150
+        duration-ms 120
         curve "ease-out-quad"
     }
 
     // Window movement (column drag & resize)
     window-movement {
-        duration-ms 200
-        curve "ease-out-cubic"
+        duration-ms 180
+        curve "ease-out-expo"
     }
 
-    // Resize while tiling
+    // Resize while tiling (makes manual resizing feel instant)
     window-resize {
-        duration-ms 200
-        curve "ease-out-cubic"
+        duration-ms 150
+        curve "ease-out-expo"
     }
 
     // Column scrolling (horizontal workspace navigation)
     horizontal-view-movement {
-        duration-ms 220
-        curve "ease-out-cubic"
+        duration-ms 200
+        curve "ease-out-expo"
     }
 
     // Workspace switching (vertical)
     workspace-switch {
-        duration-ms 250
-        curve "ease-out-cubic"
+        duration-ms 220
+        curve "ease-out-expo"
     }
 
     // Config reload fade
     config-notification-open-close {
-        duration-ms 300
-        curve "ease-out-cubic"
+        duration-ms 250
+        curve "ease-out-expo"
     }
 }
 

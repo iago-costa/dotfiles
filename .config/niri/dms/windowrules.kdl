@@ -23,12 +23,7 @@ window-rule {
 
 // Browser Picture-in-Picture — all major browsers
 window-rule {
-    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-    match app-id=r#"firefox$"# title="^Picture in Picture$"
-    match app-id=r#"org\.mozilla\.firefox$"# title="^Picture-in-Picture$"
-    match app-id=r#"google-chrome$"# title="^Picture in Picture$"
-    match app-id=r#"chromium$"# title="^Picture in Picture$"
-    match app-id=r#"vivaldi$"# title="^Picture in Picture$"
+    match app-id=r#"^(firefox|google-chrome|chromium|vivaldi|org\.mozilla\.firefox)$"# title="^Picture(-| )in(-| )Picture$"
     open-floating true
     default-column-width { fixed 480; }
 }
@@ -48,11 +43,7 @@ window-rule {
 // ============================================================
 
 window-rule {
-    match app-id="polkit-gnome-authentication-agent-1"
-    match app-id=r#"^org\.gnome\.Polkit"#
-    match app-id="xdg-desktop-portal-gtk"
-    match app-id="xdg-desktop-portal-gnome"
-    match app-id="gnome-keyring-prompt"
+    match app-id=r#"^(polkit-gnome-authentication-agent-1|org\.gnome\.Polkit|xdg-desktop-portal-gtk|xdg-desktop-portal-gnome|gnome-keyring-prompt)$"#
     match app-id=r#"^gcr-"#
     open-floating true
 }
@@ -132,22 +123,14 @@ window-rule {
 
 // Browsers — comfortable reading width
 window-rule {
-    match app-id=r#"firefox$"#
-    match app-id=r#"org\.mozilla\.firefox$"#
-    match app-id=r#"google-chrome$"#
-    match app-id=r#"vivaldi$"#
-    match app-id=r#"chromium$"#
+    match app-id=r#"^(firefox|google-chrome|vivaldi|chromium|org\.mozilla\.firefox)$"#
     default-column-width { proportion 0.6; }
 }
 
 // Code editors / IDEs — wide for code
 window-rule {
-    match app-id=r#"code(-url-handler)?$"#
-    match app-id="cursor"
-    match app-id=r#"^windsurf"#
-    match app-id=r#"^zed"#
-    match app-id="antigravity"
-    default-column-width { proportion 0.65; }
+    match app-id=r#"^(code|cursor|windsurf|zed|antigravity)"#
+    default-column-width { proportion 0.7; }
 }
 
 // API / DB / Dev tools
@@ -239,10 +222,8 @@ window-rule {
 
 // Terminal emulators — slight transparency for elegance
 window-rule {
-    match app-id="Alacritty"
-    match app-id="alacritty"
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    opacity 0.94
+    match app-id=r#"^(Alacritty|alacritty|org\.wezfurlong\.wezterm)$"#
+    opacity 0.96
 }
 
 // Fuzzel launcher — no special opacity needed (handles itself)

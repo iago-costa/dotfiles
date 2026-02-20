@@ -1,36 +1,36 @@
-// Material You — Deep Purple (DMS / Niri)
-// Copie esses valores para qualquer outro config que precisar das cores.
+// Material You — Modern Blue (DMS / Niri)
+// Palette inspired by a sleek, deep-sea terminal aesthetic.
 //
-//  Primary:         #D0BCFF   (Purple 80)
-//  Primary Dark:    #7965AF   (Purple 60)
-//  On-Primary:      #381E72   (Purple 20)
-//  Secondary:       #CCC2DC   (Secondary 80)
-//  Outline:         #938F99
-//  Outline Variant: #49454F
-//  Error / Urgent:  #F2B8B5   (Error 80)
-//  Surface:         #1C1B1F
-//  Shadow:          #00000073 (black 45%)
+//  Primary:         #A1C9FF   (Blue 80)
+//  Primary Dark:    #004A77   (Blue 30)
+//  On-Primary:      #003258   (Blue 20)
+//  Secondary:       #BFC8DA   (Secondary 80)
+//  Outline:         #8E9199
+//  Outline Variant: #43474E
+//  Error / Urgent:  #FFB4AB   (Error 80)
+//  Surface:         #1A1C1E
+//  Shadow:          #000000A0 (black 63%)
 
 layout {
     focus-ring {
         width 4
-        active-gradient from="#D0BCFF" to="#7965AF" angle=135 relative-to="workspace-view"
-        inactive-color "#49454F"
+        active-gradient from="#A1C9FF" to="#004A77" angle=135 relative-to="workspace-view"
+        inactive-color "#43474E"
     }
 
     border {
         off
         width 2
-        active-color "#D0BCFF"
-        inactive-color "#49454F"
-        urgent-color "#F2B8B5"
+        active-color "#A1C9FF"
+        inactive-color "#43474E"
+        urgent-color "#FFB4AB"
     }
 
     shadow {
         on
-        softness 24
-        spread 2
-        offset x=0 y=5
-        color "#00000073"
+        softness 32
+        spread 1
+        offset x=0 y=6
+        color "#000000A0"
     }
 }

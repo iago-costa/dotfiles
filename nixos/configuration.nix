@@ -33,6 +33,10 @@ in
   nix.settings.substituters = [ "https://cache.nixos.org/" ];
   nix.settings.trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
 
+  # Nix store disk space management
+  nix.settings.min-free = 2 * 1024 * 1024 * 1024;  # 2GB
+  nix.settings.max-free = 10 * 1024 * 1024 * 1024; # 10GB
+
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [
     "qtwebengine-5.15.19"
@@ -47,6 +51,8 @@ in
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.tmp.cleanOnBoot = true;
+  boot.tmp.useTmpfs = true;
 
   # Kernel parameters for performance optimization
   boot.kernel.sysctl = {
@@ -54,13 +60,17 @@ in
     "vm.max_map_count" = 2147483642;
     "fs.file-max" = 524288;
     
-    # Memory management - prefer RAM over swap
-    "vm.swappiness" = 10;
+    # Memory management - prefer RAM over swap, but utilize ZRAM effectively
+    "vm.swappiness" = 100; # Proactively use ZRAM to keep raw RAM free
     "vm.vfs_cache_pressure" = 50;
     
     # Disk I/O optimization - write dirty pages earlier for SSD longevity
     "vm.dirty_ratio" = 10;
     "vm.dirty_background_ratio" = 5;
+
+    # TCP BBR congestion control
+    "net.core.default_qdisc" = "fq";
+    "net.ipv4.tcp_congestion_control" = "bbr";
   };
 
   # Set your time zone.
@@ -98,7 +108,9 @@ in
   services.upower = {
     enable = true;
     usePercentageForPolicy = true;
-    percentageAction = 15;
+    percentageLow = 15;
+    percentageCritical = 7;
+    percentageAction = 5;
     criticalPowerAction = "Ignore";
     allowRiskyCriticalPowerAction = true;
   };
@@ -113,6 +125,9 @@ in
   # flatpak to install additional apps if needed
   services.flatpak.enable = true; 
   services.dbus.enable = true;
+  services.dbus.implementation = "broker";
+
+  services.earlyoom.enable = true;
 
   # Spice VDAgent
   services.spice-vdagentd.enable = true;
@@ -144,7 +159,7 @@ in
 
   # Enable logind for power management (required for Quickshell/DMS power buttons)
   services.logind = {
-    lidSwitch = "suspend";
+    lidSwitch = "ignore";
     lidSwitchExternalPower = "lock";
     powerKey = "poweroff";
     powerKeyLongPress = "poweroff";
@@ -205,6 +220,7 @@ in
     ];
   };
 
+  hardware.cpu.amd.updateMicrocode = true;
   hardware.enableAllFirmware = true;
   # Disabled PulseAudio in favor of PipeWire for Wayland/Niri compatibility
   hardware.pulseaudio.enable = false;
@@ -656,10 +672,11 @@ in
     ];
     # xfconf.enable = true;
 
-    light.brightnessKeys.enable = true;
-
     niri.enable = true;
   };
+
+  powerManagement.cpuFreqGovernor = "performance";
+
   # List services that you want to enable:
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ 
@@ -739,6 +756,9 @@ in
     
     # Kerberos fix
     KRB5_CONFIG = "/etc/krb5.conf";
+
+    # Wayland native support for Electron/Chromium
+    NIXOS_OZONE_WL = "1";
   };
 
   # Optimise Nix store
@@ -765,4 +785,14 @@ in
     enable = true;
     interval = "weekly";
   };
+
+  # ZRAM Swap - compression in RAM to save disk space
+  zramSwap = {
+    enable = true;
+    priority = 100;
+    memoryPercent = 10; # Use up to 3GB of your 30GB RAM as compressed swap
+    algorithm = "zstd";
+  };
+
 }
+
