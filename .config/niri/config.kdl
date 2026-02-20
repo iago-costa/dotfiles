@@ -102,7 +102,7 @@ input {
 // https://yalter.github.io/niri/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 5
+    gaps 4
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -254,7 +254,7 @@ layout {
 }
 
 environment {
-    XCURSOR_SIZE "18"
+    XCURSOR_SIZE "20"
     XCURSOR_THEME "Adwaita"
 }
 
@@ -496,5 +496,6 @@ binds {
 
 include "dms/colors.kdl"
 include "dms/cursor.kdl"
+include "dms/scale.kdl"
 include "dms/usability.kdl"
 include "dms/windowrules.kdl"

@@ -22,7 +22,7 @@ animations {
     }
     window-close {
         duration-ms 150
-        curve "ease-in-quad"
+        curve "ease-out-quad"
     }
 
     // Window movement (column drag & resize)
@@ -47,16 +47,6 @@ animations {
     workspace-switch {
         duration-ms 250
         curve "ease-out-cubic"
-    }
-
-    // Overview animation (Mod+Tab)
-    overview-open {
-        duration-ms 200
-        curve "ease-out-cubic"
-    }
-    overview-close {
-        duration-ms 150
-        curve "ease-in-cubic"
     }
 
     // Config reload fade

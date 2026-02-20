@@ -4,14 +4,11 @@
 // ============================================================
 
 cursor {
-    // Adwaita is the standard GNOME cursor theme, well-supported
-    // on Wayland and matches neutral dark/light Material themes.
     xcursor-theme "Adwaita"
-    // 24px is the recommended size for 1080p displays.
-    // Increase to 32 if using a HiDPI output.
-    xcursor-size 24
+    // 20px = proporcional ao scale 0.875 nos monitores 1080p
+    xcursor-size 20
 
-    // Hide the cursor after 3 seconds of inactivity.
     hide-when-typing
     hide-after-inactive-ms 3000
 }
+

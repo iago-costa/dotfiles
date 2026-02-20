@@ -1,64 +1,36 @@
-// ============================================================
-// Niri Colors — Material Design 3 / Material You
-// Palette: Deep Purple / Tonal Surface — DMS Dark Theme
+// Material You — Deep Purple (DMS / Niri)
+// Copie esses valores para qualquer outro config que precisar das cores.
 //
-// Primary:        #D0BCFF  (Purple 80)
-// On-Primary:     #381E72  (Purple 20)
-// Secondary:      #CCC2DC  (Secondary 80)
-// Outline:        #938F99  (Outline)
-// Outline Variant:#49454F  (Outline Variant)
-// Surface:        #1C1B1F  (Surface)
-// Error:          #F2B8B5  (Error 80)
-// ============================================================
+//  Primary:         #D0BCFF   (Purple 80)
+//  Primary Dark:    #7965AF   (Purple 60)
+//  On-Primary:      #381E72   (Purple 20)
+//  Secondary:       #CCC2DC   (Secondary 80)
+//  Outline:         #938F99
+//  Outline Variant: #49454F
+//  Error / Urgent:  #F2B8B5   (Error 80)
+//  Surface:         #1C1B1F
+//  Shadow:          #00000073 (black 45%)
 
 layout {
-
-    // ----------------------------------------------------------
-    // FOCUS RING
-    // Shown around the active window. Uses a gradient so it
-    // "glows" from the primary purple to the deep on-primary.
-    // ----------------------------------------------------------
     focus-ring {
         width 4
-
-        // Animated-looking gradient: light → deep purple
         active-gradient from="#D0BCFF" to="#7965AF" angle=135 relative-to="workspace-view"
-
-        // Inactive monitors: muted outline tint
         inactive-color "#49454F"
     }
 
-    // ----------------------------------------------------------
-    // BORDER
-    // Kept off by default (focus-ring takes its role).
-    // Enable with `on` if you prefer always-visible borders.
-    // ----------------------------------------------------------
     border {
         off
         width 2
-
-        // Active border: full primary purple
         active-color "#D0BCFF"
-
-        // Inactive border: outline variant
         inactive-color "#49454F"
-
-        // Urgent / attention border: Material Error color
         urgent-color "#F2B8B5"
     }
 
-    // ----------------------------------------------------------
-    // DROP SHADOW
-    // Subtle elevation shadow — matches MD3 elevation level 2.
-    // softness = blur radius, spread = expansion, offset y = lift.
-    // ----------------------------------------------------------
     shadow {
         on
         softness 24
         spread 2
         offset x=0 y=5
-        // Semi-transparent black — 45% opacity for dark theme
         color "#00000073"
     }
-
 }

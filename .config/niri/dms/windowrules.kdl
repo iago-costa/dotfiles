@@ -111,16 +111,15 @@ window-rule {
     open-floating true
 }
 
-// KDE / GTK file/color/font pickers (appear as transients)
+// Generic file/color/font dialogs (by title)
 window-rule {
-    match title="^(Open|Save|Choose|Select|Pick|Color|Font).*"
-    match is-dialog true
+    match title=r#"^(Open|Save|Choose|Select|Pick|Color|Font).*"#
     open-floating true
 }
 
 // All generic dialog windows (transients)
 window-rule {
-    match is-dialog true
+    match is-dialog=true
     open-floating true
 }
 
