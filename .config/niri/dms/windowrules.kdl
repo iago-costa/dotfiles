@@ -117,12 +117,6 @@ window-rule {
     open-floating true
 }
 
-// All generic dialog windows (transients)
-window-rule {
-    match is-dialog=true
-    open-floating true
-}
-
 
 // ============================================================
 // SECTION 7: APPLICATION LAYOUT — COLUMN WIDTHS

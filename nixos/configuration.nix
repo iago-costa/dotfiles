@@ -114,52 +114,53 @@ in
   services.flatpak.enable = true; 
   services.dbus.enable = true;
 
-  environment.xfce.excludePackages = [ 
-    stable.xfce.xfwm4
-    stable.xfce.xfce4-panel
-    stable.xfce.xfce4-power-manager
-    stable.xfce.xfce4-terminal
-    stable.xfce.xfce4-whiskermenu-plugin
-    stable.xfce.thunar
-  ];
+  # ── Legacy X11/Xfce/Xmonad (DISABLED) ──────────────────────────
+  # environment.xfce.excludePackages = [ 
+  #   stable.xfce.xfwm4
+  #   stable.xfce.xfce4-panel
+  #   stable.xfce.xfce4-power-manager
+  #   stable.xfce.xfce4-terminal
+  #   stable.xfce.xfce4-whiskermenu-plugin
+  #   stable.xfce.thunar
+  # ];
 
   # Spice VDAgent
   services.spice-vdagentd.enable = true;
 
-  # Enable the X11 windowing system.
+  # Display manager — Niri is the default session
   services.displayManager.defaultSession = "niri";
-  services.xserver = {
-    enable = true;   
-    desktopManager = {
-      #xterm.enable = false;
-      xfce = {
-         enable = true;
-         noDesktop = true;
-         enableXfwm = false;
-         enableScreensaver = false;
+
+  # services.xserver = {
+  #   enable = true;   
+  #   desktopManager = {
+  #     xfce = {
+  #        enable = true;
+  #        noDesktop = true;
+  #        enableXfwm = false;
+  #        enableScreensaver = false;
+  #     };
+  #   };
+  #   windowManager = {
+  #     xmonad = {
+  #       enable = true;
+  #       enableContribAndExtras = true;
+  #       extraPackages = haskellPackages : [
+  #         haskellPackages.xmonad-contrib
+  #         haskellPackages.xmonad-extras
+  #         haskellPackages.xmonad
+  #       ];
+  #     };
+  #   };
+  # };
+
+  # Pure Wayland Login Manager (greetd + tuigreet)
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd niri";
+        user = "greeter";
       };
-    };
-    windowManager = {
-      xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-        extraPackages = haskellPackages : [
-          haskellPackages.xmonad-contrib
-          haskellPackages.xmonad-extras
-          haskellPackages.xmonad
-        ];
-      };
-    };
-    displayManager = {
-        # defaultSession = "xfce+xmonad";
-        # defaultSession = "xmonad";
-        # startx.enable = true;
-        # sessionCommands = ''
-        #     xset -dpms  # Disable Energy Star, as we are going to suspend anyway and it may hide "success" on that
-        #     xset s blank # `noblank` may be useful for debugging 
-        #     xset s 300 # seconds
-        #     ${pkgs.lightlocker}/bin/light-locker --idle-hint --lock-on-suspend --lock-on-lid --lock-on-lid-close --lock-after-screensaver 0 &
-        # '';
     };
   };
   
@@ -209,7 +210,7 @@ in
   #};
 
   # Configure keymap in X11
-  services.xserver.xkb.layout = "us";
+  # services.xserver.xkb.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
@@ -286,313 +287,383 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = [
-    unstable.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
 
-    # Graphical tools for development
-    # Add antigravity-nix from GitHub
+    # ══════════════════════════════════════════════════════════
+    # Editors / IDEs
+    # ══════════════════════════════════════════════════════════
+    unstable.vim
+    unstable.neovim
+    unstable.emacs
     unstable.antigravity-fhs
-    # unstable.zed-editor
     unstable.code-cursor
     unstable.vscode
     unstable.windsurf
-    unstable.google-authenticator
-    unstable._1password-gui
-    unstable.authenticator
-    # unstable.code-cursor
-    stable.wireshark
-    unstable.quickgui
-    unstable.postman
-    unstable.mongodb-compass
-    unstable.freelens-bin
-    unstable.gparted
-    unstable.jmeter
-    #unstable.ciscoPacketTracer8
-    # unstable.libsForQt5.kdenlive
-    stable.kdePackages.kdenlive
-    # stable.openshot-qt
-    # stable.libsForQt5.libopenshot
-    # stable.libsForQt5.libopenshot-audio
-    stable.qtractor
-    stable.inkscape
-    stable.gimp  # Full-featured image editor
 
-    # Screenshot capture and quick editing (Wayland/Niri compatible)
-    unstable.grim      # Screenshot capture for Wayland
-    unstable.slurp     # Region selection for screenshots
-    unstable.swappy    # Quick screenshot annotation/editing
-    unstable.flameshot # Feature-rich screenshot with annotations
-    # unstable.ksnip       # Screenshot tool with annotation features
-
-    # Integrated Development Environment
-    unstable.neovim
+    # ══════════════════════════════════════════════════════════
+    # Terminal / Multiplexers
+    # ══════════════════════════════════════════════════════════
+    unstable.alacritty
     unstable.tmux
-    unstable.emacs
     unstable.zellij
-    unstable.devenv
-    unstable.nodejs_24
 
-    # Command line tools for development
+    # ══════════════════════════════════════════════════════════
+    # Backend Development (Languages & DB)
+    # ══════════════════════════════════════════════════════════
+    unstable.go
+    unstable.rustc
+    unstable.cargo
+    unstable.rust-analyzer
+    unstable.python312
+    unstable.elixir
+    unstable.ruby
+    unstable.php
+    unstable.pgcli             # Smart PostgreSQL CLI
+    unstable.mycli             # Smart MySQL CLI
+    unstable.litecli           # Smart SQLite CLI
+    unstable.dbeaver-bin       # Universal visual DB client
+    unstable.mongodb-compass   # MongoDB GUI
+    unstable.redis             # In-memory data store
+    unstable.postman           # API testing GUI
+    unstable.grpcurl           # gRPC CLI client
+    unstable.ghz               # gRPC benchmarking
+    unstable.httpie            # Human-friendly HTTP client
+    unstable.devenv            # Developer environments
+
+    # ══════════════════════════════════════════════════════════
+    # Frontend Development
+    # ══════════════════════════════════════════════════════════
+    unstable.bun               # Fast JS runtime / bundler
+    unstable.deno              # Secure JS/TS runtime
+    unstable.pnpm              # Fast Node package manager
+    unstable.yarn              # Node package manager
+    unstable.typescript        # TypeScript compiler
+    unstable.eslint            # JS/TS linter
+    unstable.prettier          # Code formatter
+
+    # ══════════════════════════════════════════════════════════
+    # DevOps / Infrastructure
+    # ══════════════════════════════════════════════════════════
+    unstable.kubectl           # Kubernetes CLI
+    unstable.kubernetes-helm   # Helm charts
+    unstable.k9s               # Kubernetes TUI
+    unstable.freelens-bin      # Kubernetes IDE
+    unstable.opentofu          # IaC (open-source Terraform fork)
+    unstable.terraform         # IaC
+    unstable.ansible           # Configuration management
+    unstable.packer            # Machine image builder
+    unstable.vault             # Secrets management
+    unstable.consul            # Service discovery
+    unstable.dive              # Docker layer explorer
+    unstable.act               # Run GitHub Actions locally
+    unstable.checkov           # IaC security scanner
+    unstable.tflint            # Terraform linter
+    unstable.hadolint          # Dockerfile linter
+    unstable.shellcheck        # Shell script analyzer
+    unstable.shfmt             # Shell script formatter
+
+    # ══════════════════════════════════════════════════════════
+    # QA / Testing / Load Testing
+    # ══════════════════════════════════════════════════════════
+    unstable.k6                # Modern load testing (JS scripted)
+    unstable.vegeta            # HTTP load testing
+    unstable.hey               # HTTP load generator (ab replacement)
+    unstable.xh                # Fast HTTP requests (curl alternative)
+    unstable.jmeter            # Java-based load testing GUI
+    unstable.wrk2              # HTTP benchmark
+    unstable.gatling           # HTTP load testing
+
+    # ══════════════════════════════════════════════════════════
+    # Data Analytics (Python)
+    # ══════════════════════════════════════════════════════════
+    unstable.python312Packages.pandas        # Data manipulation
+    unstable.python312Packages.numpy         # Numerical computing
+    unstable.python312Packages.matplotlib    # Plotting / visualization
+    unstable.python312Packages.scikit-learn  # Machine learning
+    unstable.python312Packages.jupyter       # Notebooks
+    unstable.python312Packages.ipython       # Enhanced Python REPL
+    unstable.python312Packages.requests      # HTTP for Python
+    unstable.python312Packages.sqlalchemy    # Python ORM
+
+    # ══════════════════════════════════════════════════════════
+    # AI / ML Engineering
+    # ══════════════════════════════════════════════════════════
+    unstable.ollama                          # Local LLM runner
+    unstable.gemini-cli                      # Google Gemini CLI
+    unstable.python312Packages.fastapi       # ML API framework
+    unstable.python312Packages.uvicorn       # ASGI server
+    unstable.python312Packages.pydantic      # Data validation
+    unstable.python312Packages.httpx         # Async HTTP client
+    unstable.python312Packages.boto3         # AWS SDK for Python
+    unstable.python312Packages.rich          # Beautiful terminal output
+
+    # ══════════════════════════════════════════════════════════
+    # Language Servers / Linters (Neovim / IDE support)
+    # ══════════════════════════════════════════════════════════
+    unstable.lua-language-server                         # Lua LSP
+    unstable.stylua                                      # Lua formatter
+    unstable.gopls                                       # Go LSP
+    unstable.pyright                                     # Python LSP
+    unstable.ruff                                        # Python fast linter / formatter
+    unstable.nixd                                        # Nix LSP
+    unstable.yaml-language-server                        # YAML LSP
+    unstable.vscode-langservers-extracted                 # HTML/CSS/JSON LSPs
+    unstable.nodePackages.typescript-language-server      # TS/JS LSP
+    unstable.tree-sitter                                 # Multi-lang parser
+
+    # ══════════════════════════════════════════════════════════
+    # Daily CLI Productivity (Modern Replacements)
+    # ══════════════════════════════════════════════════════════
+    unstable.bat               # cat with syntax highlighting
+    unstable.eza               # Modern ls replacement
+    unstable.zoxide            # Smart cd with memory
+    unstable.fzf               # Interactive fuzzy finder
+    unstable.delta             # Better git diffs
+    unstable.dust              # du visualization
+    unstable.duf               # df replacement
+    unstable.procs             # Modern ps replacement
+    unstable.bottom            # htop alternative (btm)
+    unstable.tokei             # Count lines of code
+    unstable.glow              # Render markdown in terminal
+    unstable.hyperfine         # CLI benchmarking
+    unstable.tldr              # Simplified man pages
+    unstable.difftastic        # Syntax-aware diff
+    unstable.ncdu              # Disk usage analyzer (TUI)
+    unstable.watchexec         # File watcher + command runner
+    unstable.yq                # YAML/XML processor
+    unstable.meld              # Visual diff / merge tool
+
+    # ══════════════════════════════════════════════════════════
+    # Git & Version Control
+    # ══════════════════════════════════════════════════════════
     unstable.git
     unstable.git-lfs
-    unstable.gh
-    unstable.libiconv
-    unstable.xclip
-    unstable.curl
-    unstable.ripgrep
-    unstable.fd
-    unstable.fasd
-    unstable.vifm-full
-    unstable.tshark
-    unstable.termshark
-    unstable.direnv
-    unstable.tree-sitter
-    unstable.just
-    unstable.pay-respects
-    unstable.mosh
-    unstable.lazygit
-    unstable.jq
-    unstable.bc
-    unstable.file
-    unstable.gnumake
+    unstable.gh                # GitHub CLI
+    unstable.lazygit           # Git TUI
+    unstable.gittuf            # Git trust framework
 
-    # Command line tools for networking
+    # ══════════════════════════════════════════════════════════
+    # Networking Tools
+    # ══════════════════════════════════════════════════════════
+    unstable.curl
+    unstable.wget
+    unstable.aria2             # Download accelerator
+    unstable.mosh              # Persistent SSH
     unstable.sshfs
     unstable.fuse3
-    unstable.nss
-    unstable.expat
     unstable.nmap
     unstable.tcpdump
-    unstable.wrk2
-    unstable.wget
     unstable.ethtool
-    unstable.python312Packages.pyngrok
-    unstable.gatling
-    unstable.iftop
-    unstable.iotop
+    unstable.iftop             # Network bandwidth monitor
+    unstable.iotop             # I/O monitor
     unstable.dig
-    unstable.doggo
-    unstable.mitmproxy
-    unstable.aria2
+    unstable.doggo             # Modern dig alternative
+    unstable.mitmproxy         # HTTP/HTTPS proxy
+    unstable.python312Packages.pyngrok
     unstable.cifs-utils
+    unstable.nss
+    unstable.expat
+    stable.wireshark
+    unstable.tshark
+    unstable.termshark
 
-    # Security cli tools
-    unstable.uv
-    unstable.vulnix
-    unstable.clamav
-    unstable.lynis
-    unstable.sqlmap
+    # ══════════════════════════════════════════════════════════
+    # Security — CLI Tools
+    # ══════════════════════════════════════════════════════════
+    unstable.uv                # Python package manager
+    unstable.vulnix            # Nix vulnerability scanner
+    unstable.clamav            # Antivirus
+    unstable.lynis             # System audit
+    unstable.sqlmap            # SQL injection tool
     unstable.sqlmc
     unstable.laudanum
-    unstable.nikto
-    unstable.hcxtools
-    unstable.hashcat
-    unstable.thc-hydra
-    unstable.gobuster
-    unstable.wireguard-tools
-    stable.metasploit
+    unstable.nikto             # Web server scanner
+    unstable.hcxtools          # WiFi capture tools
+    unstable.hashcat           # Password recovery
+    unstable.thc-hydra         # Login cracker
+    unstable.gobuster          # Directory brute-forcer
+    unstable.wireguard-tools   # VPN
+    stable.metasploit          # Exploitation framework
     unstable.sssd
-    unstable.aircrack-ng
-    unstable.gittuf
-    unstable.dockle
+    unstable.aircrack-ng       # WiFi security
+    unstable.dockle            # Container security linter
     unstable.checkmate
-    unstable.tracee
-    unstable.apktool
-    unstable.radare2
-    unstable.ghidra-bin
-    unstable.trivy
-    unstable.wapiti
-    # unstable.wpscan
-    unstable.grype
+    unstable.tracee            # Runtime security
+    unstable.apktool           # Android reverse engineering
+    unstable.radare2           # Binary analysis
+    unstable.ghidra-bin        # Reverse engineering suite
+    unstable.trivy             # Vulnerability scanner
+    unstable.wapiti            # Web vulnerability scanner
+    unstable.grype             # Vulnerability scanner
     unstable.octoscan
-    unstable.osv-scanner
+    unstable.osv-scanner       # Open Source vulnerability scanner
     unstable.http-scanner
-    unstable.secretscanner
+    unstable.secretscanner     # Secret detection
     unstable.netscanner
     unstable.mdns-scanner
-    # unstable.angryipscanner
 
-    # Security gui tools
-    # unstable.armitage  # BROKEN - fails to build in unstable
-    unstable.johnny
-    unstable.burpsuite
-    # unstable.eresi
-    unstable.cutter
-    unstable.degate
-    unstable.iaito
-    # unstable.autopsy
+    # ══════════════════════════════════════════════════════════
+    # Security — GUI Tools
+    # ══════════════════════════════════════════════════════════
+    unstable.johnny            # John the Ripper GUI
+    unstable.burpsuite         # Web security testing
+    unstable.cutter            # Reverse engineering GUI
+    unstable.degate            # IC reverse engineering
+    unstable.iaito             # Radare2 GUI
 
-    # Graphical tools for communication and collaboration
-    anydesk
-    unstable.remmina
-    unstable.teamviewer
-    # stable.rustdesk  # Disabled: no binary cache, compiles from source every time
-    #stable.zoom-us
+    # ══════════════════════════════════════════════════════════
+    # Screenshot / Screen Capture (Wayland)
+    # ══════════════════════════════════════════════════════════
+    unstable.grim              # Screenshot capture
+    unstable.slurp             # Region selection
+    unstable.swappy            # Quick annotation/editing
+    unstable.flameshot         # Feature-rich screenshots
 
-    # Browsers 
-    stable.vivaldi
-    stable.vivaldi-ffmpeg-codecs
-    stable.google-chrome
-    stable.firefox
-
-    # tools for graphics and customization of the Operational System
+    # ══════════════════════════════════════════════════════════
+    # Wayland / Niri / Desktop Environment
+    # ══════════════════════════════════════════════════════════
+    unstable.fuzzel            # App launcher
+    unstable.waybar            # Status bar
+    unstable.wlsunset          # Night light
+    unstable.swaylock          # Screen locker
+    unstable.swaybg            # Wallpaper
+    unstable.swaynotificationcenter  # Notifications
+    unstable.xwayland-satellite
+    unstable.polkit_gnome
+    unstable.quickshell        # Shell framework
+    unstable.dms-shell         # DankMaterialShell
+    unstable.dgop              # System monitor backend
+    unstable.wtype             # Wayland keyboard input simulator
     stable.gtk_engines
     stable.gtk-engine-murrine
     stable.xorg.xhost
     stable.xorg.xmessage
     stable.xorg.xbacklight
-    stable.haskellPackages.xmobar    
+    stable.haskellPackages.xmobar
+    stable.copyq               # Clipboard manager
+    stable.lightlocker         # Screen locker
+    stable.redshift            # Night light (X11)
 
-    # Graphical tools for writing and reading
-    stable.logseq
-    # stable.wpsoffice
-    # stable.libsForQt5.okular
-    stable.texstudio    
-    # unstable.pdf4qt
+    # ══════════════════════════════════════════════════════════
+    # Browsers
+    # ══════════════════════════════════════════════════════════
+    stable.vivaldi
+    stable.vivaldi-ffmpeg-codecs
+    stable.google-chrome
+    stable.firefox
 
-    # Utilities Graphical and Operational System 
-    stable.copyq
-    stable.lightlocker
-    stable.redshift
+    # ══════════════════════════════════════════════════════════
+    # Communication / Remote
+    # ══════════════════════════════════════════════════════════
+    anydesk
+    unstable.remmina
+    unstable.teamviewer
 
-    # File Manager
-    unstable.nautilus
-    unstable.gnome-disk-utility
-
-    # Command line tools to run not nix packages
-    # unstable.patchelf
-    # unstable.steam-run
-
-    # Command line tools to Operational System
-    unstable.neofetch
-    unstable.icu
-    unstable.gcc
-    unstable.xdotool
-    unstable.libnotify
-    unstable.yad
-    unstable.lux
-    unstable.killall
-    unstable.htop
-    unstable.tree
-    unstable.alacritty
-    unstable.dmidecode
-    unstable.wirelesstools
-    unstable.inetutils
-    unstable.lm_sensors
-    unstable.nix-index
-
-    # Niri / Wayland tools
-    unstable.fuzzel
-    unstable.waybar
-    unstable.wlsunset
-    unstable.swaylock
-    unstable.swaybg
-    unstable.swaynotificationcenter
-    unstable.xwayland-satellite
-    unstable.polkit_gnome
-    unstable.quickshell
-    unstable.dms-shell
-    unstable.dgop  # System monitoring backend for DMS (CPU, memory, network, GPU)
-    unstable.wtype # Wayland keyboard input simulator
-
-
-    # Command line tools for multimedia
-    unstable.zip
-    unstable.zlib
-    unstable.unzip
-    unstable.p7zip
-    unstable.xz
-    unstable.unar
-    stable.vlc
-    stable.ffmpeg
-    unstable.xar
-    unstable.p7zip
-    unstable.pbzx
-    unstable.rcodesign
-
-    # Android development tools
-    unstable.android-tools
-
-    # Command line tools for virtualization and containers
-    stable.qemu
-    unstable.docker
-    unstable.docker-compose
-    unstable.podman
-    unstable.podman-compose
-    unstable.lazydocker
-
-    # Command line tools for virtualization with Graphical interface
-    stable.virt-manager
-    stable.quickemu
-    unstable.gns3-gui
-    unstable.gns3-server
-
-    # Windows VM support - VirtIO drivers and SPICE for optimized graphics
-    unstable.virtio-win            # VirtIO drivers ISO for Windows guest (storage, network, GPU)
-    unstable.spice-gtk             # SPICE client with 3D OpenGL acceleration
-    unstable.looking-glass-client  # Low-latency display capture for GPU passthrough (optional)
-
-    # Command line tools for encryption 
+    # ══════════════════════════════════════════════════════════
+    # Authentication / Passwords
+    # ══════════════════════════════════════════════════════════
+    unstable.google-authenticator
+    unstable._1password-gui
+    unstable.authenticator
     unstable.gnome-keyring
     unstable.libsecret
     unstable.openssl
 
-    # Command line tools for graphics
+    # ══════════════════════════════════════════════════════════
+    # File Manager / Disk Utils
+    # ══════════════════════════════════════════════════════════
+    unstable.nautilus
+    unstable.gnome-disk-utility
+    unstable.gparted
+    unstable.vifm-full         # Terminal file manager
+
+    # ══════════════════════════════════════════════════════════
+    # Multimedia
+    # ══════════════════════════════════════════════════════════
+    stable.vlc                 # Media player
+    stable.ffmpeg              # Video/audio converter
+    stable.kdePackages.kdenlive  # Video editor
+    stable.qtractor            # Audio workstation
+    stable.inkscape            # Vector graphics
+    stable.gimp                # Image editor
+    unstable.pavucontrol       # PulseAudio volume control
+    unstable.pulseaudio        # Audio utilities
+    unstable.alsa-utils        # ALSA utilities
+    unstable.qbittorrent       # Torrent client
+    unstable.lux               # Video downloader
+
+    # ══════════════════════════════════════════════════════════
+    # Archive / Compression
+    # ══════════════════════════════════════════════════════════
+    unstable.zip
+    unstable.unzip
+    unstable.p7zip             # Duplicate removed
+    unstable.xz
+    unstable.unar
+    unstable.xar
+    unstable.pbzx
+    unstable.zlib
+
+    # ══════════════════════════════════════════════════════════
+    # System Utilities / Libraries
+    # ══════════════════════════════════════════════════════════
+    unstable.neofetch          # System info
+    unstable.htop              # Process monitor
+    unstable.tree              # Directory tree
+    unstable.killall
+    unstable.lsof              # List open files
+    unstable.inxi              # System info (detailed)
+    unstable.dmidecode         # Hardware info
+    unstable.lm_sensors        # Temperature / fans
+    unstable.wirelesstools
+    unstable.inetutils
+    unstable.xdotool
+    unstable.xclip
+    unstable.libnotify
+    unstable.yad               # GUI dialogs from shell
+    unstable.nix-index         # Nix package file search
+    unstable.bc                # Calculator
+    unstable.file              # File type detection
+    unstable.jq                # JSON processor
+    unstable.just              # Command runner
+    unstable.pay-respects      # Correct previous command
+    unstable.direnv            # Per-directory env vars
+    unstable.fasd              # Quick directory access
+    unstable.libiconv          # Character encoding
+    unstable.rcodesign         # Apple code signing
     unstable.glibc
     unstable.libGL
     unstable.libGLU
     unstable.libxml2
+    unstable.icu
 
-    # Graphical tools to audio
-    unstable.pavucontrol
-    unstable.pulseaudio
-    unstable.lsof
-    unstable.inxi
+    # ══════════════════════════════════════════════════════════
+    # Specialized Tools
+    # ══════════════════════════════════════════════════════════
+    unstable.android-tools     # Android development tools
+    unstable.logseq            # Knowledge management (stable.logseq found earlier)
+    unstable.texstudio         # LaTeX editor
 
-    # Command line tools for audio
-    unstable.alsa-utils
-
-    # Command line tools for AI
-    unstable.ollama
-    unstable.gemini-cli
-
-    # Command line tools for downloading
-    unstable.qbittorrent
-
-    # Dependencies for Wine Run Apps
-    # unstable.jdk
-    # unstable.jre_minimal
-
-    # Lutris and Gaming Dependencies
+    # ══════════════════════════════════════════════════════════
+    # Gaming (Lutris / Wine / Vulkan)
+    # ══════════════════════════════════════════════════════════
     unstable.lutris
     unstable.wineWow64Packages.waylandFull
     unstable.winetricks
     unstable.gamemode
     unstable.mangohud
-
-    # Vulkan tools and validation
     unstable.vulkan-tools
     unstable.vulkan-loader
     unstable.vulkan-validation-layers
     unstable.vulkan-extension-layer
-
-    # Graphics libraries
-    unstable.mesa # RADV (default AMD driver)
-    unstable.dxvk
-
-    # Additional Wine dependencies
-    # unstable.xorg.libXcursor
-    # unstable.xorg.libXi
-    # unstable.xorg.libXinerama
-    # unstable.xorg.libXrandr
-    # unstable.freetype
-    # unstable.fontconfig
-
-    # System monitoring
+    unstable.mesa              # RADV (default AMD driver)
     unstable.mesa-demos
+    unstable.dxvk              # DirectX -> Vulkan
 
-    # Font rendering
-    unstable.corefonts
-    unstable.liberation_ttf
+    # ══════════════════════════════════════════════════════════
+    # Fonts
+    # ══════════════════════════════════════════════════════════
+    unstable.corefonts         # Duplicate removed
+    unstable.liberation_ttf    # Duplicate removed
 
   ];
 
@@ -631,7 +702,8 @@ in
       unstable.gcc-unwrapped.lib
       unstable.libgcc.lib
     ];
-    xfconf.enable = true;
+    # xfconf.enable = true;
+
     light.brightnessKeys.enable = true;
 
     niri.enable = true;
