@@ -254,8 +254,8 @@ layout {
 }
 
 environment {
-    XCURSOR_SIZE "20"
-    XCURSOR_THEME "Adwaita"
+    XCURSOR_SIZE "16"
+    XCURSOR_THEME "volantes_cursors"
 }
 
 // Cursor configuration moved to dms/cursor.kdl
@@ -292,8 +292,8 @@ spawn-at-startup "swaybg" "-c" "#000000"
 spawn-at-startup "dms" "run"
 
 // Cursor Theme Consistency (GTK)
-spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-theme" "Adwaita"
-spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-size" "24"
+spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-theme" "volantes_cursors"
+spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-size" "16"
 
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
@@ -306,7 +306,7 @@ spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-size" "
 // Additionally, clients will be informed that they are tiled, removing some client-side rounded corners.
 // This option will also fix border/focus ring drawing behind some semitransparent windows.
 // After enabling or disabling this, you need to restart the apps for this to take effect.
-// prefer-no-csd
+prefer-no-csd
 
 // You can change the path where screenshots are saved.
 // A ~ at the front will be expanded to the home directory.

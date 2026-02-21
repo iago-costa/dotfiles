@@ -276,6 +276,20 @@ window-rule {
     open-floating true
 }
 
+// Lutris / Games — Fix scaling issues
+window-rule {
+    match app-id="Lutris"
+    match app-id=r#"^steam_app_"#
+    match app-id=r#" wine$"#
+    match app-id=r#"^gamescope$"#
+    
+    // Force windows to stay within monitor bounds
+    clip-to-geometry true
+    
+    // Workaround for games passing screen size on fractional scaling
+    default-column-width { proportion 1.0; }
+}
+
 // Burp Suite / security GUIs: keep floating for tool panels
 window-rule {
     match app-id=r#"^burpsuite"#

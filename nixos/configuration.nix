@@ -54,6 +54,14 @@ in
   boot.tmp.cleanOnBoot = true;
   boot.tmp.useTmpfs = true;
 
+  # Performance Optimized Kernel
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  
+  # Kernel parameters for performance optimization
+  boot.kernelParams = [ 
+    "scsi_mod.use_blk_mq=1" # Better NVMe multi-queue utilization
+  ];
+
   # Kernel parameters for performance optimization
   boot.kernel.sysctl = {
     # Gaming / application support
@@ -61,7 +69,7 @@ in
     "fs.file-max" = 524288;
     
     # Memory management - prefer RAM over swap, but utilize ZRAM effectively
-    "vm.swappiness" = 100; # Proactively use ZRAM to keep raw RAM free
+    "vm.swappiness" = 180; # Aggressively use ZRAM before hitting disk
     "vm.vfs_cache_pressure" = 50;
     
     # Disk I/O optimization - write dirty pages earlier for SSD longevity
@@ -71,6 +79,10 @@ in
     # TCP BBR congestion control
     "net.core.default_qdisc" = "fq";
     "net.ipv4.tcp_congestion_control" = "bbr";
+
+    # Improve responsiveness under load
+    "kernel.sched_latency_ns" = 1000000;
+    "kernel.sched_min_granularity_ns" = 100000;
   };
 
   # Set your time zone.
@@ -88,8 +100,8 @@ in
   #   useXkbConfig = true; # use xkbOptions in tty.
   # };
   
-  # Enable the ClamAV antivirus daemon and updater.
-  services.clamav.daemon.enable = true;
+  # Disable background antivirus daemon for performance (use manual scans if needed)
+  services.clamav.daemon.enable = false;
   services.clamav.updater.enable = true;
 
   security.rtkit.enable = true;
@@ -127,7 +139,17 @@ in
   services.dbus.enable = true;
   services.dbus.implementation = "broker";
 
-  services.earlyoom.enable = true;
+  # Modern OOM management
+  services.earlyoom.enable = false;
+  systemd.oomd.enable = true;
+  systemd.oomd.enableUserSlices = true;
+
+  # Auto-prioritize active apps
+  services.ananicy = {
+    enable = true;
+    package = pkgs.ananicy-cpp;
+    rulesProvider = pkgs.ananicy-rules-cachyos;
+  };
 
   # Spice VDAgent
   services.spice-vdagentd.enable = true;
@@ -159,13 +181,17 @@ in
 
   # Enable logind for power management (required for Quickshell/DMS power buttons)
   services.logind = {
-    lidSwitch = "ignore";
-    lidSwitchExternalPower = "lock";
-    powerKey = "poweroff";
-    powerKeyLongPress = "poweroff";
-    suspendKey = "suspend";
-    hibernateKey = "hibernate";
-    rebootKey = "reboot";
+    settings = {
+      Login = {
+        HandleLidSwitch = "ignore";
+        HandleLidSwitchExternalPower = "lock";
+        HandlePowerKey = "poweroff";
+        HandlePowerKeyLongPress = "poweroff";
+        HandleSuspendKey = "suspend";
+        HandleHibernateKey = "hibernate";
+        HandleRebootKey = "reboot";
+      };
+    };
   };
 
   #systemd.services.nix-security-scan = {
@@ -206,24 +232,22 @@ in
       vulkan-validation-layers
       vulkan-tools
       # Mesa VA-API driver (hardware video decode)
-      mesa.drivers
-      # Intel specific (uncomment if using Intel GPU)
-      # intel-media-driver
-      # intel-vaapi-driver
-      # AMD specific (uncomment if using AMD GPU)
-      # amdvlk
+      mesa
+      # AMD specific drivers and compute
+      unstable.rocmPackages.clr
+      unstable.rocmPackages.rocm-runtime
     ];
     
     extraPackages32 = with pkgs.pkgsi686Linux; [
       vulkan-loader
-      mesa.drivers
+      mesa
     ];
   };
 
   hardware.cpu.amd.updateMicrocode = true;
   hardware.enableAllFirmware = true;
   # Disabled PulseAudio in favor of PipeWire for Wayland/Niri compatibility
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
@@ -395,6 +419,7 @@ in
     unstable.bat               # cat with syntax highlighting
     unstable.eza               # Modern ls replacement
     unstable.zoxide            # Smart cd with memory
+    unstable.fd                # Fast find replacement
     unstable.fzf               # Interactive fuzzy finder
     unstable.delta             # Better git diffs
     unstable.dust              # du visualization
@@ -681,7 +706,6 @@ in
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ 
     pkgs.xdg-desktop-portal-gtk 
-    pkgs.xdg-desktop-portal-gnome
     pkgs.xdg-desktop-portal-wlr  # Screen sharing for Wayland (AnyDesk, etc)
   ];
   xdg.portal.config.common.default = "gtk";
@@ -738,8 +762,8 @@ in
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "zen" ];
   # virtualisation.virtualbox.host.enableExtensionPack = true;
-  virtualisation.virtualbox.guest.enable = true;
-  virtualisation.virtualbox.guest.dragAndDrop = true;
+  # virtualisation.virtualbox.guest.enable = true;
+  # virtualisation.virtualbox.guest.dragAndDrop = true;
 
   # Environment variables for Vulkan and gaming
   environment.sessionVariables = {
@@ -759,6 +783,10 @@ in
 
     # Wayland native support for Electron/Chromium
     NIXOS_OZONE_WL = "1";
+
+    # Global Cursor Consistency
+    XCURSOR_SIZE = "16";
+    XCURSOR_THEME = "volantes_cursors";
   };
 
   # Optimise Nix store
@@ -790,7 +818,7 @@ in
   zramSwap = {
     enable = true;
     priority = 100;
-    memoryPercent = 10; # Use up to 3GB of your 30GB RAM as compressed swap
+    memoryPercent = 50; # Use up to 16GB of your 30GB RAM as compressed swap
     algorithm = "zstd";
   };
 
