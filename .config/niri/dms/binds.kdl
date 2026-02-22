@@ -4,7 +4,7 @@
 binds {
     // === Window Management ===
     Mod+Ctrl+Space { toggle-window-floating; }
-    Mod+Ctrl+F { toggle-fullscreen; }
+    Mod+Ctrl+F { fullscreen-window; }
     
     // === Workspace Management ===
     Mod+Ctrl+1 { move-window-to-workspace 1; }
@@ -18,9 +18,9 @@ binds {
     Mod+Ctrl+9 { move-window-to-workspace 9; }
     
     // === Layout Management ===
-    Mod+Ctrl+H { switch-layout "horizontal"; }
-    Mod+Ctrl+V { switch-layout "vertical"; }
-    Mod+Ctrl+T { switch-layout "tabbed"; }
+    Mod+Ctrl+H { switch-layout 0; }
+    Mod+Ctrl+V { switch-layout 1; }
+    Mod+Ctrl+T { switch-layout 2; }
     
     // === Media Controls ===
     XF86AudioPlay { spawn "playerctl play-pause"; }

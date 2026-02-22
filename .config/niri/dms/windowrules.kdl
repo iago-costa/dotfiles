@@ -1,6 +1,22 @@
 
 
 // ============================================================
+// SECTION 1: GLOBAL VISUAL DEFAULTS
+// Applies to every window unless overridden below.
+// ============================================================
+
+// Rounded corners for all windows (requires clip-to-geometry)
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+// Default opacity for all windows
+window-rule {
+    opacity 0.98
+}
+
+// ============================================================
 // SECTION 2: FLOATING — MEDIA / PLAYERS
 // ============================================================
 
