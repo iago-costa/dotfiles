@@ -392,6 +392,8 @@ in
     # ══════════════════════════════════════════════════════════
     unstable.ollama                          # Local LLM runner
     unstable.gemini-cli                      # Google Gemini CLI
+    unstable.aider-chat                      # AI pair programming in terminal
+    unstable.opencode                        # AI coding agent built for the terminal
     unstable.python312Packages.fastapi       # ML API framework
     unstable.python312Packages.uvicorn       # ASGI server
     unstable.python312Packages.pydantic      # Data validation
@@ -787,6 +789,11 @@ in
     # Global Cursor Consistency
     XCURSOR_SIZE = "16";
     XCURSOR_THEME = "volantes_cursors";
+  };
+
+  environment.shellAliases = {
+    nix-up = "sudo nixos-rebuild switch --upgrade --cores 0 -j auto";
+    nix-boot = "sudo nixos-rebuild boot --upgrade --cores 0 -j auto";
   };
 
   # Optimise Nix store
