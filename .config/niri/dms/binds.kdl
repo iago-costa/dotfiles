@@ -1,0 +1,38 @@
+// Additional keybindings for niri
+// These complement the main binds in config.kdl
+
+binds {
+    // === Window Management ===
+    Mod+Ctrl+Space { toggle-window-floating; }
+    Mod+Ctrl+F { toggle-fullscreen; }
+    
+    // === Workspace Management ===
+    Mod+Ctrl+1 { move-window-to-workspace 1; }
+    Mod+Ctrl+2 { move-window-to-workspace 2; }
+    Mod+Ctrl+3 { move-window-to-workspace 3; }
+    Mod+Ctrl+4 { move-window-to-workspace 4; }
+    Mod+Ctrl+5 { move-window-to-workspace 5; }
+    Mod+Ctrl+6 { move-window-to-workspace 6; }
+    Mod+Ctrl+7 { move-window-to-workspace 7; }
+    Mod+Ctrl+8 { move-window-to-workspace 8; }
+    Mod+Ctrl+9 { move-window-to-workspace 9; }
+    
+    // === Layout Management ===
+    Mod+Ctrl+H { switch-layout "horizontal"; }
+    Mod+Ctrl+V { switch-layout "vertical"; }
+    Mod+Ctrl+T { switch-layout "tabbed"; }
+    
+    // === Media Controls ===
+    XF86AudioPlay { spawn "playerctl play-pause"; }
+    XF86AudioNext { spawn "playerctl next"; }
+    XF86AudioPrev { spawn "playerctl previous"; }
+    
+    // === Quick Actions ===
+    Mod+Ctrl+Q { spawn "wlogout"; }
+    Mod+Ctrl+L { spawn "swaylock"; }
+    Mod+Ctrl+E { spawn "thunar"; }
+    
+    // === Screenshot Enhancements ===
+    Mod+Shift+S { spawn "grim -g \"$(slurp)\" - | wl-copy"; }
+    Mod+Ctrl+S { spawn "grim -g \"$(slurp)\" ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"; }
+}

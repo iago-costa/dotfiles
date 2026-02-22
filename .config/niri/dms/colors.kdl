@@ -16,21 +16,39 @@ layout {
         width 4
         active-gradient from="#A1C9FF" to="#004A77" angle=135 relative-to="workspace-view"
         inactive-color "#43474E"
+        // Add a subtle animation to focus ring
+        transition {
+            duration-ms 200
+            curve "ease-out"
+        }
     }
 
     border {
-        off
+        on
         width 2
         active-color "#A1C9FF"
         inactive-color "#43474E"
         urgent-color "#FFB4AB"
+        // Make border more visible
+        corner-radius 8
     }
 
     shadow {
         on
         softness 32
-        spread 1
-        offset x=0 y=6
-        color "#000000A0"
+        spread 2
+        offset x=0 y=8
+        color "#000000C0"
+        // Enable shadows for floating windows
+        for-floating-windows true
+    }
+    
+    // Add workspace indicators
+    workspace-indicator {
+        on
+        size 4
+        active-color "#A1C9FF"
+        inactive-color "#43474E"
+        position "top-center"
     }
 }

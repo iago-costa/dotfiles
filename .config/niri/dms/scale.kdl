@@ -1,23 +1,30 @@
 // ============================================================
-// Scale / DPI — Mais espaço em tela
+// Scale / DPI — Optimized for readability and screen real estate
 //
-// Scale 0.875 em 1920x1080 = logical size 2194x1234
-// Cabe ~14% a mais de conteúdo que scale 1.
+// Laptop (eDP-1):  340x190mm → 128 DPI physical → 1.0 scale for crisp text
+// Monitor (HDMI-1): 480x270mm → 92 DPI physical → 1.0 scale for consistency
 //
-// Laptop (eDP-1):  340x190mm → 128 DPI fisico  → 0.875 ideal
-// Monitor (HDMI-1): 480x270mm → 92 DPI fisico  → 0.9 ideal
-//
-// Para reverter: comente ou mude para scale 1
+// For HiDPI displays, adjust scale accordingly (e.g., 2.0 for 4K)
 // ============================================================
 
 output "eDP-1" {
     mode "1920x1080@60.008"
     scale 1.0
     position x=0 y=0
+    // Enable adaptive sync if available
+    adaptive-sync on
 }
 
 output "HDMI-A-1" {
     mode "1920x1080@74.973"
     scale 1.0
-    position x=1920 y=0   // posição ajustada para escala 1
+    position x=1920 y=0
+    // Enable adaptive sync if available
+    adaptive-sync on
+}
+
+// Fallback for unknown outputs
+output "*" {
+    scale 1.0
+    mode "1920x1080@60"
 }

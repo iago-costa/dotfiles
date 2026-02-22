@@ -1,6 +1,6 @@
 // ============================================================
 // Usability — Niri / DMS
-// Recommended UX improvements: animations, overview, gestures,
+// Enhanced UX improvements: animations, overview, gestures,
 // scroll behaviour, and focus policy.
 // ============================================================
 
@@ -17,42 +17,75 @@ animations {
 
     // Window open/close
     window-open {
-        duration-ms 180
+        duration-ms 200
         curve "ease-out-expo"
     }
     window-close {
-        duration-ms 120
+        duration-ms 150
         curve "ease-out-quad"
     }
 
     // Window movement (column drag & resize)
     window-movement {
-        duration-ms 180
+        duration-ms 200
         curve "ease-out-expo"
     }
 
     // Resize while tiling (makes manual resizing feel instant)
     window-resize {
-        duration-ms 150
+        duration-ms 180
         curve "ease-out-expo"
     }
 
     // Column scrolling (horizontal workspace navigation)
     horizontal-view-movement {
-        duration-ms 200
+        duration-ms 220
         curve "ease-out-expo"
     }
 
     // Workspace switching (vertical)
     workspace-switch {
-        duration-ms 220
+        duration-ms 250
         curve "ease-out-expo"
     }
 
     // Config reload fade
     config-notification-open-close {
-        duration-ms 250
+        duration-ms 300
         curve "ease-out-expo"
+    }
+    
+    // Floating window animations
+    floating-window-move {
+        duration-ms 180
+        curve "ease-out-expo"
+    }
+    
+    // Focus change animations
+    focus-change {
+        duration-ms 100
+        curve "ease-out"
+    }
+}
+
+// ============================================================
+// ENHANCED OVERVIEW
+// ============================================================
+overview {
+    zoom 0.3
+    // Show workspace names with better styling
+    workspace-labels {
+        font "sans-serif"
+        size 14
+        color "#FFFFFF"
+        background "#00000080"
+        padding 8
+        corner-radius 6
+    }
+    // Add blur effect to background
+    background-blur {
+        radius 32
+        brightness 0.8
     }
 }
 
