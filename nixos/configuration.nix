@@ -394,6 +394,9 @@ in
     unstable.gemini-cli                      # Google Gemini CLI
     unstable.aider-chat                      # AI pair programming in terminal
     unstable.opencode                        # AI coding agent built for the terminal
+    unstable.crush                           # Glamourous AI coding agent for your terminal
+    unstable.goose-cli                       # Open-source, extensible AI agent
+    (import ./cline.nix { pkgs = unstable; }) # Cline AI CLI (Custom Package)
     unstable.python312Packages.fastapi       # ML API framework
     unstable.python312Packages.uvicorn       # ASGI server
     unstable.python312Packages.pydantic      # Data validation
@@ -413,6 +416,16 @@ in
     unstable.yaml-language-server                        # YAML LSP
     unstable.vscode-langservers-extracted                 # HTML/CSS/JSON LSPs
     unstable.nodePackages.typescript-language-server      # TS/JS LSP
+    unstable.clang-tools                                 # C/C++ LSP (clangd)
+    unstable.jdt-language-server                         # Java LSP (jdtls)
+    unstable.omnisharp-roslyn                            # C# LSP
+    unstable.sqls                                        # SQL LSP
+    unstable.metals                                      # Scala LSP
+    unstable.dart                                        # Dart SDK (includes LSP)
+    unstable.kotlin-language-server                      # Kotlin LSP
+    unstable.clojure-lsp                                 # Clojure LSP
+    unstable.haskell-language-server                     # Haskell LSP
+    unstable.alire                                       # Ada package manager (standard for Ada development)
     unstable.tree-sitter                                 # Multi-lang parser
 
     # ══════════════════════════════════════════════════════════
