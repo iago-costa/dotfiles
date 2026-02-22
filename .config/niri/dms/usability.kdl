@@ -55,17 +55,6 @@ animations {
         curve "ease-out-expo"
     }
     
-    // Floating window animations
-    floating-window-move {
-        duration-ms 180
-        curve "ease-out-expo"
-    }
-    
-    // Focus change animations
-    focus-change {
-        duration-ms 100
-        curve "ease-out"
-    }
 }
 
 // ============================================================
@@ -73,20 +62,6 @@ animations {
 // ============================================================
 overview {
     zoom 0.3
-    // Show workspace names with better styling
-    workspace-labels {
-        font "sans-serif"
-        size 14
-        color "#FFFFFF"
-        background "#00000080"
-        padding 8
-        corner-radius 6
-    }
-    // Add blur effect to background
-    background-blur {
-        radius 32
-        brightness 0.8
-    }
 }
 
 

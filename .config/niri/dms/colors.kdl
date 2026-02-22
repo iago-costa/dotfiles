@@ -1,1 +1,24 @@
 
+layout {
+    focus-ring {
+        width 4
+        active-gradient from="#A1C9FF" to="#004A77" angle=135 relative-to="workspace-view"
+        inactive-color "#43474E"
+    }
+
+    border {
+        on
+        width 2
+        active-color "#A1C9FF"
+        inactive-color "#43474E"
+        urgent-color "#FFB4AB"
+    }
+
+    shadow {
+        on
+        softness 32
+        spread 2
+        offset x=0 y=8
+        color "#000000C0"
+    }
+}
