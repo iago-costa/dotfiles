@@ -1,0 +1,13 @@
+# .aiderignore
+node_modules/
+.next/
+out/
+build/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.devenv/
+.direnv/
+.docker-volumes/
+db.sqlite3

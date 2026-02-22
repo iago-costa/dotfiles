@@ -1,0 +1,35 @@
+# ==========================================
+# Configuração de Performance do Aider
+# ==========================================
+
+# --- 1. Modelos (Modo Arquitecto) ---
+# Ativa o modo que separa o raciocínio da escrita
+architect: true
+# Modelo principal focado em lógica, planeamento e resolução de problemas complexos
+model: openrouter/qwen/qwen3-coder-30b-a3b-instruct
+# Modelo editor super rápido, focado apenas em aplicar as alterações no código
+editor-model: openrouter/qwen/qwen3-coder-30b-a3b-instruct
+
+# --- 2. Desativação Completa do Git ---
+# Impede o Aider de interagir, criar repositórios ou fazer commits
+no-git: true
+auto-commits: false
+dirty-commits: false
+
+# --- 3. Otimizações de Performance ---
+# Gera apenas os blocos de código que mudaram em vez de reescrever o ficheiro todo
+edit-format: diff
+# Mostra a resposta no terminal em tempo real
+stream: true
+# Ativa a cache de prompts no provedor para respostas quase instantâneas
+cache-prompts: true
+# Mantém a sessão de cache viva durante 60 minutos
+cache-keepalive: 60
+# Limita o mapa mental do projeto para o modelo não se perder em ficheiros irrelevantes
+map-tokens: 1024
+# Desativa verificações de atualizações na inicialização para abrir de imediato
+check-update: false
+
+# --- 4. Interface ---
+# Ativa as cores otimizadas para fundos escuros no terminal
+dark-mode: true

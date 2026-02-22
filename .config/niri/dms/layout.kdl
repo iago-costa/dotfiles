@@ -4,25 +4,19 @@
         // ! PLACE YOUR CUSTOM CONFIGURATION ELSEWHERE !
 
         layout {
-        gaps 8
+        gaps 4
 
         border {
         width 2
-        active-color "#A1C9FF"
-        inactive-color "#43474E"
-        urgent-color "#FFB4AB"
         }
 
         focus-ring {
-        width 4
-        active-gradient from="#A1C9FF" to="#004A77" angle=135 relative-to="workspace-view"
-        inactive-color "#43474E"
+        width 2
         }
         }
         window-rule {
-        geometry-corner-radius 12
+        geometry-corner-radius 10
         clip-to-geometry true
         tiled-state true
         draw-border-with-background false
-        opacity 0.98
         }

@@ -18,9 +18,9 @@ binds {
     Mod+Ctrl+9 { move-window-to-workspace 9; }
     
     // === Layout Management ===
-    Mod+Ctrl+H { switch-layout 0; }
-    Mod+Ctrl+V { switch-layout 1; }
-    Mod+Ctrl+T { switch-layout 2; }
+    Mod+Ctrl+H { switch-layout "0"; }
+    Mod+Ctrl+V { switch-layout "1"; }
+    Mod+Ctrl+T { switch-layout "2"; }
     
     // === Media Controls ===
     XF86AudioPlay { spawn "playerctl play-pause"; }

@@ -2,3 +2,5 @@
 # *autoload/
 # *plugin/
 .aider*
+!.aider.conf*
+!.aiderignore
