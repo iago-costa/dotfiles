@@ -1,27 +1,3 @@
-// ============================================================
-// Niri Window Rules — Enhanced Edition
-// Covers: floating dialogs, app sizing, opacity, security,
-// screen capture exclusions, and per-app column widths.
-// ============================================================
-
-
-// ============================================================
-// SECTION 1: GLOBAL VISUAL DEFAULTS
-// Applies to every window unless overridden below.
-// ============================================================
-
-// Rounded corners for all windows (requires clip-to-geometry)
-window-rule {
-    geometry-corner-radius 12
-    clip-to-geometry true
-    // Smooth edges
-    antialiasing true
-}
-
-// Default opacity for all windows
-window-rule {
-    opacity 0.98
-}
 
 
 // ============================================================
