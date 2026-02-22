@@ -90,16 +90,6 @@ overview {
 }
 
 
-// ============================================================
-// OVERVIEW (Mod+Tab workspace zoom-out)
-// ============================================================
-overview {
-    // Zoom out to 30% so all workspaces are clearly visible
-    zoom 0.3
-
-    // Show workspace names in overview
-    // workspace-shadow — inherits from layout shadow settings
-}
 
 
 // ============================================================

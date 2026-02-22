@@ -12,7 +12,7 @@ output "eDP-1" {
     scale 1.0
     position x=0 y=0
     // Enable adaptive sync if available
-    adaptive-sync on
+    adaptive-sync true
 }
 
 output "HDMI-A-1" {
@@ -20,7 +20,7 @@ output "HDMI-A-1" {
     scale 1.0
     position x=1920 y=0
     // Enable adaptive sync if available
-    adaptive-sync on
+    adaptive-sync true
 }
 
 // Fallback for unknown outputs
