@@ -643,6 +643,7 @@ in
     unstable.htop              # Process monitor
     unstable.tree              # Directory tree
     unstable.killall
+    unstable.psmisc            # Provides fuser, killall, pstree
     unstable.lsof              # List open files
     unstable.inxi              # System info (detailed)
     unstable.dmidecode         # Hardware info
