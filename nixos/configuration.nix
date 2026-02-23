@@ -134,6 +134,13 @@ in
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  # Enable Tor service
+  services.tor = {
+    enable = true;
+    client.enable = true;
+  };
+
   # flatpak to install additional apps if needed
   services.flatpak.enable = true; 
   services.dbus.enable = true;
@@ -297,7 +304,7 @@ in
     unstable.vim
     unstable.neovim
     unstable.emacs
-    unstable.antigravity-fhs
+    (builtins.getFlake "github:jacopone/antigravity-nix").packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-no-fhs
     unstable.code-cursor
     unstable.vscode
     unstable.windsurf
@@ -527,6 +534,17 @@ in
     unstable.iaito             # Radare2 GUI
 
     # ══════════════════════════════════════════════════════════
+    # Privacy & Anonymity (Tor / Onion)
+    # ══════════════════════════════════════════════════════════
+    unstable.tor               # Core Tor daemon
+    unstable.tor-browser       # Tor Browser
+    unstable.nyx               # Tor monitor (TUI)
+    unstable.torsocks          # Tor-wrap applications
+    unstable.onioncircuits     # Visualize Tor circuits
+    unstable.onionshare-gui    # Secure file sharing over Tor
+    unstable.proxychains-ng    # Proxy wrapper
+
+    # ══════════════════════════════════════════════════════════
     # Screenshot / Screen Capture (Wayland)
     # ══════════════════════════════════════════════════════════
     unstable.grim              # Screenshot capture
@@ -551,6 +569,8 @@ in
     unstable.wtype             # Wayland keyboard input simulator
     stable.gtk_engines
     stable.gtk-engine-murrine
+    unstable.gnome-themes-extra
+    unstable.adwaita-icon-theme
     stable.xorg.xhost
     stable.xorg.xmessage
     stable.xorg.xbacklight
@@ -765,7 +785,16 @@ in
     };
   };
   
-  programs.dconf.enable = true; # virt-manager requires dconf to remember settings
+  programs.dconf = {
+    enable = true; # virt-manager requires dconf to remember settings
+    profiles.user.databases = [{
+      settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+        };
+      };
+    }];
+  };
 
   virtualisation.docker.enable = true;
   users.extraGroups.docker.members = [ "zen" ];
@@ -802,6 +831,10 @@ in
     # Global Cursor Consistency
     XCURSOR_SIZE = "16";
     XCURSOR_THEME = "volantes_cursors";
+
+    # Force Dark Theme for GTK and Qt apps
+    GTK_THEME = "Adwaita:dark";
+    QT_QPA_PLATFORMTHEME = "gtk3";
   };
 
   environment.shellAliases = {
