@@ -77,6 +77,9 @@ environment {
 // See the binds section below for more spawn examples.
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
+// Update DBus and systemd environment for XDG Desktop Portal (Fixes slow app startup)
+spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP && dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+
 // Autostart XFCE services
 spawn-at-startup "xfsettingsd"
 spawn-at-startup "xfce4-power-manager"
