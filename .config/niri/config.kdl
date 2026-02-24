@@ -302,7 +302,7 @@ binds {
 
     // === System ===
     Mod+Shift+E { quit; }
-    Mod+Shift+W { spawn-sh "niri msg action load-config-file && dms restart; dms restart;"; }
+    Mod+Shift+W { spawn-sh "niri msg action load-config-file && dms restart;"; }
 }
 
 include "dms/colors.kdl"
