@@ -338,6 +338,7 @@ in
     unstable.ghz               # gRPC benchmarking
     unstable.httpie            # Human-friendly HTTP client
     unstable.devenv            # Developer environments
+    unstable.gnumake           # Makefile support
 
     # ══════════════════════════════════════════════════════════
     # Frontend Development
@@ -370,6 +371,8 @@ in
     unstable.hadolint          # Dockerfile linter
     unstable.shellcheck        # Shell script analyzer
     unstable.shfmt             # Shell script formatter
+    unstable.lazydocker        # Docker TUI
+    unstable.docker-compose    # Container orchestration
 
     # ══════════════════════════════════════════════════════════
     # QA / Testing / Load Testing
@@ -393,6 +396,18 @@ in
     unstable.python312Packages.ipython       # Enhanced Python REPL
     unstable.python312Packages.requests      # HTTP for Python
     unstable.python312Packages.sqlalchemy    # Python ORM
+    unstable.python312Packages.polars        # Fast DataFrames
+    unstable.python312Packages.duckdb        # DuckDB Python bindings
+    unstable.python312Packages.dask          # Parallel computing
+    unstable.python312Packages.plotly        # Interactive visualization
+
+    # ══════════════════════════════════════════════════════════
+    # Data Engineering / Big Data
+    # ══════════════════════════════════════════════════════════
+    unstable.duckdb            # Fast analytical DB
+    unstable.apache-spark      # Big data processing
+    unstable.visidata          # Data exploration TUI
+    unstable.clickhouse-cli    # ClickHouse client
 
     # ══════════════════════════════════════════════════════════
     # AI / ML Engineering
@@ -738,14 +753,13 @@ in
 
   powerManagement.cpuFreqGovernor = "performance";
 
-  # List services that you want to enable:
+  # Screen sharing and Portals for Niri
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ 
+    pkgs.xdg-desktop-portal-gnome
     pkgs.xdg-desktop-portal-gtk 
-    pkgs.xdg-desktop-portal-wlr  # Screen sharing for Wayland (AnyDesk, etc)
   ];
-  xdg.portal.config.common.default = "gtk";
-  xdg.portal.wlr.enable = true;  # Enable wlroots portal for screen capture
+  xdg.portal.config.niri.default = [ "gnome" "gtk" ];
   
   # Ensure Nautilus file picker works in browsers
   services.gnome.sushi.enable = true;  # Quick file previewer
