@@ -326,9 +326,9 @@ in
     unstable.python312
     unstable.elixir
     unstable.ruby
-    unstable.php
+    # Database clients
+    stable.mycli               # Smart MySQL CLI
     unstable.pgcli             # Smart PostgreSQL CLI
-    unstable.mycli             # Smart MySQL CLI
     unstable.litecli           # Smart SQLite CLI
     unstable.dbeaver-bin       # Universal visual DB client
     unstable.mongodb-compass   # MongoDB GUI
@@ -362,11 +362,11 @@ in
     unstable.terraform         # IaC
     unstable.ansible           # Configuration management
     unstable.packer            # Machine image builder
-    unstable.vault             # Secrets management
+    stable.vault               # Secrets management
     unstable.consul            # Service discovery
     unstable.dive              # Docker layer explorer
     unstable.act               # Run GitHub Actions locally
-    unstable.checkov           # IaC security scanner
+    stable.checkov             # IaC security scanner
     unstable.tflint            # Terraform linter
     unstable.hadolint          # Dockerfile linter
     unstable.shellcheck        # Shell script analyzer
@@ -399,8 +399,8 @@ in
     unstable.python312Packages.polars        # Fast DataFrames
     unstable.python312Packages.duckdb        # DuckDB Python bindings
     unstable.python312Packages.dask          # Parallel computing
-    unstable.python312Packages.plotly        # Interactive visualization
-
+    stable.python312Packages.plotly          # Interactive visualization
+    stable.python312Packages.bokeh           # Interactive web plotting
     # ══════════════════════════════════════════════════════════
     # Data Engineering / Big Data
     # ══════════════════════════════════════════════════════════
@@ -497,9 +497,9 @@ in
     unstable.iftop             # Network bandwidth monitor
     unstable.iotop             # I/O monitor
     unstable.dig
-    unstable.doggo             # Modern dig alternative
-    unstable.mitmproxy         # HTTP/HTTPS proxy
-    unstable.python312Packages.pyngrok
+    unstable.tcpdump           # Traffic analyzer
+    stable.mitmproxy           # HTTP/HTTPS proxy
+    unstable.ettercap          # Network sniffer/MITM toolk
     unstable.cifs-utils
     stable.wireshark
     unstable.tshark
@@ -529,9 +529,9 @@ in
     unstable.apktool           # Android reverse engineering
     unstable.radare2           # Binary analysis
     unstable.ghidra-bin        # Reverse engineering suite
-    unstable.trivy             # Vulnerability scanner
-    unstable.wapiti            # Web vulnerability scanner
-    unstable.grype             # Vulnerability scanner
+    unstable.zap               # OWASP ZAP proxy
+    stable.wapiti              # Web vulnerability scanner
+    unstable.nuclei            # Template-based vulnerability scanner
     unstable.octoscan
     unstable.osv-scanner       # Open Source vulnerability scanner
     unstable.http-scanner
@@ -801,6 +801,9 @@ in
       runAsRoot = false;
     };
   };
+
+  # Disable documentation builds to bypass broken unstable packages (e.g. python3.12-doc)
+  documentation.doc.enable = false;
   
   programs.dconf = {
     enable = true; # virt-manager requires dconf to remember settings
