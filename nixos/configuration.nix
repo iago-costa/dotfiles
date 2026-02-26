@@ -405,7 +405,7 @@ in
     # Data Engineering / Big Data
     # ══════════════════════════════════════════════════════════
     unstable.duckdb            # Fast analytical DB
-    unstable.apache-spark      # Big data processing
+    unstable.spark             # Big data processing
     unstable.visidata          # Data exploration TUI
     unstable.clickhouse-cli    # ClickHouse client
 
