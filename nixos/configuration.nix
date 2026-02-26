@@ -685,6 +685,8 @@ in
     unstable.android-tools     # Android development tools
     unstable.logseq            # Knowledge management (stable.logseq found earlier)
     unstable.texstudio         # LaTeX editor
+    unstable.texlive.combined.scheme-medium # LaTeX compiler (pdflatex, etc)
+    unstable.tectonic          # Modern C++ LaTeX compiler (no setup required)
 
     # ══════════════════════════════════════════════════════════
     # Gaming (Lutris / Wine / Vulkan)
@@ -858,7 +860,7 @@ in
   };
 
   # Optimise Nix store
-  nix.settings.auto-optimise-store = true;
+  nix.settings.auto-optimise-store = false;
   nix.settings.max-jobs = "auto";  # Use all available cores for builds
   nix.settings.cores = 0;          # Use all cores per job
   nix.optimise.automatic = true;
