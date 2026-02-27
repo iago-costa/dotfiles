@@ -69,7 +69,7 @@ in
     "fs.file-max" = 524288;
     
     # Memory management - prefer RAM over swap, but utilize ZRAM effectively
-    "vm.swappiness" = 180; # Aggressively use ZRAM before hitting disk
+    "vm.swappiness" = 100; # Balanced use of ZRAM
     "vm.vfs_cache_pressure" = 50;
     
     # Disk I/O optimization - write dirty pages earlier for SSD longevity
