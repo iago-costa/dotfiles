@@ -57,9 +57,15 @@ in
   # Performance Optimized Kernel
   boot.kernelPackages = pkgs.linuxPackages_zen;
   
-  # Kernel parameters for performance optimization
+  # Kernel parameters for performance optimization and AMD Ryzen stability
   boot.kernelParams = [ 
     "scsi_mod.use_blk_mq=1" # Better NVMe multi-queue utilization
+    
+    # AMD Ryzen / AMDGPU stability fixes
+    "processor.max_cstate=5"
+    "rcu_nocbs=0-15"
+    "idle=nomwait"
+    "amdgpu.sg_display=0"
   ];
 
   # Kernel parameters for performance optimization
