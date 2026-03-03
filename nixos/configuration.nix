@@ -55,7 +55,7 @@ in
   boot.tmp.useTmpfs = true;
 
   # Performance Optimized Kernel
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelPackages = stable.linuxPackages_zen;
   
   # Kernel parameters for performance optimization and AMD Ryzen stability
   boot.kernelParams = [ 
@@ -784,7 +784,7 @@ in
     niri.enable = true;
   };
 
-  powerManagement.cpuFreqGovernor = "performance";
+  powerManagement.cpuFreqGovernor = "powersave";
 
   # Screen sharing and Portals for Niri
   xdg.portal.enable = true;
