@@ -266,6 +266,13 @@ in
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
 
+  # Make Qt applications (like VLC) properly render under Wayland/Niri
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.defaultUserShell = unstable.zsh;
   users.users.zen = {
@@ -310,7 +317,12 @@ in
     unstable.vim
     unstable.neovim
     unstable.emacs
-    (builtins.getFlake "github:jacopone/antigravity-nix").packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-no-fhs
+    ((builtins.getFlake "github:jacopone/antigravity-nix").packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-no-fhs.overrideAttrs (old: {
+      postInstall = (old.postInstall or "") + ''
+        wrapProgram $out/bin/antigravity \
+          --add-flags "--enable-features=UseOzonePlatform --ozone-platform=wayland"
+      '';
+    }))
     unstable.code-cursor
     unstable.vscode
     unstable.windsurf
@@ -368,7 +380,7 @@ in
     unstable.terraform         # IaC
     unstable.ansible           # Configuration management
     unstable.packer            # Machine image builder
-    stable.vault               # Secrets management
+    stable.vault-bin           # Secrets management
     unstable.consul            # Service discovery
     unstable.dive              # Docker layer explorer
     unstable.act               # Run GitHub Actions locally
@@ -419,7 +431,7 @@ in
     # AI / ML Engineering
     # ══════════════════════════════════════════════════════════
     unstable.ollama                          # Local LLM runner
-    unstable.gemini-cli                      # Google Gemini CLI
+    unstable.gemini-cli-bin                  # Google Gemini CLI
     unstable.aider-chat                      # AI pair programming in terminal
     unstable.opencode                        # AI coding agent built for the terminal
     unstable.crush                           # Glamourous AI coding agent for your terminal
@@ -449,7 +461,7 @@ in
     unstable.omnisharp-roslyn                            # C# LSP
     unstable.sqls                                        # SQL LSP
     unstable.metals                                      # Scala LSP
-    unstable.dart                                        # Dart SDK (includes LSP)
+    unstable.dart-bin                                    # Dart SDK (includes LSP)
     unstable.kotlin-language-server                      # Kotlin LSP
     unstable.clojure-lsp                                 # Clojure LSP
     unstable.haskell-language-server                     # Haskell LSP
@@ -603,10 +615,14 @@ in
     # ══════════════════════════════════════════════════════════
     # Browsers
     # ══════════════════════════════════════════════════════════
-    stable.vivaldi
+    (stable.vivaldi.override {
+      commandLineArgs = "--enable-features=UseOzonePlatform --ozone-platform=wayland";
+    })
     stable.vivaldi-ffmpeg-codecs
-    stable.google-chrome
-    stable.firefox
+    (stable.google-chrome.override {
+      commandLineArgs = "--enable-features=UseOzonePlatform --ozone-platform=wayland";
+    })
+    stable.firefox-bin
 
     # ══════════════════════════════════════════════════════════
     # Communication / Remote
@@ -693,6 +709,17 @@ in
     unstable.texstudio         # LaTeX editor
     unstable.texlive.combined.scheme-medium # LaTeX compiler (pdflatex, etc)
     unstable.tectonic          # Modern C++ LaTeX compiler (no setup required)
+
+    # ══════════════════════════════════════════════════════════
+    # Study / Education
+    # ══════════════════════════════════════════════════════════
+    unstable.anki-bin          # Spaced repetition flashcards (binary is often preferred for Anki)
+    unstable.obsidian          # Second brain / Markdown knowledge base
+    unstable.zotero            # Top tier reference and research management
+    unstable.xournalpp         # PDF annotation and handwritten notes
+    unstable.kdePackages.okular # Feature-rich document and PDF viewer
+    unstable.super-productivity # ToDo list, Time tracker, Pomodoro timer
+    # unstable.mindforger        # Thinking notebook and Markdown IDE (currently failing to build due to cmake error)
 
     # ══════════════════════════════════════════════════════════
     # Gaming (Lutris / Wine / Vulkan)
@@ -860,7 +887,6 @@ in
 
     # Force Dark Theme for GTK and Qt apps
     GTK_THEME = "Adwaita:dark";
-    QT_QPA_PLATFORMTHEME = "gtk3";
   };
 
   environment.shellAliases = {
@@ -895,7 +921,7 @@ in
 
   # ZRAM Swap - compression in RAM to save disk space
   zramSwap = {
-    enable = true;
+    enable = false;
     priority = 100;
     memoryPercent = 50; # Use up to 16GB of your 30GB RAM as compressed swap
     algorithm = "zstd";
