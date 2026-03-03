@@ -74,8 +74,7 @@ in
     "vm.max_map_count" = 2147483642;
     "fs.file-max" = 524288;
     
-    # Memory management - prefer RAM over swap, but utilize ZRAM effectively
-    "vm.swappiness" = 100; # Balanced use of ZRAM
+    "vm.swappiness" = 60; # Moderated physical swap usage (Linux default)
     "vm.vfs_cache_pressure" = 50;
     
     # Disk I/O optimization - write dirty pages earlier for SSD longevity
@@ -719,7 +718,6 @@ in
     unstable.xournalpp         # PDF annotation and handwritten notes
     unstable.kdePackages.okular # Feature-rich document and PDF viewer
     unstable.super-productivity # ToDo list, Time tracker, Pomodoro timer
-    # unstable.mindforger        # Thinking notebook and Markdown IDE (currently failing to build due to cmake error)
 
     # ══════════════════════════════════════════════════════════
     # Gaming (Lutris / Wine / Vulkan)
@@ -922,9 +920,6 @@ in
   # ZRAM Swap - compression in RAM to save disk space
   zramSwap = {
     enable = false;
-    priority = 100;
-    memoryPercent = 50; # Use up to 16GB of your 30GB RAM as compressed swap
-    algorithm = "zstd";
   };
 
 }
