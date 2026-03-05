@@ -675,7 +675,7 @@ in
     # ══════════════════════════════════════════════════════════
     # System Utilities / Libraries
     # ══════════════════════════════════════════════════════════
-    unstable.neofetch          # System info
+    unstable.fastfetch         # System info (neofetch replacement)
     unstable.htop              # Process monitor
     unstable.tree              # Directory tree
     unstable.killall
@@ -699,6 +699,15 @@ in
     unstable.direnv            # Per-directory env vars
     unstable.fasd              # Quick directory access
     unstable.rcodesign         # Apple code signing
+
+    # ══════════════════════════════════════════════════════════
+    # Temperature Monitoring & Thermal Management
+    # ══════════════════════════════════════════════════════════
+    unstable.xsensors          # GUI temperature monitor (lm_sensors frontend)
+    unstable.s-tui             # Terminal CPU stress test & temp monitor
+    unstable.stress            # System stress testing (used by s-tui)
+    unstable.stress-ng         # Advanced stress testing
+    unstable.zenmonitor        # AMD Ryzen temperature monitor
 
     # ══════════════════════════════════════════════════════════
     # Specialized Tools
@@ -785,6 +794,31 @@ in
   };
 
   powerManagement.cpuFreqGovernor = "powersave";
+
+  # ── Thermal Management ────────────────────────────────────────
+  # Hardware sensor detection (lm_sensors)
+  hardware.sensor.iio.enable = true;
+
+  # Thermal daemon — dynamic thermal management for CPU/GPU
+  services.thermald.enable = true;
+
+  # Auto CPU frequency scaling based on temperature & load
+  services.auto-cpufreq = {
+    enable = true;
+    settings = {
+      battery = {
+        governor = "powersave";
+        turbo = "never";
+      };
+      charger = {
+        governor = "performance";
+        turbo = "auto";
+      };
+    };
+  };
+
+  # Load AMD temperature sensor kernel module
+  boot.kernelModules = [ "k10temp" "zenpower" ];
 
   # Screen sharing and Portals for Niri
   xdg.portal.enable = true;
