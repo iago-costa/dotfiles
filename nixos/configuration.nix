@@ -4,7 +4,6 @@
 
 { config, pkgs, ... }:
 let
-  # Config to install android sdk
 
   baseconfig = { 
     allowUnfree = true; 
@@ -66,6 +65,9 @@ in
     "rcu_nocbs=0-15"
     "idle=nomwait"
     "amdgpu.sg_display=0"
+
+    # AMD P-state driver — finer CPU frequency/thermal control
+    "amd_pstate=active"
   ];
 
   # Kernel parameters for performance optimization
@@ -93,17 +95,6 @@ in
   # Set your time zone.
   time.timeZone = "America/Belem";
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  #   useXkbConfig = true; # use xkbOptions in tty.
-  # };
   
   # Disable background antivirus daemon for performance (use manual scans if needed)
   services.clamav.daemon.enable = false;
@@ -163,8 +154,7 @@ in
     rulesProvider = pkgs.ananicy-rules-cachyos;
   };
 
-  # Spice VDAgent
-  services.spice-vdagentd.enable = true;
+
 
   # Display manager — Niri is the default session
   services.displayManager.defaultSession = "niri";
@@ -206,28 +196,6 @@ in
     };
   };
 
-  #systemd.services.nix-security-scan = {
-  #  description = "Weekly system security scan";
-  #  script = pkgs.writeScript "nixos-scan-runner" ''
-  #    #!${pkgs.bash}/bin/bash
-  #    # Copy the full script from above and paste it here
-  #    # Or, if you saved it to a file: /path/to/your/nixos-scan.sh
-  #    /etc/nixos/nixos-scan.sh
-  #  '';
-  #  serviceConfig = {
-  #    Type = "oneshot";
-  #    User = "root";
-  #  };
-  #};
-
-  #systemd.timers.nix-security-scan = {
-  #  description = "Run security scan weekly";
-  #  wantedBy = [ "timers.target" ];
-  #  timerConfig = {
-  #    OnCalendar = "Sun 03:00:00"; # Every Sunday at 3:00 AM
-  #    Persistent = true;
-  #  };
-  #};
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -418,6 +386,7 @@ in
     unstable.python312Packages.dask          # Parallel computing
     stable.python312Packages.plotly          # Interactive visualization
     stable.python312Packages.bokeh           # Interactive web plotting
+    unstable.pspp                            # SPSS alternative (.sav editor)
     # ══════════════════════════════════════════════════════════
     # Data Engineering / Big Data
     # ══════════════════════════════════════════════════════════
@@ -509,12 +478,11 @@ in
     unstable.sshfs
     unstable.fuse3
     unstable.nmap
-    unstable.tcpdump
+    unstable.tcpdump           # Traffic analyzer
     unstable.ethtool
     unstable.iftop             # Network bandwidth monitor
     unstable.iotop             # I/O monitor
     unstable.dig
-    unstable.tcpdump           # Traffic analyzer
     stable.mitmproxy           # HTTP/HTTPS proxy
     unstable.ettercap          # Network sniffer/MITM toolk
     unstable.cifs-utils
@@ -599,17 +567,13 @@ in
     unstable.dms-shell         # DankMaterialShell
     unstable.dgop              # System monitor backend
     unstable.wtype             # Wayland keyboard input simulator
+    unstable.wl-clipboard      # Wayland clipboard (replaces xclip)
+    unstable.brightnessctl     # Backlight control (replaces xbacklight)
     stable.gtk_engines
     stable.gtk-engine-murrine
     unstable.gnome-themes-extra
     unstable.adwaita-icon-theme
-    stable.xorg.xhost
-    stable.xorg.xmessage
-    stable.xorg.xbacklight
-    stable.haskellPackages.xmobar
     stable.copyq               # Clipboard manager
-    stable.lightlocker         # Screen locker
-    stable.redshift            # Night light (X11)
 
     # ══════════════════════════════════════════════════════════
     # Browsers
@@ -678,7 +642,6 @@ in
     unstable.fastfetch         # System info (neofetch replacement)
     unstable.htop              # Process monitor
     unstable.tree              # Directory tree
-    unstable.killall
     unstable.psmisc            # Provides fuser, killall, pstree
     unstable.lsof              # List open files
     unstable.inxi              # System info (detailed)
@@ -686,8 +649,6 @@ in
     unstable.lm_sensors        # Temperature / fans
     unstable.wirelesstools
     unstable.inetutils
-    unstable.xdotool
-    unstable.xclip
     unstable.libnotify
     unstable.yad               # GUI dialogs from shell
     unstable.nix-index         # Nix package file search
@@ -703,11 +664,12 @@ in
     # ══════════════════════════════════════════════════════════
     # Temperature Monitoring & Thermal Management
     # ══════════════════════════════════════════════════════════
-    unstable.xsensors          # GUI temperature monitor (lm_sensors frontend)
+
     unstable.s-tui             # Terminal CPU stress test & temp monitor
     unstable.stress            # System stress testing (used by s-tui)
     unstable.stress-ng         # Advanced stress testing
     unstable.zenmonitor        # AMD Ryzen temperature monitor
+    stable.linuxPackages_zen.cpupower  # Manual CPU frequency control
 
     # ══════════════════════════════════════════════════════════
     # Specialized Tools
@@ -717,6 +679,7 @@ in
     unstable.texstudio         # LaTeX editor
     unstable.texlive.combined.scheme-medium # LaTeX compiler (pdflatex, etc)
     unstable.tectonic          # Modern C++ LaTeX compiler (no setup required)
+    unstable.spec-kit          # Spec-Driven Development toolkit (GitHub)
 
     # ══════════════════════════════════════════════════════════
     # Study / Education
@@ -736,9 +699,10 @@ in
     unstable.winetricks
     unstable.mangohud
     unstable.vulkan-extension-layer
-    unstable.mesa              # RADV (default AMD driver)
+
     unstable.mesa-demos
     unstable.dxvk              # DirectX -> Vulkan
+    unstable.scanmem           # GameConqueror (Memory Editor for games)
 
     # ══════════════════════════════════════════════════════════
 
@@ -788,16 +752,10 @@ in
       unstable.expat
       unstable.nss
     ];
-    # xfconf.enable = true;
-
     niri.enable = true;
   };
 
-  powerManagement.cpuFreqGovernor = "powersave";
-
   # ── Thermal Management ────────────────────────────────────────
-  # Hardware sensor detection (lm_sensors)
-  hardware.sensor.iio.enable = true;
 
   # Thermal daemon — dynamic thermal management for CPU/GPU
   services.thermald.enable = true;
@@ -811,8 +769,8 @@ in
         turbo = "never";
       };
       charger = {
-        governor = "performance";
-        turbo = "auto";
+        governor = "powersave";
+        turbo = "never";
       };
     };
   };
@@ -820,26 +778,48 @@ in
   # Load AMD temperature sensor kernel module
   boot.kernelModules = [ "k10temp" "zenpower" ];
 
+  # ── Disable CPU Turbo Boost at Boot (thermal safety) ──────────
+  # Prevents CPU from exceeding safe thermal limits under load
+  systemd.services.disable-cpu-boost = {
+    description = "Disable CPU turbo boost for thermal stability";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "sysinit.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "/bin/sh -c 'echo 0 > /sys/devices/system/cpu/cpufreq/boost'";
+      ExecStop  = "/bin/sh -c 'echo 1 > /sys/devices/system/cpu/cpufreq/boost'";
+    };
+  };
+
+  # Set Vivaldi as default browser for all applications
+  xdg.mime.defaultApplications = {
+    "x-scheme-handler/http" = "vivaldi-stable.desktop";
+    "x-scheme-handler/https" = "vivaldi-stable.desktop";
+    "x-scheme-handler/about" = "vivaldi-stable.desktop";
+    "x-scheme-handler/unknown" = "vivaldi-stable.desktop";
+    "text/html" = "vivaldi-stable.desktop";
+    "application/xhtml+xml" = "vivaldi-stable.desktop";
+  };
+
   # Screen sharing and Portals for Niri
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ 
     pkgs.xdg-desktop-portal-gnome
     pkgs.xdg-desktop-portal-gtk 
   ];
-  xdg.portal.config.niri.default = [ "gnome" "gtk" ];
+  xdg.portal.config.niri = {
+    default = [ "gnome" "gtk" ];
+    # Use GTK portal for OpenURI — GNOME portal shows invisible confirmation
+    # dialog under Niri, blocking cursor:// and other custom protocol redirects
+    "org.freedesktop.impl.portal.OpenURI" = [ "gtk" ];
+  };
   
   # Ensure Nautilus file picker works in browsers
   services.gnome.sushi.enable = true;  # Quick file previewer
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
   networking.firewall.enable = false;
-  # networking.hostName = "nixos"; # Define your hostname.
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true;
   
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
@@ -854,8 +834,7 @@ in
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
-  # virtualisation.vmware.host.enable = true;
-  
+
   # Libvirt/QEMU for Windows 10 VM with optimized graphics
   virtualisation.libvirtd = {
     enable = true;
@@ -896,6 +875,9 @@ in
 
   # Environment variables for Vulkan and gaming
   environment.sessionVariables = {
+    # Default browser for CLI tools and IDEs
+    BROWSER = "vivaldi";
+
     # Vulkan ICD selection
     VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json";
     
