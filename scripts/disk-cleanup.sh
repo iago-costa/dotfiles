@@ -56,11 +56,41 @@ header() {
 }
 
 get_size() {
-    du -sb "$1" 2>/dev/null | cut -f1 || echo 0
+    local s
+    s=$(du -sb "$1" 2>/dev/null | cut -f1)
+    echo "${s:-0}"
+}
+
+# Reliably empty a directory (handles dotfiles, measures freed bytes)
+# Usage: safe_clean_dir "/path/to/dir" [exclude_pattern...]
+# Sets LAST_FREED to actual bytes freed
+LAST_FREED=0
+safe_clean_dir() {
+    local dir="$1"; shift
+    local excludes=("$@")
+    [[ -d "$dir" ]] || { LAST_FREED=0; return 1; }
+    local before after
+    before=$(get_size "$dir")
+    if [[ ${#excludes[@]} -gt 0 ]]; then
+        # Build find exclusion args
+        local find_args=(find "$dir" -mindepth 1 -maxdepth 1)
+        for ex in "${excludes[@]}"; do
+            find_args+=(! -name "$ex")
+        done
+        "${find_args[@]}" -exec rm -rf {} + 2>/dev/null || true
+    else
+        find "$dir" -mindepth 1 -delete 2>/dev/null || \
+            find "$dir" -mindepth 1 -exec rm -rf {} + 2>/dev/null || true
+    fi
+    after=$(get_size "$dir")
+    LAST_FREED=$(( before - after ))
+    (( LAST_FREED < 0 )) && LAST_FREED=0
+    return 0
 }
 
 format_size() {
-    local bytes=$1
+    local bytes=${1:-0}
+    (( bytes < 0 )) && bytes=0
     if (( bytes >= 1073741824 )); then
         local gb=$((bytes / 1073741824))
         local remainder=$(( (bytes % 1073741824) * 100 / 1073741824 ))
@@ -96,18 +126,15 @@ confirm() {
 }
 
 show_progress() {
-    # $1: current
-    # $2: total
-    # $3: label (optional)
     local current=$1
     local total=$2
     local label="${3:-}"
+    (( total == 0 )) && return
     local width=50
     local percent=$((current * 100 / total))
     local filled=$((current * width / total))
     local empty=$((width - filled))
     
-    # Create the bar [=====>.....]
     local bar="["
     if [ $filled -gt 0 ]; then
         bar+=$(printf "%${filled}s" | tr ' ' '=')
@@ -117,10 +144,8 @@ show_progress() {
     fi
     bar+="]"
     
-    # Print progress with carriage return to overwrite line
     echo -ne "\r${CYAN}${bar} ${percent}% ${NC}${label}"
     
-    # If done, print newline
     if [ "$current" -eq "$total" ]; then
         echo ""
     fi
@@ -228,9 +253,18 @@ cleanup_user_caches() {
             if (( size > 1048576 )); then  # Maior que 1MB
                 log "Encontrado: $dir ($(format_size $size))"
                 if confirm "Limpar $dir"; then
-                    rm -rf "${dir:?}"/* 2>/dev/null || true
-                    success "Limpo: $dir"
-                    TOTAL_FREED=$((TOTAL_FREED + size))
+                    if [[ "$dir" == "$REAL_HOME/.cache" ]]; then
+                        # Preserve critical cache subdirectories
+                        safe_clean_dir "$dir" "p10k-instant-prompt-*" "fontconfig" "zsh-init-cache" "nix"
+                    else
+                        safe_clean_dir "$dir"
+                    fi
+                    if (( LAST_FREED > 0 )); then
+                        success "Limpo: $dir — liberado $(format_size $LAST_FREED)"
+                        TOTAL_FREED=$((TOTAL_FREED + LAST_FREED))
+                    else
+                        warn "Nada removido em $dir (permissão negada ou já vazio)"
+                    fi
                 fi
             fi
         fi
@@ -240,32 +274,62 @@ cleanup_user_caches() {
 cleanup_browser_caches() {
     header "5. Limpeza de Caches de Navegadores"
     
-    # Firefox
+    # Firefox — measure only cache2 dirs, not entire profile
     if [[ -d "$REAL_HOME/.mozilla/firefox" ]]; then
-        local firefox_cache=$(find "$REAL_HOME/.mozilla/firefox" -type d -name "cache2" 2>/dev/null)
-        if [[ -n "$firefox_cache" ]]; then
-            local size=$(du -sb "$REAL_HOME/.mozilla/firefox" 2>/dev/null | cut -f1 || echo 0)
-            log "Firefox cache: $(format_size $size)"
+        local firefox_caches=()
+        while IFS= read -r d; do
+            firefox_caches+=("$d")
+        done < <(find "$REAL_HOME/.mozilla/firefox" -type d -name "cache2" 2>/dev/null)
+        if [[ ${#firefox_caches[@]} -gt 0 ]]; then
+            local size=0
+            for fc in "${firefox_caches[@]}"; do
+                size=$((size + $(get_size "$fc")))
+            done
+            log "Firefox cache (cache2): $(format_size $size)"
             if confirm "Limpar cache do Firefox"; then
-                find "$REAL_HOME/.mozilla/firefox" -type d -name "cache2" -exec rm -rf {} \; 2>/dev/null || true
+                local before_ff=$(get_size "$REAL_HOME/.mozilla/firefox")
+                # Use -prune to avoid descending into deleted dirs (prevents find race)
+                find "$REAL_HOME/.mozilla/firefox" -type d -name "cache2" -prune -exec rm -rf {} + 2>/dev/null || true
                 find "$REAL_HOME/.mozilla/firefox" -name "*.sqlite" -type f -exec sqlite3 {} "VACUUM;" \; 2>/dev/null || true
-                success "Cache do Firefox limpo"
+                local after_ff=$(get_size "$REAL_HOME/.mozilla/firefox")
+                local freed_ff=$(( before_ff - after_ff ))
+                (( freed_ff < 0 )) && freed_ff=0
+                if (( freed_ff > 0 )); then
+                    success "Cache do Firefox limpo — liberado $(format_size $freed_ff)"
+                    TOTAL_FREED=$((TOTAL_FREED + freed_ff))
+                else
+                    warn "Cache do Firefox: nada a limpar"
+                fi
             fi
         fi
     fi
     
-    # Chrome/Chromium
-    for browser_dir in "$REAL_HOME/.config/google-chrome" "$REAL_HOME/.config/chromium"; do
+    # Chrome/Chromium/Vivaldi — measure only cache dirs, not entire profile
+    for browser_dir in "$REAL_HOME/.config/google-chrome" "$REAL_HOME/.config/chromium" "$REAL_HOME/.config/vivaldi"; do
         if [[ -d "$browser_dir" ]]; then
-            local size=$(get_size "$browser_dir")
-            log "$(basename $browser_dir): $(format_size $size)"
+            local cache_size=0
+            local browser_name=$(basename "$browser_dir")
+            for cname in Cache "Code Cache" GPUCache "Service Worker"; do
+                while IFS= read -r cdir; do
+                    cache_size=$((cache_size + $(get_size "$cdir")))
+                done < <(find "$browser_dir" -type d -name "$cname" -prune 2>/dev/null)
+            done
+            log "$browser_name (caches): $(format_size $cache_size)"
             
-            if confirm "Limpar cache do $(basename $browser_dir)"; then
-                find "$browser_dir" -type d -name "Cache" -exec rm -rf {} \; 2>/dev/null || true
-                find "$browser_dir" -type d -name "Code Cache" -exec rm -rf {} \; 2>/dev/null || true
-                find "$browser_dir" -type d -name "GPUCache" -exec rm -rf {} \; 2>/dev/null || true
-                find "$browser_dir" -type d -name "Service Worker" -exec rm -rf {} \; 2>/dev/null || true
-                success "Cache do $(basename $browser_dir) limpo"
+            if (( cache_size > 0 )) && confirm "Limpar cache do $browser_name"; then
+                local before_br=$(get_size "$browser_dir")
+                for cname in Cache "Code Cache" GPUCache "Service Worker"; do
+                    find "$browser_dir" -type d -name "$cname" -prune -exec rm -rf {} + 2>/dev/null || true
+                done
+                local after_br=$(get_size "$browser_dir")
+                local freed_br=$(( before_br - after_br ))
+                (( freed_br < 0 )) && freed_br=0
+                if (( freed_br > 0 )); then
+                    success "Cache do $browser_name limpo — liberado $(format_size $freed_br)"
+                    TOTAL_FREED=$((TOTAL_FREED + freed_br))
+                else
+                    warn "Cache do $browser_name: nada efetivamente removido"
+                fi
             fi
         fi
     done
@@ -274,59 +338,72 @@ cleanup_browser_caches() {
 cleanup_package_caches() {
     header "6. Limpeza de Caches de Pacotes"
     
-    # NPM cache
-    if [[ -d "$REAL_HOME/.npm" ]]; then
-        local size=$(get_size "$REAL_HOME/.npm")
-        log "NPM cache: $(format_size $size)"
-        if confirm "Limpar cache do NPM"; then
-            npm cache clean --force 2>/dev/null || rm -rf "$REAL_HOME/.npm/_cacache" 2>/dev/null || true
-            success "Cache do NPM limpo"
-            TOTAL_FREED=$((TOTAL_FREED + size))
+    # Helper: clean a cache dir and track freed bytes accurately
+    _clean_pkg_cache() {
+        local label="$1" dir="$2" cmd="$3"
+        if [[ -d "$dir" ]]; then
+            local before=$(get_size "$dir")
+            log "$label: $(format_size $before)"
+            if confirm "Limpar cache do $label"; then
+                eval "$cmd" 2>/dev/null || true
+                local after=$(get_size "$dir")
+                local freed=$(( before - after ))
+                (( freed < 0 )) && freed=0
+                if (( freed > 0 )); then
+                    success "Cache do $label limpo — liberado $(format_size $freed)"
+                    TOTAL_FREED=$((TOTAL_FREED + freed))
+                else
+                    warn "Cache do $label: nada efetivamente removido"
+                fi
+            fi
         fi
-    fi
+    }
+
+    _clean_pkg_cache "NPM" "$REAL_HOME/.npm" \
+        "npm cache clean --force 2>/dev/null || safe_clean_dir '$REAL_HOME/.npm/_cacache'"
     
-    # Yarn cache
-    if [[ -d "$REAL_HOME/.cache/yarn" ]]; then
-        local size=$(get_size "$REAL_HOME/.cache/yarn")
-        log "Yarn cache: $(format_size $size)"
-        if confirm "Limpar cache do Yarn"; then
-            yarn cache clean 2>/dev/null || rm -rf "$REAL_HOME/.cache/yarn" 2>/dev/null || true
-            success "Cache do Yarn limpo"
-            TOTAL_FREED=$((TOTAL_FREED + size))
-        fi
-    fi
+    _clean_pkg_cache "Yarn" "$REAL_HOME/.cache/yarn" \
+        "yarn cache clean 2>/dev/null || rm -rf '$REAL_HOME/.cache/yarn'"
     
-    # pip cache
-    if [[ -d "$REAL_HOME/.cache/pip" ]]; then
-        local size=$(get_size "$REAL_HOME/.cache/pip")
-        log "Pip cache: $(format_size $size)"
-        if confirm "Limpar cache do pip"; then
-            pip cache purge 2>/dev/null || rm -rf "$REAL_HOME/.cache/pip" 2>/dev/null || true
-            success "Cache do pip limpo"
-            TOTAL_FREED=$((TOTAL_FREED + size))
-        fi
-    fi
+    _clean_pkg_cache "Pip" "$REAL_HOME/.cache/pip" \
+        "pip cache purge 2>/dev/null || rm -rf '$REAL_HOME/.cache/pip'"
     
-    # Cargo cache
+    # Cargo cache — includes both registry/cache and registry/src
     if [[ -d "$REAL_HOME/.cargo/registry/cache" ]]; then
-        local size=$(get_size "$REAL_HOME/.cargo/registry/cache")
-        log "Cargo cache: $(format_size $size)"
+        local cargo_cache_size=$(get_size "$REAL_HOME/.cargo/registry/cache")
+        local cargo_src_size=0
+        [[ -d "$REAL_HOME/.cargo/registry/src" ]] && cargo_src_size=$(get_size "$REAL_HOME/.cargo/registry/src")
+        local cargo_total=$((cargo_cache_size + cargo_src_size))
+        log "Cargo cache: $(format_size $cargo_total)"
         if confirm "Limpar cache do Cargo"; then
-            rm -rf "$REAL_HOME/.cargo/registry/cache"/* 2>/dev/null || true
-            rm -rf "$REAL_HOME/.cargo/registry/src"/* 2>/dev/null || true
-            success "Cache do Cargo limpo"
-            TOTAL_FREED=$((TOTAL_FREED + size))
+            safe_clean_dir "$REAL_HOME/.cargo/registry/cache"
+            local freed_cargo=$LAST_FREED
+            safe_clean_dir "$REAL_HOME/.cargo/registry/src"
+            freed_cargo=$((freed_cargo + LAST_FREED))
+            if (( freed_cargo > 0 )); then
+                success "Cache do Cargo limpo — liberado $(format_size $freed_cargo)"
+                TOTAL_FREED=$((TOTAL_FREED + freed_cargo))
+            else
+                warn "Cache do Cargo: nada efetivamente removido"
+            fi
         fi
     fi
 
     # Go cache
     if [[ -d "$REAL_HOME/go/pkg" ]]; then
-        local size=$(get_size "$REAL_HOME/go/pkg")
-        log "Go modules cache: $(format_size $size)"
+        local go_before=$(get_size "$REAL_HOME/go/pkg")
+        log "Go modules cache: $(format_size $go_before)"
         if confirm "Limpar cache do Go"; then
-            go clean -cache -modcache 2>/dev/null || rm -rf "$REAL_HOME/go/pkg"/* 2>/dev/null || true
-            success "Cache do Go limpo"
-            TOTAL_FREED=$((TOTAL_FREED + size))
+            go clean -cache -modcache 2>/dev/null || safe_clean_dir "$REAL_HOME/go/pkg"
+            local go_after=$(get_size "$REAL_HOME/go/pkg")
+            local go_freed=$(( go_before - go_after ))
+            (( go_freed < 0 )) && go_freed=0
+            if (( go_freed > 0 )); then
+                success "Cache do Go limpo — liberado $(format_size $go_freed)"
+                TOTAL_FREED=$((TOTAL_FREED + go_freed))
+            else
+                warn "Cache do Go: nada efetivamente removido"
+            fi
         fi
     fi
 }
@@ -580,12 +657,19 @@ cleanup_flatpak() {
         done
         
         if confirm "Limpar caches dos apps Flatpak"; then
+            local flatpak_freed=0
             for app_dir in "$REAL_HOME/.var/app"/*; do
                 if [[ -d "$app_dir/cache" ]]; then
-                    rm -rf "$app_dir/cache"/* 2>/dev/null || true
+                    safe_clean_dir "$app_dir/cache"
+                    flatpak_freed=$((flatpak_freed + LAST_FREED))
                 fi
             done
-            success "Caches Flatpak limpos!"
+            if (( flatpak_freed > 0 )); then
+                success "Caches Flatpak limpos — liberado $(format_size $flatpak_freed)"
+                TOTAL_FREED=$((TOTAL_FREED + flatpak_freed))
+            else
+                warn "Caches Flatpak: nada efetivamente removido"
+            fi
         fi
     fi
 }
@@ -614,9 +698,13 @@ cleanup_wayland_caches() {
                 if (( size > 0 )); then
                     log "$(basename $dir): $(format_size $size)"
                     if confirm "Limpar $dir"; then
-                        rm -rf "${dir:?}"/* 2>/dev/null || true
-                        success "$dir limpo"
-                        TOTAL_FREED=$((TOTAL_FREED + size))
+                        safe_clean_dir "$dir"
+                        if (( LAST_FREED > 0 )); then
+                            success "$dir limpo — liberado $(format_size $LAST_FREED)"
+                            TOTAL_FREED=$((TOTAL_FREED + LAST_FREED))
+                        else
+                            warn "$dir: nada efetivamente removido"
+                        fi
                     fi
                 fi
             else
@@ -668,11 +756,10 @@ cleanup_dev_tools() {
     for ide_dir in "${ide_dirs[@]}"; do
         if [[ -d "$ide_dir" ]]; then
             log "Verificando $(basename $ide_dir)..."
-            # Limpeza segura de arquivos temporários de extensões sem confirmação explícita
-            # ou inclua na confirmação abaixo se preferir
             rm -rf "$ide_dir/extensions/.obsolete" 2>/dev/null || true
-            find "$ide_dir/extensions" -type d -name ".cache" -exec rm -rf {} \; 2>/dev/null || true
-            find "$ide_dir/extensions" -type d -name "node_modules/.cache" -exec rm -rf {} \; 2>/dev/null || true
+            # Use -prune to prevent find race when deleting parent dirs
+            find "$ide_dir/extensions" -type d -name ".cache" -prune -exec rm -rf {} + 2>/dev/null || true
+            find "$ide_dir/extensions" -type d -name "node_modules" -path "*/.cache/*" -prune -exec rm -rf {} + 2>/dev/null || true
             find "$ide_dir" -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
         fi
     done
@@ -692,6 +779,7 @@ cleanup_dev_tools() {
             log "Config/Cache $(basename $config_dir): $(format_size $size)"
             
             if confirm "Limpar caches do $(basename $config_dir)"; then
+                local before_ide=$(get_size "$config_dir")
                 # Lista de diretórios de cache comuns em Electron/VSCode-based
                 local caches=(
                     "CachedData"
@@ -704,19 +792,27 @@ cleanup_dev_tools() {
                     "DawnWebGPUCache"
                     "GPUCache"
                     "logs"
-                    "Service Worker/CacheStorage"
-                    "Service Worker/ScriptCache"
                     "blob_storage"
                     "Cache"
                 )
                 
                 for cache in "${caches[@]}"; do
-                    if [[ -d "$config_dir/$cache" ]]; then
-                        rm -rf "$config_dir/$cache"/* 2>/dev/null || true
-                    fi
+                    [[ -d "$config_dir/$cache" ]] && safe_clean_dir "$config_dir/$cache"
+                done
+                # Service Worker subdirs (path contains slash, handle separately)
+                for sw_sub in CacheStorage ScriptCache; do
+                    [[ -d "$config_dir/Service Worker/$sw_sub" ]] && safe_clean_dir "$config_dir/Service Worker/$sw_sub"
                 done
                 
-                success "Caches do $(basename $config_dir) limpos"
+                local after_ide=$(get_size "$config_dir")
+                local freed_ide=$(( before_ide - after_ide ))
+                (( freed_ide < 0 )) && freed_ide=0
+                if (( freed_ide > 0 )); then
+                    success "Caches do $(basename $config_dir) limpos — liberado $(format_size $freed_ide)"
+                    TOTAL_FREED=$((TOTAL_FREED + freed_ide))
+                else
+                    warn "Caches do $(basename $config_dir): nada efetivamente removido"
+                fi
             fi
         fi
     done
@@ -849,22 +945,22 @@ analyze_config_dir() {
     
     # Limpeza automática de caches conhecidos em .config
     if confirm "Limpar caches conhecidos em ~/.config"; then
+        local config_before=$(get_size "$REAL_HOME/.config")
         # Electron apps comum
         for app_dir in "$REAL_HOME/.config"/*; do
-            if [[ -d "$app_dir/Cache" ]]; then
-                rm -rf "$app_dir/Cache" 2>/dev/null || true
-            fi
-            if [[ -d "$app_dir/GPUCache" ]]; then
-                rm -rf "$app_dir/GPUCache" 2>/dev/null || true
-            fi
-            if [[ -d "$app_dir/Code Cache" ]]; then
-                rm -rf "$app_dir/Code Cache" 2>/dev/null || true
-            fi
-            if [[ -d "$app_dir/CachedData" ]]; then
-                rm -rf "$app_dir/CachedData" 2>/dev/null || true
-            fi
+            for cname in Cache GPUCache "Code Cache" CachedData; do
+                [[ -d "$app_dir/$cname" ]] && safe_clean_dir "$app_dir/$cname"
+            done
         done
-        success "Caches em ~/.config limpos"
+        local config_after=$(get_size "$REAL_HOME/.config")
+        local config_freed=$(( config_before - config_after ))
+        (( config_freed < 0 )) && config_freed=0
+        if (( config_freed > 0 )); then
+            success "Caches em ~/.config limpos — liberado $(format_size $config_freed)"
+            TOTAL_FREED=$((TOTAL_FREED + config_freed))
+        else
+            warn "Caches em ~/.config: nada efetivamente removido"
+        fi
     fi
 }
 
@@ -878,25 +974,32 @@ aggressive_cleanup() {
     warn "Este modo remove TODOS os caches e pode requerer re-download de dependências!"
     
     if confirm "Continuar com limpeza agressiva"; then
+        local agg_before=$(df --output=used / | tail -1)
+        
         # Remover TODAS as gerações exceto a atual
         log "Removendo TODAS gerações antigas..."
         sudo nix-env --delete-generations old --profile /nix/var/nix/profiles/system 2>/dev/null || true
         nix-env --delete-generations old 2>/dev/null || true
         
-        # Limpar completamente o cache
+        # Limpar completamente o cache (preserving critical dirs)
         log "Limpando todos os caches..."
-        rm -rf "$REAL_HOME/.cache"/* 2>/dev/null || true
+        safe_clean_dir "$REAL_HOME/.cache" "p10k-instant-prompt-*" "nix"
         
         # GC agressivo
         log "Executando GC agressivo..."
-        sudo nix-collect-garbage -d
-        nix-collect-garbage -d
+        sudo nix-collect-garbage -d 2>&1 | tee -a "$LOG_FILE"
+        nix-collect-garbage -d 2>&1 | tee -a "$LOG_FILE" || true
         
         # Remover derivações result
         log "Removendo symlinks result..."
         find "$REAL_HOME" -maxdepth 3 -name "result" -type l -delete 2>/dev/null || true
         
-        success "Limpeza agressiva concluída!"
+        local agg_after=$(df --output=used / | tail -1)
+        local agg_freed_kb=$(( agg_before - agg_after ))
+        (( agg_freed_kb < 0 )) && agg_freed_kb=0
+        local agg_freed_bytes=$(( agg_freed_kb * 1024 ))
+        success "Limpeza agressiva concluída! Liberado: $(format_size $agg_freed_bytes)"
+        TOTAL_FREED=$((TOTAL_FREED + agg_freed_bytes))
     fi
 }
 

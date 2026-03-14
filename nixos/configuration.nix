@@ -443,6 +443,7 @@ in
     unstable.eza               # Modern ls replacement
     unstable.zoxide            # Smart cd with memory
     unstable.fd                # Fast find replacement
+    unstable.ripgrep           # Fast recursive grep (rg)
     unstable.fzf               # Interactive fuzzy finder
     unstable.delta             # Better git diffs
     unstable.dust              # du visualization
@@ -792,14 +793,14 @@ in
     };
   };
 
-  # Set Vivaldi as default browser for all applications
+  # Set Google Chrome as default browser for all applications
   xdg.mime.defaultApplications = {
-    "x-scheme-handler/http" = "vivaldi-stable.desktop";
-    "x-scheme-handler/https" = "vivaldi-stable.desktop";
-    "x-scheme-handler/about" = "vivaldi-stable.desktop";
-    "x-scheme-handler/unknown" = "vivaldi-stable.desktop";
-    "text/html" = "vivaldi-stable.desktop";
-    "application/xhtml+xml" = "vivaldi-stable.desktop";
+    "x-scheme-handler/http" = "google-chrome.desktop";
+    "x-scheme-handler/https" = "google-chrome.desktop";
+    "x-scheme-handler/about" = "google-chrome.desktop";
+    "x-scheme-handler/unknown" = "google-chrome.desktop";
+    "text/html" = "google-chrome.desktop";
+    "application/xhtml+xml" = "google-chrome.desktop";
   };
 
   # Screen sharing and Portals for Niri
@@ -808,11 +809,15 @@ in
     pkgs.xdg-desktop-portal-gnome
     pkgs.xdg-desktop-portal-gtk 
   ];
-  xdg.portal.config.niri = {
-    default = [ "gnome" "gtk" ];
-    # Use GTK portal for OpenURI — GNOME portal shows invisible confirmation
-    # dialog under Niri, blocking cursor:// and other custom protocol redirects
-    "org.freedesktop.impl.portal.OpenURI" = [ "gtk" ];
+  xdg.portal.config = {
+    niri = {
+      default = [ "gnome" "gtk" ];
+      # Use GTK portal for OpenURI — GNOME portal shows invisible confirmation
+      # dialog under Niri, blocking cursor:// and other custom protocol redirects
+      "org.freedesktop.impl.portal.OpenURI" = [ "gtk" ];
+    };
+    # Fallback for apps that don't match a specific desktop
+    common.default = [ "gtk" "gnome" ];
   };
   
   # Ensure Nautilus file picker works in browsers
@@ -876,7 +881,11 @@ in
   # Environment variables for Vulkan and gaming
   environment.sessionVariables = {
     # Default browser for CLI tools and IDEs
-    BROWSER = "vivaldi";
+    BROWSER = "google-chrome-stable";
+
+    # Force xdg-open to use XDG Desktop Portal (D-Bus) instead of
+    # spawning browser directly — returns focus to calling app immediately
+    NIXOS_XDG_OPEN_USE_PORTAL = "1";
 
     # Vulkan ICD selection
     VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json";

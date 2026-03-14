@@ -5,249 +5,259 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
-# export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-# export PATH=$JAVA_HOME/bin:$PATH
+# ══════════════════════════════════════════════════════════
+# PATH (deduplicated)
+# ══════════════════════════════════════════════════════════
+typeset -U path PATH                    # Enforce unique entries — prevents PATH bloat across sessions
+export PATH="$HOME/bin:$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
-# Path to your oh-my-zsh installation.
+# ══════════════════════════════════════════════════════════
+# Oh-My-Zsh Configuration
+# ══════════════════════════════════════════════════════════
 export ZSH="$HOME/.oh-my-zsh"
-
-# export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-# export PATH=$JAVA_HOME/bin:$PATH
-# export SDKMANAGER=/home/gup/Android/Sdk/cmdline-tools/latest/bin
-# export ANDROID_SDK_ROOT=/home/gup/Android/Sdk/
-# export PATH=$SDKMANAGER:$PATH
-# export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
-# export PATH=/opt/flutter/bin:$PATH
-
-# export PATH=/opt/asdf-vm/bin:$PATH
-# export ASDF_DIR=$HOME/.asdf
-# export ASDF_SHELL=/opt/asdf-vm/asdf.sh
-
-export RUST_BACKTRACE=none
-
-typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE='20'
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-SAVEHIST=99999
+# Plugin settings (must be set before sourcing oh-my-zsh)
+ZSH_DOTENV_PROMPT=false                       # Auto-source .env silently (p10k compat)
+typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+typeset -g ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+DISABLE_UNTRACKED_FILES_DIRTY="true"          # Faster git status in large repos
+ENABLE_CORRECTION="false"                     # Disabled — frequent false positives cause hangs
+export RUST_BACKTRACE=none
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# ══════════════════════════════════════════════════════════
+# History (crash-safe)
+# ══════════════════════════════════════════════════════════
+HISTFILE="${HISTFILE:-$HOME/.zsh_history}"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt SHARE_HISTORY          # Share history across sessions
+setopt HIST_IGNORE_ALL_DUPS   # Remove older duplicate entries
+setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks
+setopt HIST_VERIFY            # Don't execute immediately on history expansion
+setopt INC_APPEND_HISTORY     # Write immediately, don't wait for shell exit
+setopt HIST_FCNTL_LOCK        # Use kernel-level locking (prevents corruption)
+setopt HIST_EXPIRE_DUPS_FIRST # When history is full, expire duplicates before unique entries
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# ══════════════════════════════════════════════════════════
+# Safety Options (prevent crashes & data loss)
+# ══════════════════════════════════════════════════════════
+setopt NO_CLOBBER             # Prevent accidental file overwrite with >
+setopt NO_BG_NICE             # Don't lower priority of background jobs
+setopt NO_HUP                 # Don't kill background jobs on shell exit
+setopt NO_BEEP                # No bell on errors
+setopt INTERACTIVE_COMMENTS   # Allow comments in interactive mode
+setopt LONG_LIST_JOBS         # Show PID in job list for easier management
+setopt LOCAL_TRAPS            # Traps set in functions are restored on return
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+# Harden against crashes — increase stack size to prevent segfaults
+# on deep recursion (zsh-autocomplete, large completions)
+ulimit -s 32768 2>/dev/null   # 32MB stack (default 8MB is too low)
 
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+# Crash recovery — log fatal signals for debugging
+TRAPTERM()  { return 128; }
+TRAPSEGV()  { echo "[zsh] SEGV caught — shell recovering" >&2; return 139; }
+TRAPABRT()  { echo "[zsh] ABRT caught — shell recovering" >&2; return 134; }
 
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
+# ══════════════════════════════════════════════════════════
+# Completion System (optimized, cached)
+# ══════════════════════════════════════════════════════════
+# Only rebuild completion dump once per day (major speedup)
+autoload -Uz compinit
+() {
+  local zcompdump="${ZDOTDIR:-$HOME}/.zcompdump-${ZSH_VERSION}"
+  if [[ -n $zcompdump(#qN.mh+24) ]]; then
+    compinit -d "$zcompdump"
+  else
+    compinit -C -d "$zcompdump"  # -C = skip security check (faster)
+  fi
+}
 
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-
-#plugins=(git)
+# ══════════════════════════════════════════════════════════
+# Plugins
+# ══════════════════════════════════════════════════════════
+# IMPORTANT: zsh-autocomplete removed — it conflicts with fzf-tab
+# and causes crashes (both override ZLE widgets for completion).
+# fzf-tab is more stable and integrates better with fzf ecosystem.
+#
+# Removed for performance:
+#   - fasd: redundant with zoxide (which is faster and already loaded)
+#   - emacs: overrides emacs with emacsclient (not needed, we use nvim)
+#   - gitfast: redundant — git plugin already provides completions
+#   - alias-finder: hooks preexec on every command, adds latency
 plugins=(
-	git 
-	zsh-autosuggestions 
-	# zsh-syntax-highlighting 
-	fast-syntax-highlighting 
-	zsh-autocomplete
-  bundler
-  dotenv
-  rake
-  rbenv
-	ruby
-  npm
-	docker
-	docker-compose
-	timer
-	fasd
-	direnv
-  dirhistory
-	fzf-tab
-  zellij
-  gh
-  alias-finder
-  ansible
-  aws
-  azure
-  git-flow
-  kubectl
-  minikube
-  terraform
-  yarn
-  nmap
-  helm
-  gradle
+  # Core experience
+  git
   git-lfs
-  deno
-  node
-  emacs
-  flutter
   git-flow
-  gitfast
-  lein
-  microk8s
-  singlechar
-  sudo
-  git-prompt
+  gh
+  sudo                  # Press ESC twice to prepend sudo
+  dirhistory            # Alt+Left/Right to navigate dir history
+  direnv                # Auto-load .envrc files
+  dotenv                # Auto-source .env files
+  timer                 # Show command execution time
+
+  # Completions & UI
+  zsh-autosuggestions
+  fast-syntax-highlighting
+  fzf-tab
+
+  # Languages & tools (only installed ones)
+  npm
+  node
+  deno
+  yarn
+  docker
+  docker-compose
+  ansible
+  kubectl
+  helm
+  terraform
+  nmap
 )
 
 source $ZSH/oh-my-zsh.sh
 
-# Include directories in fasd's database
-export _FASD_BLACKLIST_CMDLINE_DIRS=false
-export _FASD_BLACKLIST_DIRS=""
+# ══════════════════════════════════════════════════════════
+# Modern Tool Initialization (cached for speed)
+# ══════════════════════════════════════════════════════════
+# Cache init scripts — only regenerate when the binary is updated.
+# Saves ~80-120ms per startup compared to `eval "$(... init zsh)"`.
+_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh-init-cache"
+[[ -d "$_cache_dir" ]] || mkdir -p "$_cache_dir"
 
-alias a='fasd -a'        # any
-alias s='fasd -si'       # show / search / select
-alias d='fasd -d'        # directory
-alias f='fasd -f'        # file
-alias sd='fasd -sid'     # interactive directory selection
-alias sf='fasd -sif'     # interactive file selection
-alias z='fasd_cd -d'     # cd, same functionality as j in autojump
-alias zz='fasd_cd -d -i' # cd with interactive selection
-alias op="fzf --print0 | xargs -0 -o xdg-open $1"
-alias opd="find / -type d | fzf --print0 | xargs -0 -o xdg-open $1"
+_cached_init() {
+  local name="$1" cmd="$2"
+  local cache_file="$_cache_dir/${name}.zsh"
+  local bin_path="${commands[$name]}"
+  # Regenerate if cache is missing or binary is newer than cache
+  if [[ -z "$bin_path" ]]; then
+    return 1  # Binary not installed
+  elif [[ ! -f "$cache_file" || "$bin_path" -nt "$cache_file" ]]; then
+    eval "$cmd" > "$cache_file" 2>/dev/null || return 1
+  fi
+  source "$cache_file"
+}
 
-alias xmonadinit='pkill -f "xmonad" | true | xmonad --recompile &> /dev/null | true && xmonad --replace &'
-alias xmobarinit='pkill -f "xmobar" | true && xmobar &'
-alias xmoinit='xmonadinit; xmobarinit;'
+_cached_init zoxide  "zoxide init zsh"
+_cached_init pay-respects "pay-respects init zsh"
 
-# VM aliases
+unset _cache_dir
+unfunction _cached_init 2>/dev/null
+
+# ══════════════════════════════════════════════════════════
+# Aliases — Modern CLI Replacements (guarded)
+# ══════════════════════════════════════════════════════════
+# Each alias is guarded — if the tool isn't installed, the
+# original system command is preserved instead of breaking.
+
+# File listing (eza replaces ls/exa)
+if (( $+commands[eza] )); then
+  alias ls='eza --icons --group-directories-first'
+  alias ll='eza -alh --icons --group-directories-first --git'
+  alias lt='eza -T --icons --group-directories-first -L 3'
+fi
+
+# File viewing
+(( $+commands[bat] ))   && alias cat='bat --style=auto' && alias catn='bat --style=plain'
+
+# Search
+(( $+commands[rg] ))    && alias grep='rg'
+
+# Disk usage
+(( $+commands[dust] ))  && alias du='dust'
+(( $+commands[duf] ))   && alias df='duf'
+
+# Process viewing
+(( $+commands[procs] )) && alias ps='procs'
+
+# Quick edit
+(( $+commands[nvim] ))  && alias vi='nvim' && alias vim='nvim'
+
+# ══════════════════════════════════════════════════════════
+# Aliases — Fuzzy Finders & Openers
+# ══════════════════════════════════════════════════════════
+alias op="fzf --print0 | xargs -0 -o xdg-open"
+# Use fd (fast) scoped to $HOME instead of find / (dangerous — scans entire filesystem)
+alias opd="fd --type d . ~ | fzf --print0 | xargs -0 -o xdg-open"
+
+# ══════════════════════════════════════════════════════════
+# Aliases — VMs
+# ══════════════════════════════════════════════════════════
 alias win10='~/GITS/INC_FILES/STUDY_PROGRAMMING/dotfiles/scripts/win10-vm.sh'
 alias macos='~/GITS/INC_FILES/STUDY_PROGRAMMING/dotfiles/scripts/macos-vm.sh'
 
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -TFl --group-directories-first --icons --git -L 2 --no-user $realpath'
-zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
-zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
-zstyle ':fzf-tab:complete:pacman:*' fzf-preview 'pacman -Si $word'
-zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
-
-zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview 'git diff $word | delta'
-zstyle ':fzf-tab:complete:git-log:*' fzf-preview 'git show --color=always $word'
-zstyle ':fzf-tab:complete:git-help:*' fzf-preview 'git help $word | bat -plman --color=always'
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nvim'
-else
-  export EDITOR='nvim'
+# ══════════════════════════════════════════════════════════
+# FZF-Tab Previews (guarded)
+# ══════════════════════════════════════════════════════════
+if (( $+commands[eza] )); then
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -TFl --group-directories-first --icons --git -L 2 --no-user $realpath'
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+if (( $+commands[bat] )); then
+  zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
+  zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:500 $realpath'
+fi
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Git previews
+if (( $+commands[delta] )); then
+  zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview 'git diff $word | delta'
+fi
+zstyle ':fzf-tab:complete:git-log:*' fzf-preview 'git show --color=always $word'
+if (( $+commands[bat] )); then
+  zstyle ':fzf-tab:complete:git-help:*' fzf-preview 'git help $word | bat -plman --color=always'
+fi
 
-# fcd - fuzzy cd
+# NixOS package preview
+zstyle ':fzf-tab:complete:nix:*' fzf-preview 'nix eval --raw "nixpkgs#$word.meta.description" 2>/dev/null || echo "No description"'
+
+# ══════════════════════════════════════════════════════════
+# Editor
+# ══════════════════════════════════════════════════════════
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+# ══════════════════════════════════════════════════════════
+# Custom Functions
+# ══════════════════════════════════════════════════════════
+
+# fcd - fuzzy cd (recursive directory picker)
 fcd() {
     local selected_dir
-    selected_dir=$(find "$1" -type d | fzf +m)  # Recursively list directories and use fzf for selection
-    if [ -n "$selected_dir" ]; then
-        cd "$selected_dir" || return  # Change to the selected directory
-    fi
+    selected_dir=$(fd --type d "${1:-.}" | fzf +m --preview 'eza -T --icons -L 2 {}')
+    [[ -n "$selected_dir" ]] && cd "$selected_dir"
 }
 
-# tm.zsh
-# Simplifies creating new tmux sessions, attaching to existing sessions,
-# switching between sessions, and listing active sessions.
+# tm - tmux session manager
 function tm() {
   [[ -z "$1" ]] && {
     echo "Usage: tm <session>"
-      SESSIONS=$(tmux ls -F "* #{session_name}" 2>/dev/null)
-      if [[ -n $SESSIONS ]]; then
-        echo "Active tmux sessions:"
-        echo "$SESSIONS"
-      else
-        echo "No tmux server running"
-      fi
-      return
-    }
+    SESSIONS=$(tmux ls -F "* #{session_name}" 2>/dev/null)
+    if [[ -n $SESSIONS ]]; then
+      echo "Active tmux sessions:"
+      echo "$SESSIONS"
+    else
+      echo "No tmux server running"
+    fi
+    return
+  }
   [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-  tmux has -t="$1" 2> /dev/null && tmux $change -t "$1" || (TMUX= tmux new -d -s "$1" && tmux $change -t "$1")
+  tmux has -t="$1" 2>/dev/null && tmux $change -t "$1" || (TMUX= tmux new -d -s "$1" && tmux $change -t "$1")
 }
-
 function __tmux-sessions() {
   local expl
   local -a sessions
-  sessions=( ${${(f)"$(command tmux list-sessions 2> /dev/null)"}/:[ $'\t']##/:} )
+  sessions=( ${${(f)"$(command tmux list-sessions 2>/dev/null)"}/:[ $'\t']##/:} )
   _describe -t sessions 'sessions' sessions "$@"
 }
 compdef __tmux-sessions tm
-# end tm.zsh
 alias t="tmux switchc -t"
+
+# ══════════════════════════════════════════════════════════
+# Powerlevel10k
+# ══════════════════════════════════════════════════════════
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 unset ZSH_AUTOSUGGEST_USE_ASYNC
