@@ -359,6 +359,13 @@ in
     unstable.lazydocker        # Docker TUI
     unstable.docker-compose    # Container orchestration
 
+    # ── Cloud Provider CLIs ──────────────────────────────────
+    unstable.google-cloud-sdk  # GCP CLI (gcloud, gsutil, bq)
+    unstable.awscli2           # AWS CLI v2
+    unstable.oci-cli           # Oracle Cloud CLI
+    unstable.doctl             # DigitalOcean CLI
+    unstable.python312Packages.ovh  # OVHCloud Python SDK/CLI
+
     # ══════════════════════════════════════════════════════════
     # QA / Testing / Load Testing
     # ══════════════════════════════════════════════════════════
@@ -690,7 +697,7 @@ in
     unstable.zotero            # Top tier reference and research management
     unstable.xournalpp         # PDF annotation and handwritten notes
     unstable.kdePackages.okular # Feature-rich document and PDF viewer
-    unstable.super-productivity # ToDo list, Time tracker, Pomodoro timer
+    stable.super-productivity  # ToDo list, Time tracker, Pomodoro timer (stable: Electron 39 broken on unstable)
 
     # ══════════════════════════════════════════════════════════
     # Gaming (Lutris / Wine / Vulkan)
