@@ -890,6 +890,10 @@ in
     # Default browser for CLI tools and IDEs
     BROWSER = "google-chrome-stable";
 
+    # Antigravity — use Google Chrome for browser subagent interactions
+    CHROME_PATH = "${stable.google-chrome}/bin/google-chrome-stable";
+    ANTIGRAVITY_BROWSER = "${stable.google-chrome}/bin/google-chrome-stable";
+
     # Force xdg-open to use XDG Desktop Portal (D-Bus) instead of
     # spawning browser directly — returns focus to calling app immediately
     NIXOS_XDG_OPEN_USE_PORTAL = "1";
