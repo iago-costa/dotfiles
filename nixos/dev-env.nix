@@ -1,8 +1,8 @@
 # ╔══════════════════════════════════════════════════════════════════════════════╗
-# ║  Ubuntu Dev Environment — Nix Shell (Single File)                          ║
+# ║  Universal Dev Environment — Nix Shell                                     ║
 # ║                                                                            ║
-# ║  Replicates all development packages from configuration.nix for use on     ║
-# ║  Ubuntu (or any Linux distro with Nix installed).                          ║
+# ║  Cross-platform (Linux, macOS, WSL) development shell.                     ║
+# ║  Prioritizes pre-built binaries (nixpkgs cache) — no local compilation.    ║
 # ║                                                                            ║
 # ║  SETUP (one-time):                                                         ║
 # ║    1. Install Nix:                                                         ║
@@ -12,14 +12,14 @@
 # ║       experimental-features = nix-command flakes                           ║
 # ║                                                                            ║
 # ║  USAGE:                                                                    ║
-# ║    • Full environment:   nix-shell ubuntu-dev-env.nix                      ║
-# ║    • Specific profile:   nix-shell ubuntu-dev-env.nix -A backend           ║
+# ║    • Full environment:   nix-shell dev-env.nix                             ║
+# ║    • Specific profile:   nix-shell dev-env.nix -A backend                  ║
 # ║    • Available profiles: backend, frontend, devops, data, ai, security,    ║
 # ║                          qa, tools, all (default)                          ║
 # ║                                                                            ║
 # ║  TIP: Add alias to your .bashrc/.zshrc:                                    ║
-# ║    alias devenv='nix-shell ~/ubuntu-dev-env.nix'                           ║
-# ║    alias devenv-back='nix-shell ~/ubuntu-dev-env.nix -A backend'           ║
+# ║    alias devenv='nix-shell ~/dev-env.nix'                                  ║
+# ║    alias devenv-back='nix-shell ~/dev-env.nix -A backend'                  ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
 let
@@ -28,32 +28,41 @@ let
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
   };
 
+  # Auto-detect current platform (x86_64-linux, aarch64-linux, x86_64-darwin, aarch64-darwin)
+  system = builtins.currentSystem;
+  isLinux  = builtins.match ".*-linux"  system != null;
+  isDarwin = builtins.match ".*-darwin" system != null;
+
   pkgs = import nixpkgs {
+    inherit system;
     config = {
       allowUnfree = true;
       permittedInsecurePackages = [ ];
     };
   };
 
+  # Helper: include package only on Linux
+  linuxOnly = pkg: if isLinux then [ pkg ] else [];
+  # Helper: include list of packages only on Linux
+  linuxOnlyList = list: if isLinux then list else [];
+
   # ────────────────────────────────────────────────────────────────────────────
-  # Package Groups — Mirrored from configuration.nix systemPackages
+  # Package Groups — Pre-built binaries only (no source compilation)
   # ────────────────────────────────────────────────────────────────────────────
 
-  # Editors / IDEs (CLI only — GUI editors like VSCode/Cursor install via apt/snap)
+  # Editors (CLI only — GUI editors install via native package manager)
   editors = with pkgs; [
     vim
     neovim
-    emacs
   ];
 
   # Terminal / Multiplexers
   terminals = with pkgs; [
-    alacritty
     tmux
     zellij
   ];
 
-  # Backend Development (Languages & DB)
+  # Backend Development (Languages & DB clients)
   backendDev = with pkgs; [
     go
     rustc
@@ -62,14 +71,11 @@ let
     python312
     elixir
     ruby
-    # Database clients
+    # Database clients (all pre-built)
     mycli                       # Smart MySQL CLI
     pgcli                       # Smart PostgreSQL CLI
     litecli                     # Smart SQLite CLI
-    dbeaver-bin                 # Universal visual DB client
-    mongodb-compass             # MongoDB GUI
     redis                       # In-memory data store
-    postman                     # API testing GUI
     grpcurl                     # gRPC CLI client
     ghz                         # gRPC benchmarking
     httpie                      # Human-friendly HTTP client
@@ -97,7 +103,7 @@ let
     terraform                   # IaC
     ansible                     # Configuration management
     packer                      # Machine image builder
-    vault-bin                   # Secrets management
+    vault-bin                   # Secrets management (binary)
     consul                      # Service discovery
     dive                        # Docker layer explorer
     act                         # Run GitHub Actions locally
@@ -110,14 +116,12 @@ let
     docker-compose              # Container orchestration
   ];
 
-  # Cloud Provider CLIs
+  # Cloud Provider CLIs (all pre-built binaries)
   cloudCLIs = with pkgs; [
     google-cloud-sdk            # GCP CLI (gcloud, gsutil, bq)
     awscli2                     # AWS CLI v2
-    oci-cli                     # Oracle Cloud CLI
     doctl                       # DigitalOcean CLI
-    python312Packages.ovh       # OVHCloud Python SDK/CLI
-  ];
+  ] ++ linuxOnly oci-cli;       # Oracle Cloud CLI (Linux only)
 
   # QA / Testing / Load Testing
   qaTools = with pkgs; [
@@ -125,75 +129,42 @@ let
     vegeta                      # HTTP load testing
     hey                         # HTTP load generator (ab replacement)
     xh                          # Fast HTTP requests (curl alternative)
-    jmeter                      # Java-based load testing GUI
     wrk2                        # HTTP benchmark
-    gatling                     # HTTP load testing
   ];
 
-  # Data Analytics (Python)
-  dataAnalytics = with pkgs; [
-    python312Packages.pandas          # Data manipulation
-    python312Packages.numpy           # Numerical computing
-    python312Packages.matplotlib      # Plotting / visualization
-    python312Packages.scikit-learn    # Machine learning
-    python312Packages.jupyter         # Notebooks
-    python312Packages.ipython         # Enhanced Python REPL
-    python312Packages.requests        # HTTP for Python
-    python312Packages.sqlalchemy      # Python ORM
-    python312Packages.polars          # Fast DataFrames
-    python312Packages.duckdb          # DuckDB Python bindings
-    python312Packages.dask            # Parallel computing
-    python312Packages.plotly          # Interactive visualization
-    python312Packages.bokeh           # Interactive web plotting
-  ];
-
-  # Data Engineering / Big Data
+  # Data Engineering (CLI tools, pre-built)
   dataEngineering = with pkgs; [
     duckdb                      # Fast analytical DB
-    spark                       # Big data processing
     visidata                    # Data exploration TUI
   ];
 
-  # AI / ML Engineering
+  # AI / ML Engineering (CLI agents & tools, pre-built)
   aiML = with pkgs; [
-    ollama                      # Local LLM runner
-    gemini-cli-bin              # Google Gemini CLI
+    gemini-cli-bin              # Google Gemini CLI (binary)
     aider-chat                  # AI pair programming in terminal
     opencode                    # AI coding agent built for the terminal
     crush                       # Glamourous AI coding agent for your terminal
     goose-cli                   # Open-source, extensible AI agent
-    python312Packages.fastapi   # ML API framework
-    python312Packages.uvicorn   # ASGI server
-    python312Packages.pydantic  # Data validation
-    python312Packages.httpx     # Async HTTP client
-    python312Packages.boto3     # AWS SDK for Python
-    python312Packages.rich      # Beautiful terminal output
-  ];
+  ] ++ linuxOnly ollama;        # Local LLM runner (Linux only)
 
-  # Language Servers / Linters (Neovim / IDE support)
+  # Language Servers / Linters (pre-built — removed those that compile from source)
   languageServers = with pkgs; [
     lua-language-server                     # Lua LSP
     stylua                                  # Lua formatter
     gopls                                   # Go LSP
-    pyright                                 # Python LSP
+    pyright                                 # Python LSP (pre-built)
     ruff                                    # Python fast linter / formatter
     nixd                                    # Nix LSP
     yaml-language-server                    # YAML LSP
     vscode-langservers-extracted            # HTML/CSS/JSON LSPs
     nodePackages.typescript-language-server  # TS/JS LSP
-    clang-tools                             # C/C++ LSP (clangd)
-    jdt-language-server                     # Java LSP (jdtls)
-    omnisharp-roslyn                        # C# LSP
     sqls                                    # SQL LSP
-    metals                                  # Scala LSP
-    dart-bin                                # Dart SDK (includes LSP)
+    dart-bin                                # Dart SDK (binary, includes LSP)
     kotlin-language-server                  # Kotlin LSP
-    clojure-lsp                             # Clojure LSP
-    haskell-language-server                 # Haskell LSP
     tree-sitter                             # Multi-lang parser
   ];
 
-  # Daily CLI Productivity (Modern Replacements)
+  # Daily CLI Productivity (Modern Replacements — all pre-built Go/Rust binaries)
   cliProductivity = with pkgs; [
     bat                         # cat with syntax highlighting
     eza                         # Modern ls replacement
@@ -214,7 +185,6 @@ let
     ncdu                        # Disk usage analyzer (TUI)
     watchexec                   # File watcher + command runner
     yq                          # YAML/XML processor
-    meld                        # Visual diff / merge tool
   ];
 
   # Git & Version Control
@@ -232,54 +202,47 @@ let
     wget
     aria2                       # Download accelerator
     mosh                        # Persistent SSH
-    sshfs
-    fuse3
     nmap
+  ] ++ linuxOnlyList (with pkgs; [
+    sshfs                       # SSHFS (Linux only)
+    fuse3                       # FUSE3 (Linux only)
     tcpdump                     # Traffic analyzer
     ethtool
     iftop                       # Network bandwidth monitor
     iotop                       # I/O monitor
     dig
-    mitmproxy                   # HTTP/HTTPS proxy
-    cifs-utils
-    tshark
     termshark
-  ];
+    tshark
+  ]);
 
-  # Security — CLI Tools
+  # Security — CLI Tools (pre-built)
   securityCLI = with pkgs; [
-    uv                          # Python package manager
+    uv                          # Python package manager (Rust binary)
     lynis                       # System audit
     sqlmap                      # SQL injection tool
     nikto                       # Web server scanner
-    hcxtools                    # WiFi capture tools
-    hashcat                     # Password recovery
-    thc-hydra                   # Login cracker
     gobuster                    # Directory brute-forcer
     wireguard-tools             # VPN
-    metasploit                  # Exploitation framework
-    aircrack-ng                 # WiFi security
-    dockle                      # Container security linter
-    tracee                      # Runtime security
-    apktool                     # Android reverse engineering
-    radare2                     # Binary analysis
-    ghidra-bin                  # Reverse engineering suite
-    zap                         # OWASP ZAP proxy
-    wapiti                      # Web vulnerability scanner
     nuclei                      # Template-based vulnerability scanner
     osv-scanner                 # Open Source vulnerability scanner
     secretscanner               # Secret detection
-  ];
+    dockle                      # Container security linter
+  ] ++ linuxOnlyList (with pkgs; [
+    hashcat                     # Password recovery (Linux)
+    thc-hydra                   # Login cracker (Linux)
+    aircrack-ng                 # WiFi security (Linux)
+    hcxtools                    # WiFi capture tools (Linux)
+    apktool                     # Android reverse engineering
+    radare2                     # Binary analysis
+    ghidra-bin                  # Reverse engineering suite (binary)
+  ]);
 
-  # System Utilities / Libraries
+  # System Utilities (all pre-built)
   systemUtils = with pkgs; [
     fastfetch                   # System info (neofetch replacement)
     htop                        # Process monitor
     tree                        # Directory tree
-    psmisc                      # Provides fuser, killall, pstree
     lsof                        # List open files
-    inxi                        # System info (detailed)
-    libnotify
     nix-index                   # Nix package file search
     bc                          # Calculator
     file                        # File type detection
@@ -291,24 +254,14 @@ let
     zip
     unzip
     xz
-    zlib
-  ];
+  ] ++ linuxOnlyList (with pkgs; [
+    psmisc                      # Provides fuser, killall, pstree (Linux)
+    inxi                        # System info — detailed (Linux)
+  ]);
 
-  # Browsers (for Antigravity browser subagent on auto-generated VMs)
-  browsers = with pkgs; [
-    google-chrome               # Google Chrome (used by Antigravity)
-  ];
-
-  # Multimedia (CLI tools only)
+  # Multimedia (CLI only, pre-built)
   multimediaCLI = with pkgs; [
     ffmpeg                      # Video/audio converter
-  ];
-
-  # Specialized Tools
-  specializedTools = with pkgs; [
-    android-tools               # Android development tools
-    texlive.combined.scheme-medium  # LaTeX compiler
-    tectonic                    # Modern LaTeX compiler
   ];
 
   # ────────────────────────────────────────────────────────────────────────────
@@ -318,23 +271,18 @@ let
   devShellHook = ''
     echo ""
     echo "╔══════════════════════════════════════════════════════════╗"
-    echo "║  🚀 Dev Environment Ready!                              ║"
+    echo "║  🚀 Dev Environment Ready!  [${system}]                  ║"
     echo "║                                                         ║"
     echo "║  Languages: Go, Rust, Python, Elixir, Ruby, TS/JS       ║"
     echo "║  DBs:       PostgreSQL, MySQL, SQLite, Redis, DuckDB    ║"
     echo "║  DevOps:    Docker, K8s, Terraform, Ansible, Helm       ║"
-    echo "║  Cloud:     GCP, AWS, Oracle, DigitalOcean              ║"
-    echo "║  AI/ML:     Ollama, Gemini, Aider, FastAPI              ║"
+    echo "║  Cloud:     GCP, AWS, DigitalOcean                      ║"
+    echo "║  AI/ML:     Gemini, Aider, Ollama, Goose                ║"
     echo "║  Tools:     bat, eza, fzf, ripgrep, lazygit, delta      ║"
     echo "║                                                         ║"
     echo "║  Run 'type <cmd>' to check any tool's availability      ║"
     echo "╚══════════════════════════════════════════════════════════╝"
     echo ""
-
-    # Antigravity — use Google Chrome for browser subagent interactions
-    export BROWSER="google-chrome-stable"
-    export CHROME_PATH="${pkgs.google-chrome}/bin/google-chrome-stable"
-    export ANTIGRAVITY_BROWSER="$CHROME_PATH"
 
     # Auto-setup direnv if available
     if command -v direnv &>/dev/null; then
@@ -348,7 +296,7 @@ let
   '';
 
   # ────────────────────────────────────────────────────────────────────────────
-  # Composable profiles — use `nix-shell ubuntu-dev-env.nix -A <profile>`
+  # Composable profiles — use `nix-shell dev-env.nix -A <profile>`
   # ────────────────────────────────────────────────────────────────────────────
 
   mkShell = name: packages: pkgs.mkShell {
@@ -375,12 +323,12 @@ in {
   );
 
   data = mkShell "data-env" (
-    editors ++ terminals ++ dataAnalytics ++ dataEngineering
+    editors ++ terminals ++ dataEngineering
     ++ gitTools ++ cliProductivity ++ systemUtils
   );
 
   ai = mkShell "ai-ml-env" (
-    editors ++ terminals ++ aiML ++ dataAnalytics
+    editors ++ terminals ++ aiML
     ++ gitTools ++ cliProductivity ++ systemUtils
   );
 
@@ -400,7 +348,7 @@ in {
   );
 
   # ── Full environment (default) ──────────────────────────────────────────────
-  # Usage: nix-shell ubuntu-dev-env.nix
+  # Usage: nix-shell dev-env.nix
 
   default = mkShell "full-dev-env" (
     editors
@@ -410,7 +358,6 @@ in {
     ++ devops
     ++ cloudCLIs
     ++ qaTools
-    ++ dataAnalytics
     ++ dataEngineering
     ++ aiML
     ++ languageServers
@@ -419,8 +366,6 @@ in {
     ++ networkingTools
     ++ securityCLI
     ++ systemUtils
-    ++ browsers
     ++ multimediaCLI
-    ++ specializedTools
   );
 }

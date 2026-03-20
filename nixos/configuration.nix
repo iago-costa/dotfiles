@@ -703,6 +703,7 @@ in
     # Gaming (Lutris / Wine / Vulkan)
     # ══════════════════════════════════════════════════════════
     unstable.lutris
+    unstable.gamescope           # Nested compositor (fix Wine/XWayland in Niri)
     unstable.wineWow64Packages.waylandFull
     unstable.winetricks
     unstable.mangohud
