@@ -110,55 +110,56 @@ window-rule {
 
 // ============================================================
 // SECTION 7: APPLICATION LAYOUT — COLUMN WIDTHS
-// Tuned per-app to make the most of horizontal space.
+// Optimized for fitting 4 windows side-by-side (0.25 each).
+// Use Mod+R to cycle presets, Mod+Equal/Minus to resize.
 // ============================================================
 
-// File manager — narrow browser-style panel
+// File manager — narrow panel
 window-rule {
     match app-id="org.gnome.Nautilus"
     match app-id="nautilus"
-    default-column-width { proportion 0.35; }
+    default-column-width { proportion 0.5; }
 }
 
-// Browsers — comfortable reading width
+// Browsers
 window-rule {
     match app-id=r#"^(firefox|google-chrome|vivaldi|chromium|org\.mozilla\.firefox)$"#
-    default-column-width { proportion 0.6; }
+    default-column-width { proportion 0.5; }
 }
 
-// Code editors / IDEs — wide for code
+// Code editors / IDEs
 window-rule {
     match app-id=r#"^(code|cursor|windsurf|zed|antigravity)"#
-    default-column-width { proportion 0.7; }
+    default-column-width { proportion 0.5; }
 }
 
 // API / DB / Dev tools
 window-rule {
     match app-id="postman"
     match app-id=r#"mongodb-compass"#
-    default-column-width { proportion 0.6; }
+    default-column-width { proportion 0.5; }
 }
 
 // Kubernetes / container management tools
 window-rule {
     match app-id=r#"freelens"#
-    default-column-width { proportion 0.75; }
+    default-column-width { proportion 0.5; }
 }
 
-// VM manager — wide for console output
+// VM manager
 window-rule {
     match app-id="virt-manager"
     match app-id=r#"^quickgui"#
-    default-column-width { proportion 0.65; }
+    default-column-width { proportion 0.5; }
 }
 
-// GNS3 network topology — needs space
+// GNS3 network topology
 window-rule {
     match app-id=r#"^gns3"#
-    default-column-width { proportion 0.8; }
+    default-column-width { proportion 0.5; }
 }
 
-// Terminal emulator — medium width
+// Terminal emulator
 window-rule {
     match app-id="Alacritty"
     match app-id="alacritty"
@@ -170,48 +171,48 @@ window-rule {
 window-rule {
     match app-id=r#"^wireshark"#
     match app-id=r#"^termshark"#
-    default-column-width { proportion 0.75; }
+    default-column-width { proportion 0.5; }
 }
 
 // Media editors (Kdenlive, Audacity-like)
 window-rule {
     match app-id=r#"^kdenlive"#
     match app-id=r#"^qtractor"#
-    default-column-width { proportion 0.8; }
+    default-column-width { proportion 0.5; }
 }
 
 // Image editors
 window-rule {
     match app-id="gimp"
     match app-id="inkscape"
-    default-column-width { proportion 0.7; }
+    default-column-width { proportion 0.5; }
 }
 
 // Logseq / note-taking
 window-rule {
     match app-id=r#"^logseq"#
-    default-column-width { proportion 0.55; }
+    default-column-width { proportion 0.5; }
 }
 
 // OBS Studio (broadcast / recording)
 window-rule {
     match app-id=r#"^com\.obsproject"#
     match app-id="obs"
-    default-column-width { proportion 0.7; }
+    default-column-width { proportion 0.5; }
 }
 
 // Remote desktop / VNC clients
 window-rule {
     match app-id="remmina"
     match app-id="org.remmina.Remmina"
-    default-column-width { proportion 0.65; }
+    default-column-width { proportion 0.5; }
 }
 
-// Disk utility - narrow
+// Disk utility
 window-rule {
     match app-id=r#"^org\.gnome\.DiskUtility"#
     match app-id="gnome-disks"
-    default-column-width { proportion 0.45; }
+    default-column-width { proportion 0.5; }
 }
 
 
@@ -275,18 +276,35 @@ window-rule {
     open-floating true
 }
 
-// Lutris / Games — Fix scaling issues
+// Lutris manager — keep tiled
 window-rule {
     match app-id="Lutris"
-    match app-id=r#"^steam_app_"#
-    match app-id=r#" wine$"#
-    match app-id=r#"^gamescope$"#
-    
-    // Force windows to stay within monitor bounds
+    default-column-width { proportion 0.6; }
     clip-to-geometry true
-    
-    // Workaround for games passing screen size on fractional scaling
+}
+
+// Gamescope nested compositor — tiled fullwidth (isolates Wine inside)
+window-rule {
+    match app-id=r#"^gamescope$"#
     default-column-width { proportion 1.0; }
+    clip-to-geometry true
+}
+
+// Wine / XWayland apps — float with fixed size to prevent
+// the resize/reposition bug when switching Niri workspaces.
+// Wine recalculates window position on Wayland move events,
+// causing the window to escape screen bounds. Floating with
+// a fixed size avoids this entirely.
+window-rule {
+    match app-id=r#"^steam_app_"#
+    match app-id=r#"\.exe$"#
+    match app-id=r#"[Ww]ine"#
+
+    open-floating true
+    clip-to-geometry true
+
+    // Prevent Wine from grabbing all input when unfocused
+    block-out-from "screen-capture"
 }
 
 // Burp Suite / security GUIs: keep floating for tool panels

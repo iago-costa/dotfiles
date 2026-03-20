@@ -1,24 +1,39 @@
 
 layout {
+    // Override DMS gaps for tighter packing
+    gaps 2
+
+    // Default: open windows at 50% width (2 columns = 2x2 grid)
+    default-column-width { proportion 0.5; }
+
+    // Mod+R cycles through these presets
+    preset-column-widths {
+        proportion 0.25    // Quarter
+        proportion 0.333   // Third
+        proportion 0.5     // Half (2x2 grid)
+        proportion 0.75    // Three-quarter
+        proportion 1.0     // Full width
+    }
+
     focus-ring {
-        width 4
-        active-gradient from="#A1C9FF" to="#004A77" angle=135 relative-to="workspace-view"
-        inactive-color "#43474E"
+        width 1
+        active-gradient from="#7B61FF" to="#00D9FF" angle=135 relative-to="workspace-view"
+        inactive-color "#333639"
     }
 
     border {
         on
-        width 2
-        active-color "#A1C9FF"
-        inactive-color "#43474E"
+        width 1
+        active-gradient from="#7B61FF" to="#00D9FF" angle=135 relative-to="workspace-view"
+        inactive-color "#2A2D33"
         urgent-color "#FFB4AB"
     }
 
     shadow {
         on
-        softness 32
-        spread 2
-        offset x=0 y=8
-        color "#000000C0"
+        softness 20
+        spread 1
+        offset x=0 y=4
+        color "#00000080"
     }
 }

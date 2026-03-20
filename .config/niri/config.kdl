@@ -206,6 +206,7 @@ binds {
 
     Mod+M hotkey-overlay-title="Toggle Dark Mode" { spawn "bash" "/home/zen/.config/niri/scripts/toggle-darkmode.sh"; }
     Mod+Shift+M hotkey-overlay-title="Theme Menu" { spawn "bash" "/home/zen/.config/niri/scripts/dark-mode-menu.sh"; }
+    Mod+Escape hotkey-overlay-title="Fix Wine Input" { spawn "bash" "/home/zen/.config/niri/scripts/wine-fix-input.sh"; }
 
     // === Focus Navigation (vim keys) ===
     Mod+H { focus-column-left; }
@@ -305,7 +306,7 @@ binds {
 
     // === System ===
     Mod+Shift+E { quit; }
-    Mod+Shift+W { spawn-sh "niri msg action load-config-file && dms restart;"; }
+    Mod+Shift+W { spawn-sh "niri msg action load-config-file; (dms restart && niri msg action load-config-file) &"; }
 }
 
 include "dms/colors.kdl"
