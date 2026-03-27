@@ -87,6 +87,33 @@ in
     "net.core.default_qdisc" = "fq";
     "net.ipv4.tcp_congestion_control" = "bbr";
 
+    # ── Network Performance Tuning ──
+    # TCP buffer sizes (min, default, max) — larger buffers for high-latency links
+    "net.core.rmem_max" = 16777216;       # 16 MB
+    "net.core.wmem_max" = 16777216;       # 16 MB
+    "net.ipv4.tcp_rmem" = "4096 131072 16777216";
+    "net.ipv4.tcp_wmem" = "4096 65536 16777216";
+
+    # TCP Fast Open (client + server)
+    "net.ipv4.tcp_fastopen" = 3;
+
+    # Increase backlog for better throughput under load
+    "net.core.netdev_max_backlog" = 5000;
+
+    # Enable selective acknowledgments and timestamps
+    "net.ipv4.tcp_sack" = 1;
+    "net.ipv4.tcp_timestamps" = 1;
+    "net.ipv4.tcp_window_scaling" = 1;
+
+    # Reduce TCP keepalive time for faster dead connection detection
+    "net.ipv4.tcp_keepalive_time" = 60;
+    "net.ipv4.tcp_keepalive_intvl" = 10;
+    "net.ipv4.tcp_keepalive_probes" = 6;
+
+    # Faster connection reuse
+    "net.ipv4.tcp_tw_reuse" = 1;
+    "net.ipv4.tcp_fin_timeout" = 15;
+
     # Improve responsiveness under load
     "kernel.sched_latency_ns" = 1000000;
     "kernel.sched_min_granularity_ns" = 100000;
@@ -214,8 +241,8 @@ in
       # Mesa VA-API driver (hardware video decode)
       mesa
       # AMD specific drivers and compute
-      unstable.rocmPackages.clr
-      unstable.rocmPackages.rocm-runtime
+      stable.rocmPackages.clr
+      stable.rocmPackages.rocm-runtime
     ];
     
     extraPackages32 = with pkgs.pkgsi686Linux; [
@@ -241,7 +268,7 @@ in
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.defaultUserShell = unstable.zsh;
+  users.defaultUserShell = stable.zsh;
   users.users.zen = {
     isNormalUser = true;
     # isSystemUser = true;
@@ -281,306 +308,306 @@ in
     # ══════════════════════════════════════════════════════════
     # Editors / IDEs
     # ══════════════════════════════════════════════════════════
-    unstable.vim
-    unstable.neovim
-    unstable.emacs
+    stable.vim
+    stable.neovim
+    stable.emacs
     ((builtins.getFlake "github:jacopone/antigravity-nix").packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-no-fhs.overrideAttrs (old: {
       postInstall = (old.postInstall or "") + ''
         wrapProgram $out/bin/antigravity \
           --add-flags "--enable-features=UseOzonePlatform --ozone-platform=wayland"
       '';
     }))
-    unstable.code-cursor
-    unstable.vscode
-    unstable.windsurf
+    stable.code-cursor
+    stable.vscode
+    stable.windsurf
 
     # ══════════════════════════════════════════════════════════
     # Terminal / Multiplexers
     # ══════════════════════════════════════════════════════════
-    unstable.alacritty
-    unstable.tmux
-    unstable.zellij
+    stable.alacritty
+    stable.tmux
+    stable.zellij
 
     # ══════════════════════════════════════════════════════════
     # Backend Development (Languages & DB)
     # ══════════════════════════════════════════════════════════
-    unstable.go
-    unstable.rustc
-    unstable.cargo
-    unstable.rust-analyzer
-    unstable.python312
-    unstable.elixir
-    unstable.ruby
+    stable.go
+    stable.rustc
+    stable.cargo
+    stable.rust-analyzer
+    stable.python312
+    stable.elixir
+    stable.ruby
     # Database clients
     stable.mycli               # Smart MySQL CLI
-    unstable.pgcli             # Smart PostgreSQL CLI
-    unstable.litecli           # Smart SQLite CLI
-    unstable.dbeaver-bin       # Universal visual DB client
-    unstable.mongodb-compass   # MongoDB GUI
-    unstable.redis             # In-memory data store
-    unstable.postman           # API testing GUI
-    unstable.grpcurl           # gRPC CLI client
-    unstable.ghz               # gRPC benchmarking
-    unstable.httpie            # Human-friendly HTTP client
-    unstable.devenv            # Developer environments
-    unstable.gnumake           # Makefile support
+    stable.pgcli             # Smart PostgreSQL CLI
+    stable.litecli           # Smart SQLite CLI
+    stable.dbeaver-bin       # Universal visual DB client
+    stable.mongodb-compass   # MongoDB GUI
+    stable.redis             # In-memory data store
+    stable.postman           # API testing GUI
+    stable.grpcurl           # gRPC CLI client
+    stable.ghz               # gRPC benchmarking
+    stable.httpie            # Human-friendly HTTP client
+    stable.devenv            # Developer environments
+    stable.gnumake           # Makefile support
 
     # ══════════════════════════════════════════════════════════
     # Frontend Development
     # ══════════════════════════════════════════════════════════
-    unstable.bun               # Fast JS runtime / bundler
-    unstable.deno              # Secure JS/TS runtime
-    unstable.pnpm              # Fast Node package manager
-    unstable.yarn              # Node package manager
-    unstable.typescript        # TypeScript compiler
-    unstable.eslint            # JS/TS linter
-    unstable.prettier          # Code formatter
+    stable.bun               # Fast JS runtime / bundler
+    stable.deno              # Secure JS/TS runtime
+    stable.pnpm              # Fast Node package manager
+    stable.yarn              # Node package manager
+    stable.typescript        # TypeScript compiler
+    stable.eslint            # JS/TS linter
+    stable.prettier          # Code formatter
 
     # ══════════════════════════════════════════════════════════
     # DevOps / Infrastructure
     # ══════════════════════════════════════════════════════════
-    unstable.kubectl           # Kubernetes CLI
-    unstable.kubernetes-helm   # Helm charts
-    unstable.k9s               # Kubernetes TUI
-    unstable.freelens-bin      # Kubernetes IDE
-    unstable.opentofu          # IaC (open-source Terraform fork)
-    unstable.terraform         # IaC
-    unstable.ansible           # Configuration management
-    unstable.packer            # Machine image builder
+    stable.kubectl           # Kubernetes CLI
+    stable.kubernetes-helm   # Helm charts
+    stable.k9s               # Kubernetes TUI
+    stable.freelens-bin      # Kubernetes IDE
+    stable.opentofu          # IaC (open-source Terraform fork)
+    stable.terraform         # IaC
+    stable.ansible           # Configuration management
+    stable.packer            # Machine image builder
     stable.vault-bin           # Secrets management
-    unstable.consul            # Service discovery
-    unstable.dive              # Docker layer explorer
-    unstable.act               # Run GitHub Actions locally
+    stable.consul            # Service discovery
+    stable.dive              # Docker layer explorer
+    stable.act               # Run GitHub Actions locally
     stable.checkov             # IaC security scanner
-    unstable.tflint            # Terraform linter
-    unstable.hadolint          # Dockerfile linter
-    unstable.shellcheck        # Shell script analyzer
-    unstable.shfmt             # Shell script formatter
-    unstable.lazydocker        # Docker TUI
-    unstable.docker-compose    # Container orchestration
+    stable.tflint            # Terraform linter
+    stable.hadolint          # Dockerfile linter
+    stable.shellcheck        # Shell script analyzer
+    stable.shfmt             # Shell script formatter
+    stable.lazydocker        # Docker TUI
+    stable.docker-compose    # Container orchestration
 
     # ── Cloud Provider CLIs ──────────────────────────────────
-    unstable.google-cloud-sdk  # GCP CLI (gcloud, gsutil, bq)
-    unstable.awscli2           # AWS CLI v2
-    unstable.oci-cli           # Oracle Cloud CLI
-    unstable.doctl             # DigitalOcean CLI
-    unstable.python312Packages.ovh  # OVHCloud Python SDK/CLI
+    stable.google-cloud-sdk  # GCP CLI (gcloud, gsutil, bq)
+    stable.awscli2           # AWS CLI v2
+    stable.oci-cli           # Oracle Cloud CLI
+    stable.doctl             # DigitalOcean CLI
+    stable.python312Packages.ovh  # OVHCloud Python SDK/CLI
 
     # ══════════════════════════════════════════════════════════
     # QA / Testing / Load Testing
     # ══════════════════════════════════════════════════════════
-    unstable.k6                # Modern load testing (JS scripted)
-    unstable.vegeta            # HTTP load testing
-    unstable.hey               # HTTP load generator (ab replacement)
-    unstable.xh                # Fast HTTP requests (curl alternative)
-    unstable.jmeter            # Java-based load testing GUI
-    unstable.wrk2              # HTTP benchmark
-    unstable.gatling           # HTTP load testing
+    stable.k6                # Modern load testing (JS scripted)
+    stable.vegeta            # HTTP load testing
+    stable.hey               # HTTP load generator (ab replacement)
+    stable.xh                # Fast HTTP requests (curl alternative)
+    stable.jmeter            # Java-based load testing GUI
+    stable.wrk2              # HTTP benchmark
+    stable.gatling           # HTTP load testing
 
     # ══════════════════════════════════════════════════════════
     # Data Analytics (Python)
     # ══════════════════════════════════════════════════════════
-    unstable.python312Packages.pandas        # Data manipulation
-    unstable.python312Packages.numpy         # Numerical computing
-    unstable.python312Packages.matplotlib    # Plotting / visualization
-    unstable.python312Packages.scikit-learn  # Machine learning
-    unstable.python312Packages.jupyter       # Notebooks
-    unstable.python312Packages.ipython       # Enhanced Python REPL
-    unstable.python312Packages.requests      # HTTP for Python
-    unstable.python312Packages.sqlalchemy    # Python ORM
-    unstable.python312Packages.polars        # Fast DataFrames
-    unstable.python312Packages.duckdb        # DuckDB Python bindings
-    unstable.python312Packages.dask          # Parallel computing
+    stable.python312Packages.pandas        # Data manipulation
+    stable.python312Packages.numpy         # Numerical computing
+    stable.python312Packages.matplotlib    # Plotting / visualization
+    stable.python312Packages.scikit-learn  # Machine learning
+    stable.python312Packages.jupyter       # Notebooks
+    stable.python312Packages.ipython       # Enhanced Python REPL
+    stable.python312Packages.requests      # HTTP for Python
+    stable.python312Packages.sqlalchemy    # Python ORM
+    stable.python312Packages.polars        # Fast DataFrames
+    stable.python312Packages.duckdb        # DuckDB Python bindings
+    stable.python312Packages.dask          # Parallel computing
     stable.python312Packages.plotly          # Interactive visualization
     stable.python312Packages.bokeh           # Interactive web plotting
-    unstable.pspp                            # SPSS alternative (.sav editor)
+    stable.pspp                            # SPSS alternative (.sav editor)
     # ══════════════════════════════════════════════════════════
     # Data Engineering / Big Data
     # ══════════════════════════════════════════════════════════
-    unstable.duckdb            # Fast analytical DB
-    unstable.spark             # Big data processing
-    unstable.visidata          # Data exploration TUI
-    unstable.clickhouse-cli    # ClickHouse client
+    stable.duckdb            # Fast analytical DB
+    stable.spark             # Big data processing
+    stable.visidata          # Data exploration TUI
+    stable.clickhouse-cli    # ClickHouse client
 
     # ══════════════════════════════════════════════════════════
     # AI / ML Engineering
     # ══════════════════════════════════════════════════════════
-    unstable.ollama                          # Local LLM runner
-    unstable.gemini-cli-bin                  # Google Gemini CLI
-    unstable.aider-chat                      # AI pair programming in terminal
-    unstable.opencode                        # AI coding agent built for the terminal
-    unstable.crush                           # Glamourous AI coding agent for your terminal
-    unstable.goose-cli                       # Open-source, extensible AI agent
-    (import ./cline.nix { pkgs = unstable; }) # Cline AI CLI (Custom Package)
-    unstable.python312Packages.fastapi       # ML API framework
-    unstable.python312Packages.uvicorn       # ASGI server
-    unstable.python312Packages.pydantic      # Data validation
-    unstable.python312Packages.httpx         # Async HTTP client
-    unstable.python312Packages.boto3         # AWS SDK for Python
-    unstable.python312Packages.rich          # Beautiful terminal output
+    stable.ollama                          # Local LLM runner
+    stable.gemini-cli-bin                  # Google Gemini CLI
+    stable.aider-chat                      # AI pair programming in terminal
+    stable.opencode                        # AI coding agent built for the terminal
+    stable.crush                           # Glamourous AI coding agent for your terminal
+    stable.goose-cli                       # Open-source, extensible AI agent
+    (import ./cline.nix { pkgs = stable; }) # Cline AI CLI (Custom Package)
+    stable.python312Packages.fastapi       # ML API framework
+    stable.python312Packages.uvicorn       # ASGI server
+    stable.python312Packages.pydantic      # Data validation
+    stable.python312Packages.httpx         # Async HTTP client
+    stable.python312Packages.boto3         # AWS SDK for Python
+    stable.python312Packages.rich          # Beautiful terminal output
 
     # ══════════════════════════════════════════════════════════
     # Language Servers / Linters (Neovim / IDE support)
     # ══════════════════════════════════════════════════════════
-    unstable.lua-language-server                         # Lua LSP
-    unstable.stylua                                      # Lua formatter
-    unstable.gopls                                       # Go LSP
-    unstable.pyright                                     # Python LSP
-    unstable.ruff                                        # Python fast linter / formatter
-    unstable.nixd                                        # Nix LSP
-    unstable.yaml-language-server                        # YAML LSP
-    unstable.vscode-langservers-extracted                 # HTML/CSS/JSON LSPs
-    unstable.nodePackages.typescript-language-server      # TS/JS LSP
-    unstable.clang-tools                                 # C/C++ LSP (clangd)
-    unstable.jdt-language-server                         # Java LSP (jdtls)
-    unstable.omnisharp-roslyn                            # C# LSP
-    unstable.sqls                                        # SQL LSP
-    unstable.metals                                      # Scala LSP
-    unstable.dart-bin                                    # Dart SDK (includes LSP)
-    unstable.kotlin-language-server                      # Kotlin LSP
-    unstable.clojure-lsp                                 # Clojure LSP
-    unstable.haskell-language-server                     # Haskell LSP
-    unstable.alire                                       # Ada package manager (standard for Ada development)
-    unstable.tree-sitter                                 # Multi-lang parser
+    stable.lua-language-server                         # Lua LSP
+    stable.stylua                                      # Lua formatter
+    stable.gopls                                       # Go LSP
+    stable.pyright                                     # Python LSP
+    stable.ruff                                        # Python fast linter / formatter
+    stable.nixd                                        # Nix LSP
+    stable.yaml-language-server                        # YAML LSP
+    stable.vscode-langservers-extracted                 # HTML/CSS/JSON LSPs
+    stable.nodePackages.typescript-language-server      # TS/JS LSP
+    stable.clang-tools                                 # C/C++ LSP (clangd)
+    stable.jdt-language-server                         # Java LSP (jdtls)
+    stable.omnisharp-roslyn                            # C# LSP
+    stable.sqls                                        # SQL LSP
+    stable.metals                                      # Scala LSP
+    stable.dart                                      # Dart SDK (includes LSP)
+    stable.kotlin-language-server                      # Kotlin LSP
+    stable.clojure-lsp                                 # Clojure LSP
+    stable.haskell-language-server                     # Haskell LSP
+    stable.alire                                       # Ada package manager (standard for Ada development)
+    stable.tree-sitter                                 # Multi-lang parser
 
     # ══════════════════════════════════════════════════════════
     # Daily CLI Productivity (Modern Replacements)
     # ══════════════════════════════════════════════════════════
-    unstable.bat               # cat with syntax highlighting
-    unstable.eza               # Modern ls replacement
-    unstable.zoxide            # Smart cd with memory
-    unstable.fd                # Fast find replacement
-    unstable.ripgrep           # Fast recursive grep (rg)
-    unstable.fzf               # Interactive fuzzy finder
-    unstable.delta             # Better git diffs
-    unstable.dust              # du visualization
-    unstable.duf               # df replacement
-    unstable.procs             # Modern ps replacement
-    unstable.bottom            # htop alternative (btm)
-    unstable.tokei             # Count lines of code
-    unstable.glow              # Render markdown in terminal
-    unstable.hyperfine         # CLI benchmarking
-    unstable.tldr              # Simplified man pages
-    unstable.difftastic        # Syntax-aware diff
-    unstable.ncdu              # Disk usage analyzer (TUI)
-    unstable.watchexec         # File watcher + command runner
-    unstable.yq                # YAML/XML processor
-    unstable.meld              # Visual diff / merge tool
+    stable.bat               # cat with syntax highlighting
+    stable.eza               # Modern ls replacement
+    stable.zoxide            # Smart cd with memory
+    stable.fd                # Fast find replacement
+    stable.ripgrep           # Fast recursive grep (rg)
+    stable.fzf               # Interactive fuzzy finder
+    stable.delta             # Better git diffs
+    stable.dust              # du visualization
+    stable.duf               # df replacement
+    stable.procs             # Modern ps replacement
+    stable.bottom            # htop alternative (btm)
+    stable.tokei             # Count lines of code
+    stable.glow              # Render markdown in terminal
+    stable.hyperfine         # CLI benchmarking
+    stable.tldr              # Simplified man pages
+    stable.difftastic        # Syntax-aware diff
+    stable.ncdu              # Disk usage analyzer (TUI)
+    stable.watchexec         # File watcher + command runner
+    stable.yq                # YAML/XML processor
+    stable.meld              # Visual diff / merge tool
 
     # ══════════════════════════════════════════════════════════
     # Git & Version Control
     # ══════════════════════════════════════════════════════════
-    unstable.git
-    unstable.git-lfs
-    unstable.gh                # GitHub CLI
-    unstable.lazygit           # Git TUI
-    unstable.gittuf            # Git trust framework
+    stable.git
+    stable.git-lfs
+    stable.gh                # GitHub CLI
+    stable.lazygit           # Git TUI
+    stable.gittuf            # Git trust framework
 
     # ══════════════════════════════════════════════════════════
     # Networking Tools
     # ══════════════════════════════════════════════════════════
-    unstable.curl
-    unstable.wget
-    unstable.aria2             # Download accelerator
-    unstable.mosh              # Persistent SSH
-    unstable.sshfs
-    unstable.fuse3
-    unstable.nmap
-    unstable.tcpdump           # Traffic analyzer
-    unstable.ethtool
-    unstable.iftop             # Network bandwidth monitor
-    unstable.iotop             # I/O monitor
-    unstable.dig
+    stable.curl
+    stable.wget
+    stable.aria2             # Download accelerator
+    stable.mosh              # Persistent SSH
+    stable.sshfs
+    stable.fuse3
+    stable.nmap
+    stable.tcpdump           # Traffic analyzer
+    stable.ethtool
+    stable.iftop             # Network bandwidth monitor
+    stable.iotop             # I/O monitor
+    stable.dig
     stable.mitmproxy           # HTTP/HTTPS proxy
-    unstable.ettercap          # Network sniffer/MITM toolk
-    unstable.cifs-utils
+    stable.ettercap          # Network sniffer/MITM toolk
+    stable.cifs-utils
     stable.wireshark
-    unstable.tshark
-    unstable.termshark
+    stable.tshark
+    stable.termshark
 
     # ══════════════════════════════════════════════════════════
     # Security — CLI Tools
     # ══════════════════════════════════════════════════════════
-    unstable.uv                # Python package manager
-    unstable.vulnix            # Nix vulnerability scanner
-    unstable.lynis             # System audit
-    unstable.sqlmap            # SQL injection tool
-    unstable.sqlmc
-    unstable.laudanum
-    unstable.nikto             # Web server scanner
-    unstable.hcxtools          # WiFi capture tools
-    unstable.hashcat           # Password recovery
-    unstable.thc-hydra         # Login cracker
-    unstable.gobuster          # Directory brute-forcer
-    unstable.wireguard-tools   # VPN
+    stable.uv                # Python package manager
+    stable.vulnix            # Nix vulnerability scanner
+    stable.lynis             # System audit
+    stable.sqlmap            # SQL injection tool
+    stable.sqlmc
+    stable.laudanum
+    stable.nikto             # Web server scanner
+    stable.hcxtools          # WiFi capture tools
+    stable.hashcat           # Password recovery
+    stable.thc-hydra         # Login cracker
+    stable.gobuster          # Directory brute-forcer
+    stable.wireguard-tools   # VPN
     stable.metasploit          # Exploitation framework
-    unstable.sssd
-    unstable.aircrack-ng       # WiFi security
-    unstable.dockle            # Container security linter
-    unstable.checkmate
-    unstable.tracee            # Runtime security
-    unstable.apktool           # Android reverse engineering
-    unstable.radare2           # Binary analysis
-    unstable.ghidra-bin        # Reverse engineering suite
-    unstable.zap               # OWASP ZAP proxy
+    stable.sssd
+    stable.aircrack-ng       # WiFi security
+    stable.dockle            # Container security linter
+    stable.checkmate
+    stable.tracee            # Runtime security
+    stable.apktool           # Android reverse engineering
+    stable.radare2           # Binary analysis
+    stable.ghidra-bin        # Reverse engineering suite
+    stable.zap               # OWASP ZAP proxy
     stable.wapiti              # Web vulnerability scanner
-    unstable.nuclei            # Template-based vulnerability scanner
-    unstable.octoscan
-    unstable.osv-scanner       # Open Source vulnerability scanner
-    unstable.http-scanner
-    unstable.secretscanner     # Secret detection
-    unstable.netscanner
-    unstable.mdns-scanner
+    stable.nuclei            # Template-based vulnerability scanner
+    stable.octoscan
+    stable.osv-scanner       # Open Source vulnerability scanner
+    stable.http-scanner
+    stable.secretscanner     # Secret detection
+    stable.netscanner
+    stable.mdns-scanner
 
     # ══════════════════════════════════════════════════════════
     # Security — GUI Tools
     # ══════════════════════════════════════════════════════════
-    unstable.johnny            # John the Ripper GUI
-    unstable.burpsuite         # Web security testing
-    unstable.cutter            # Reverse engineering GUI
-    unstable.degate            # IC reverse engineering
-    unstable.iaito             # Radare2 GUI
+    stable.johnny            # John the Ripper GUI
+    stable.burpsuite         # Web security testing
+    stable.cutter            # Reverse engineering GUI
+    stable.degate            # IC reverse engineering
+    stable.iaito             # Radare2 GUI
 
     # ══════════════════════════════════════════════════════════
     # Privacy & Anonymity (Tor / Onion)
     # ══════════════════════════════════════════════════════════
-    unstable.tor               # Core Tor daemon
-    unstable.tor-browser       # Tor Browser
-    unstable.nyx               # Tor monitor (TUI)
-    unstable.torsocks          # Tor-wrap applications
-    unstable.onioncircuits     # Visualize Tor circuits
-    unstable.onionshare-gui    # Secure file sharing over Tor
-    unstable.proxychains-ng    # Proxy wrapper
+    stable.tor               # Core Tor daemon
+    stable.tor-browser       # Tor Browser
+    stable.nyx               # Tor monitor (TUI)
+    stable.torsocks          # Tor-wrap applications
+    stable.onioncircuits     # Visualize Tor circuits
+    stable.onionshare-gui    # Secure file sharing over Tor
+    stable.proxychains-ng    # Proxy wrapper
 
     # ══════════════════════════════════════════════════════════
     # Screenshot / Screen Capture (Wayland)
     # ══════════════════════════════════════════════════════════
-    unstable.grim              # Screenshot capture
-    unstable.slurp             # Region selection
-    unstable.swappy            # Quick annotation/editing
-    unstable.flameshot         # Feature-rich screenshots
+    stable.grim              # Screenshot capture
+    stable.slurp             # Region selection
+    stable.swappy            # Quick annotation/editing
+    stable.flameshot         # Feature-rich screenshots
 
     # ══════════════════════════════════════════════════════════
     # Wayland / Niri / Desktop Environment
     # ══════════════════════════════════════════════════════════
-    unstable.fuzzel            # App launcher
-    unstable.waybar            # Status bar
-    unstable.wlsunset          # Night light
-    unstable.swaylock          # Screen locker
-    unstable.swaybg            # Wallpaper
-    unstable.swaynotificationcenter  # Notifications
-    unstable.xwayland-satellite
-    unstable.polkit_gnome
-    unstable.quickshell        # Shell framework
-    unstable.dms-shell         # DankMaterialShell
-    unstable.dgop              # System monitor backend
-    unstable.wtype             # Wayland keyboard input simulator
-    unstable.wl-clipboard      # Wayland clipboard (replaces xclip)
-    unstable.brightnessctl     # Backlight control (replaces xbacklight)
+    stable.fuzzel            # App launcher
+    stable.waybar            # Status bar
+    stable.wlsunset          # Night light
+    stable.swaylock          # Screen locker
+    stable.swaybg            # Wallpaper
+    stable.swaynotificationcenter  # Notifications
+    stable.xwayland-satellite
+    stable.polkit_gnome
+    stable.quickshell        # Shell framework
+    # stable.dms-shell         # DankMaterialShell (not in stable 25.11)
+    # stable.dgop              # System monitor backend (not in stable 25.11)
+    stable.wtype             # Wayland keyboard input simulator
+    stable.wl-clipboard      # Wayland clipboard (replaces xclip)
+    stable.brightnessctl     # Backlight control (replaces xbacklight)
     stable.gtk_engines
     stable.gtk-engine-murrine
-    unstable.gnome-themes-extra
-    unstable.adwaita-icon-theme
+    stable.gnome-themes-extra
+    stable.adwaita-icon-theme
     stable.copyq               # Clipboard manager
 
     # ══════════════════════════════════════════════════════════
@@ -599,25 +626,25 @@ in
     # Communication / Remote
     # ══════════════════════════════════════════════════════════
     anydesk
-    unstable.remmina
-    unstable.teamviewer
+    stable.remmina
+    stable.teamviewer
 
     # ══════════════════════════════════════════════════════════
     # Authentication / Passwords
     # ══════════════════════════════════════════════════════════
-    unstable.google-authenticator
-    unstable._1password-gui
-    unstable.authenticator
-    unstable.libsecret
-    unstable.openssl
+    stable.google-authenticator
+    stable._1password-gui
+    stable.authenticator
+    stable.libsecret
+    stable.openssl
 
     # ══════════════════════════════════════════════════════════
     # File Manager / Disk Utils
     # ══════════════════════════════════════════════════════════
-    unstable.nautilus
-    unstable.gnome-disk-utility
-    unstable.gparted
-    unstable.vifm-full         # Terminal file manager
+    stable.nautilus
+    stable.gnome-disk-utility
+    stable.gparted
+    stable.vifm-full         # Terminal file manager
 
     # ══════════════════════════════════════════════════════════
     # Multimedia
@@ -628,110 +655,110 @@ in
     stable.qtractor            # Audio workstation
     stable.inkscape            # Vector graphics
     stable.gimp                # Image editor
-    unstable.pavucontrol       # Audio volume control
-    unstable.alsa-utils        # ALSA utilities
-    unstable.qbittorrent       # Torrent client
-    unstable.lux               # Video downloader
+    stable.pavucontrol       # Audio volume control
+    stable.alsa-utils        # ALSA utilities
+    stable.qbittorrent       # Torrent client
+    stable.lux               # Video downloader
 
     # ══════════════════════════════════════════════════════════
     # Archive / Compression
     # ══════════════════════════════════════════════════════════
-    unstable.zip
-    unstable.unzip
-    unstable.xz
-    unstable.unar
-    unstable.xar
-    unstable.pbzx
-    unstable.zlib
+    stable.zip
+    stable.unzip
+    stable.xz
+    stable.unar
+    stable.xar
+    stable.pbzx
+    stable.zlib
 
     # ══════════════════════════════════════════════════════════
     # System Utilities / Libraries
     # ══════════════════════════════════════════════════════════
-    unstable.fastfetch         # System info (neofetch replacement)
-    unstable.htop              # Process monitor
-    unstable.tree              # Directory tree
-    unstable.psmisc            # Provides fuser, killall, pstree
-    unstable.lsof              # List open files
-    unstable.inxi              # System info (detailed)
-    unstable.dmidecode         # Hardware info
-    unstable.lm_sensors        # Temperature / fans
-    unstable.wirelesstools
-    unstable.inetutils
-    unstable.libnotify
-    unstable.yad               # GUI dialogs from shell
-    unstable.nix-index         # Nix package file search
-    unstable.bc                # Calculator
-    unstable.file              # File type detection
-    unstable.jq                # JSON processor
-    unstable.just              # Command runner
-    unstable.pay-respects      # Correct previous command
-    unstable.direnv            # Per-directory env vars
-    unstable.fasd              # Quick directory access
-    unstable.rcodesign         # Apple code signing
+    stable.fastfetch         # System info (neofetch replacement)
+    stable.htop              # Process monitor
+    stable.tree              # Directory tree
+    stable.psmisc            # Provides fuser, killall, pstree
+    stable.lsof              # List open files
+    stable.inxi              # System info (detailed)
+    stable.dmidecode         # Hardware info
+    stable.lm_sensors        # Temperature / fans
+    stable.wirelesstools
+    stable.inetutils
+    stable.libnotify
+    stable.yad               # GUI dialogs from shell
+    stable.nix-index         # Nix package file search
+    stable.bc                # Calculator
+    stable.file              # File type detection
+    stable.jq                # JSON processor
+    stable.just              # Command runner
+    stable.pay-respects      # Correct previous command
+    stable.direnv            # Per-directory env vars
+    stable.fasd              # Quick directory access
+    stable.rcodesign         # Apple code signing
 
     # ══════════════════════════════════════════════════════════
     # Temperature Monitoring & Thermal Management
     # ══════════════════════════════════════════════════════════
 
-    unstable.s-tui             # Terminal CPU stress test & temp monitor
-    unstable.stress            # System stress testing (used by s-tui)
-    unstable.stress-ng         # Advanced stress testing
-    unstable.zenmonitor        # AMD Ryzen temperature monitor
+    stable.s-tui             # Terminal CPU stress test & temp monitor
+    stable.stress            # System stress testing (used by s-tui)
+    stable.stress-ng         # Advanced stress testing
+    stable.zenmonitor        # AMD Ryzen temperature monitor
     stable.linuxPackages_zen.cpupower  # Manual CPU frequency control
 
     # ══════════════════════════════════════════════════════════
     # Specialized Tools
     # ══════════════════════════════════════════════════════════
-    unstable.android-tools     # Android development tools
-    unstable.logseq            # Knowledge management (stable.logseq found earlier)
-    unstable.texstudio         # LaTeX editor
-    unstable.texlive.combined.scheme-medium # LaTeX compiler (pdflatex, etc)
-    unstable.tectonic          # Modern C++ LaTeX compiler (no setup required)
-    unstable.spec-kit          # Spec-Driven Development toolkit (GitHub)
+    stable.android-tools     # Android development tools
+    stable.logseq            # Knowledge management (stable.logseq found earlier)
+    stable.texstudio         # LaTeX editor
+    stable.texlive.combined.scheme-medium # LaTeX compiler (pdflatex, etc)
+    stable.tectonic          # Modern C++ LaTeX compiler (no setup required)
+    # stable.spec-kit          # Spec-Driven Development toolkit (not in stable 25.11)
 
     # ══════════════════════════════════════════════════════════
     # Study / Education
     # ══════════════════════════════════════════════════════════
-    unstable.anki-bin          # Spaced repetition flashcards (binary is often preferred for Anki)
-    unstable.obsidian          # Second brain / Markdown knowledge base
-    unstable.zotero            # Top tier reference and research management
-    unstable.xournalpp         # PDF annotation and handwritten notes
-    unstable.kdePackages.okular # Feature-rich document and PDF viewer
+    stable.anki-bin          # Spaced repetition flashcards (binary is often preferred for Anki)
+    stable.obsidian          # Second brain / Markdown knowledge base
+    stable.zotero            # Top tier reference and research management
+    stable.xournalpp         # PDF annotation and handwritten notes
+    stable.kdePackages.okular # Feature-rich document and PDF viewer
     stable.super-productivity  # ToDo list, Time tracker, Pomodoro timer (stable: Electron 39 broken on unstable)
 
     # ══════════════════════════════════════════════════════════
     # Gaming (Lutris / Wine / Vulkan)
     # ══════════════════════════════════════════════════════════
-    unstable.lutris
-    unstable.gamescope           # Nested compositor (fix Wine/XWayland in Niri)
-    unstable.wineWow64Packages.waylandFull
-    unstable.winetricks
-    unstable.mangohud
-    unstable.vulkan-extension-layer
+    stable.lutris
+    stable.gamescope           # Nested compositor (fix Wine/XWayland in Niri)
+    stable.wineWow64Packages.waylandFull
+    stable.winetricks
+    stable.mangohud
+    stable.vulkan-extension-layer
 
-    unstable.mesa-demos
-    unstable.dxvk              # DirectX -> Vulkan
-    unstable.scanmem           # GameConqueror (Memory Editor for games)
+    stable.mesa-demos
+    stable.dxvk              # DirectX -> Vulkan
+    stable.scanmem           # GameConqueror (Memory Editor for games)
 
     # ══════════════════════════════════════════════════════════
 
   ];
 
   fonts.packages = [
-    unstable.noto-fonts
-    unstable.noto-fonts-cjk-sans
-    unstable.noto-fonts-color-emoji
-    unstable.liberation_ttf
-    unstable.fira-code
-    unstable.fira-code-symbols
-    unstable.mplus-outline-fonts.githubRelease
-    unstable.dina-font
-    unstable.proggyfonts
-    unstable.meslo-lgs-nf
-    unstable.vista-fonts
-    unstable.corefonts
-    unstable.dejavu_fonts
-    unstable.freefont_ttf
+    stable.noto-fonts
+    stable.noto-fonts-cjk-sans
+    stable.noto-fonts-color-emoji
+    stable.liberation_ttf
+    stable.fira-code
+    stable.fira-code-symbols
+    stable.mplus-outline-fonts.githubRelease
+    stable.dina-font
+    stable.proggyfonts
+    stable.meslo-lgs-nf
+    stable.vista-fonts
+    stable.corefonts
+    stable.dejavu_fonts
+    stable.freefont_ttf
   ];
   
   # Some programs need SUID wrappers, can be configured further or are
@@ -748,18 +775,18 @@ in
       # Add any missing dynamic libraries for unpackaged programs
       # here, NOT in environment.systemPackages
       # add stdlibc++.so.6
-      unstable.stdenv.cc.cc.lib
-      unstable.gcc-unwrapped.lib
-      unstable.libgcc.lib
-      unstable.glibc
-      unstable.libGL
-      unstable.libGLU
-      unstable.libxml2
-      unstable.icu
-      unstable.libiconv
-      unstable.zlib
-      unstable.expat
-      unstable.nss
+      stable.stdenv.cc.cc.lib
+      stable.gcc-unwrapped.lib
+      stable.libgcc.lib
+      stable.glibc
+      stable.libGL
+      stable.libGLU
+      stable.libxml2
+      stable.icu
+      stable.libiconv
+      stable.zlib
+      stable.expat
+      stable.nss
     ];
     niri.enable = true;
   };
@@ -833,6 +860,25 @@ in
 
   networking.firewall.enable = false;
   networking.networkmanager.enable = true;
+
+  # ── DNS Optimization ──
+  # Use fast public DNS instead of slow ISP DNS
+  networking.nameservers = [ "1.1.1.1" "8.8.8.8" "1.0.0.1" "8.8.4.4" ];
+  networking.networkmanager.dns = "none"; # Prevent NM from overwriting resolv.conf
+
+  # ── Force Ethernet 100 Mb/s ──
+  # Auto-negotiation is falling to 10 Mb/s (likely bad cable) — force 100 Mb/s
+  networking.networkmanager.dispatcherScripts = [{
+    source = pkgs.writeText "force-100mbps" ''
+      #!/bin/sh
+      IFACE=$1
+      ACTION=$2
+      if [ "$IFACE" = "enp1s0" ] && [ "$ACTION" = "up" ]; then
+        ${pkgs.ethtool}/bin/ethtool -s enp1s0 speed 100 duplex full autoneg on
+      fi
+    '';
+    type = "basic";
+  }];
   
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

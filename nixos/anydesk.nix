@@ -1,30 +1,34 @@
 {lib, stdenv, fetchurl, makeWrapper, makeDesktopItem, genericUpdater, writeShellScript
-, atk, cairo, gdk-pixbuf, glib, gnome2, gtk2, libGLU, libGL, pango, minizip
+, atk, cairo, gdk-pixbuf, glib, gnome2, gtk2, gtk3, libGLU, libGL, pango, minizip
 , libxcb, libxkbfile, libx11, libxdamage, libxext, libxfixes, libxi, libxmu
 , libxrandr, libxtst, libxt, libice, libsm, libxrender
 , lsb-release, freetype, fontconfig, polkit, polkit_gnome, pciutils, copyDesktopItems
-, pulseaudio }:
+, pulseaudio
+# Wayland support
+, wayland, libxkbcommon, pipewire, xdg-desktop-portal, xdg-desktop-portal-gtk }:
 
 let
   description = "Desktop sharing application, providing remote support and online meetings";
 in stdenv.mkDerivation (finalAttrs: {
   pname = "anydesk";
-  version = "6.3.3";
+  version = "8.0.1";
 
   src = fetchurl {
     urls = [
       "https://download.anydesk.com/linux/anydesk-${finalAttrs.version}-amd64.tar.gz"
       "https://download.anydesk.com/linux/generic-linux/anydesk-${finalAttrs.version}-amd64.tar.gz"
     ];
-    hash = "sha256-uSotkFOpuC2a2sRTagY9KFx3F2VJmgrsn+dBa5ycdck=";
+    hash = "sha256-KVE2EG/sSVUJGlQO6lVHbXq9gtvtXvntUOXkx3BhTx8=";
   };
 
   buildInputs = [
-    atk cairo gdk-pixbuf glib gtk2 stdenv.cc.cc pango
+    atk cairo gdk-pixbuf glib gtk2 gtk3 stdenv.cc.cc pango
     gnome2.gtkglext libGLU libGL minizip freetype
     fontconfig polkit polkit_gnome pulseaudio
     libxcb libxkbfile libx11 libxdamage libxext libxfixes libxi libxmu
     libxrandr libxtst libxt libice libsm libxrender
+    # Wayland support
+    wayland libxkbcommon pipewire
   ];
 
   nativeBuildInputs = [ copyDesktopItems makeWrapper ];
@@ -64,7 +68,9 @@ in stdenv.mkDerivation (finalAttrs: {
       $out/bin/anydesk
 
     wrapProgram $out/bin/anydesk \
-      --prefix PATH : ${lib.makeBinPath [ lsb-release pciutils ]}
+      --prefix PATH : ${lib.makeBinPath [ lsb-release pciutils ]} \
+      --set GDK_BACKEND "x11" \
+      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ wayland libxkbcommon pipewire ]}"
   '';
 
   passthru = {
