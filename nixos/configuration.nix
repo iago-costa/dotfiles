@@ -318,7 +318,7 @@ in
           --add-flags "--enable-features=UseOzonePlatform --ozone-platform=wayland"
       '';
     }))
-    stable.code-cursor
+    unstable.code-cursor
     stable.vscode
     stable.windsurf
 
