@@ -1,0 +1,36 @@
+# This file configures language servers and formatters for your most used languages
+# based on the packages available in your Nix dev-env
+
+[[language]]
+name = "nix"
+# We're already installing nixd in your dev-env
+language-servers = [ "nixd" ]
+formatter = { command = "alejandra" }
+auto-format = true
+
+[[language]]
+name = "python"
+language-servers = [ "pyright", "ruff" ]
+formatter = { command = "ruff", args = ["check", "--fix", "-"] }
+auto-format = true
+
+[[language]]
+name = "go"
+language-servers = ["gopls"]
+auto-format = true
+formatter = { command = "goimports" }
+
+[[language]]
+name = "rust"
+language-servers = ["rust-analyzer"]
+auto-format = true
+
+[[language]]
+name = "javascript"
+language-servers = ["typescript-language-server"]
+auto-format = true
+
+[[language]]
+name = "typescript"
+language-servers = ["typescript-language-server"]
+auto-format = true

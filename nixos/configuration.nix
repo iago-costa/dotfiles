@@ -310,6 +310,7 @@ in
     # ══════════════════════════════════════════════════════════
     stable.vim
     stable.neovim
+    stable.helix              # Modal editor (Rust-based, built-in LSP)
     stable.emacs
     ((builtins.getFlake "github:jacopone/antigravity-nix").packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-no-fhs.overrideAttrs (old: {
       postInstall = (old.postInstall or "") + ''
@@ -324,6 +325,7 @@ in
     # ══════════════════════════════════════════════════════════
     # Terminal / Multiplexers
     # ══════════════════════════════════════════════════════════
+    stable.ghostty            # GPU-accelerated terminal (Zig-based)
     stable.alacritty
     stable.tmux
     stable.zellij
@@ -351,6 +353,8 @@ in
     stable.httpie            # Human-friendly HTTP client
     stable.devenv            # Developer environments
     stable.gnumake           # Makefile support
+    stable.go-task           # Taskfile runner (task)
+    stable.nodejs            # Node.js runtime (provides npx)
 
     # ══════════════════════════════════════════════════════════
     # Frontend Development
@@ -599,8 +603,8 @@ in
     stable.xwayland-satellite
     stable.polkit_gnome
     stable.quickshell        # Shell framework
-    # stable.dms-shell         # DankMaterialShell (not in stable 25.11)
-    # stable.dgop              # System monitor backend (not in stable 25.11)
+    unstable.dms-shell       # DankMaterialShell (via unstable — not yet in stable 25.11)
+    unstable.dgop            # System monitor backend (via unstable — not yet in stable 25.11)
     stable.wtype             # Wayland keyboard input simulator
     stable.wl-clipboard      # Wayland clipboard (replaces xclip)
     stable.brightnessctl     # Backlight control (replaces xbacklight)

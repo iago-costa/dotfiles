@@ -18,7 +18,7 @@ in stdenv.mkDerivation (finalAttrs: {
       "https://download.anydesk.com/linux/anydesk-${finalAttrs.version}-amd64.tar.gz"
       "https://download.anydesk.com/linux/generic-linux/anydesk-${finalAttrs.version}-amd64.tar.gz"
     ];
-    hash = "sha256-KVE2EG/sSVUJGlQO6lVHbXq9gtvtXvntUOXkx3BhTx8=";
+    hash = "sha256-nZZNp/zpfnIsTCnGX/6cGCiEVTyZyoShTAOjEenUzkk=";
   };
 
   buildInputs = [

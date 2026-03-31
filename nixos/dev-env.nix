@@ -54,10 +54,12 @@ let
   editors = with pkgs; [
     vim
     neovim
+    helix                       # Modal editor (Rust-based, built-in LSP)
   ];
 
   # Terminal / Multiplexers
   terminals = with pkgs; [
+    ghostty                     # GPU-accelerated terminal (Zig-based)
     tmux
     zellij
   ];
@@ -81,6 +83,8 @@ let
     httpie                      # Human-friendly HTTP client
     devenv                      # Developer environments
     gnumake                     # Makefile support
+    go-task                     # Taskfile runner (task)
+    nodejs                      # Node.js runtime (provides npx)
   ];
 
   # Frontend Development

@@ -112,6 +112,13 @@ link-user:
 	mkdir -p ${HOME}/.config/alacritty/ | true
 	ln alacritty.toml ${HOME}/.config/alacritty/alacritty.toml | true
 	
+	mkdir -p ${HOME}/.config/helix/ | true
+	ln .config/helix/config.toml ${HOME}/.config/helix/config.toml | true
+	ln .config/helix/languages.toml ${HOME}/.config/helix/languages.toml | true
+	
+	mkdir -p ${HOME}/.config/ghostty/ | true
+	ln .config/ghostty/config ${HOME}/.config/ghostty/config | true
+	
 	ln .xmobarrc ${HOME}/.xmobarrc | true
 	
 	mkdir -p ${HOME}/.xmonad/ | true
@@ -171,6 +178,12 @@ del-user:
 
 	cp ${HOME}/.config/alacritty/ ${HOME}/.config/alacritty.bak -r | true
 	rm ${HOME}/.config/alacritty/ -rv | true
+
+	cp ${HOME}/.config/helix/ ${HOME}/.config/helix.bak -r | true
+	rm ${HOME}/.config/helix/ -rv | true
+
+	cp ${HOME}/.config/ghostty/ ${HOME}/.config/ghostty.bak -r | true
+	rm ${HOME}/.config/ghostty/ -rv | true
 
 	cp ${HOME}/.xmobarrc ${HOME}/.xmobarrc.bak | true
 	rm ${HOME}/.xmobarrc | true
