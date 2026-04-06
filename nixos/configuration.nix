@@ -731,6 +731,47 @@ in
     stable.super-productivity  # ToDo list, Time tracker, Pomodoro timer (stable: Electron 39 broken on unstable)
 
     # ══════════════════════════════════════════════════════════
+    # Financial Markets / Trading (B3 & USA)
+    # ══════════════════════════════════════════════════════════
+
+    # ── MT5 / Wine Management ────────────────────────────────
+    stable.bottles             # Wine prefix manager (install MT5 here)
+
+    # ── Technical Analysis C Libraries ───────────────────────
+    stable.ta-lib              # TA-Lib C library (technical indicators)
+    stable.quantlib            # QuantLib C++ (quantitative finance)
+
+    # ── Python: Market Data & Finance ────────────────────────
+    stable.python312Packages.yfinance         # Yahoo Finance (stocks, ETFs, options)
+    stable.python312Packages.mplfinance       # Candlestick / OHLCV charts
+    stable.python312Packages.beautifulsoup4   # Web scraping (B3/SEC filings)
+    stable.python312Packages.lxml             # Fast XML/HTML parsing
+    stable.python312Packages.selenium         # Browser automation (broker portals)
+    stable.python312Packages.tweepy           # Twitter API (market sentiment)
+    stable.python312Packages.arrow            # Human-friendly dates/times
+
+    # ── Python: Technical & Statistical Analysis ─────────────
+    stable.python312Packages.scipy            # Scientific computing
+    stable.python312Packages.statsmodels      # Econometrics / time-series
+    stable.python312Packages.seaborn          # Statistical visualization
+
+    # ── Python: Async & Real-Time Data ───────────────────────
+    stable.python312Packages.websockets       # WebSocket protocol
+    stable.python312Packages.websocket-client # WebSocket client
+    stable.python312Packages.aiohttp         # Async HTTP client/server
+
+    # ── Python: Scheduling & Notifications ───────────────────
+    stable.python312Packages.schedule          # Lightweight job scheduler
+    stable.python312Packages.apscheduler      # Advanced Python scheduler
+    stable.python312Packages.python-telegram-bot  # Telegram trade alerts
+    stable.python312Packages.pytz             # Timezone handling (B3 = America/Sao_Paulo)
+
+    # ── Python: Reporting & Data Export ──────────────────────
+    stable.python312Packages.openpyxl         # Excel read/write
+    stable.python312Packages.xlsxwriter       # Excel report generation
+    stable.python312Packages.pyyaml           # YAML config files
+
+    # ══════════════════════════════════════════════════════════
     # Gaming (Lutris / Wine / Vulkan)
     # ══════════════════════════════════════════════════════════
     stable.lutris
