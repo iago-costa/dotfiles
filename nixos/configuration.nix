@@ -726,6 +726,8 @@ in
     stable.anki-bin          # Spaced repetition flashcards (binary is often preferred for Anki)
     stable.obsidian          # Second brain / Markdown knowledge base
     stable.zotero            # Top tier reference and research management
+    stable.mendeley          # Elsevier reference manager (unfree)
+    stable.jabref            # Open-source BibTeX/BibLaTeX bibliography manager
     stable.xournalpp         # PDF annotation and handwritten notes
     stable.kdePackages.okular # Feature-rich document and PDF viewer
     stable.super-productivity  # ToDo list, Time tracker, Pomodoro timer (stable: Electron 39 broken on unstable)
