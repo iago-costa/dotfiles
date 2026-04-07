@@ -11,8 +11,8 @@ set -euo pipefail
 # Configuration
 VM_DIR="${HOME}/VMs/windows10"
 CONF_FILE="${VM_DIR}/windows-10.conf"
-RAM="${WIN10_RAM:-8G}"
-CORES="${WIN10_CORES:-4}"
+RAM="${WIN10_RAM:-4G}"
+CORES="${WIN10_CORES:-2}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -67,6 +67,29 @@ check_dependencies() {
     fi
 }
 
+find_iso() {
+    # Look for any Windows 10 ISO in the VM working directory
+    local iso_path=""
+    if [ -f "$CONF_FILE" ]; then
+        iso_path=$(grep '^iso=' "$CONF_FILE" 2>/dev/null | cut -d'"' -f2)
+    fi
+    # Check if the ISO from config exists
+    if [ -n "$iso_path" ] && [ -f "$iso_path" ]; then
+        echo "$iso_path"
+        return 0
+    fi
+    # Fallback: find any Win10 ISO in the directory
+    local found
+    found=$(find "$VM_DIR" -maxdepth 2 -name "*.iso" \
+        ! -name "virtio-win*" ! -name "unattended*" ! -name "spice*" \
+        -size +1G 2>/dev/null | head -1)
+    if [ -n "$found" ]; then
+        echo "$found"
+        return 0
+    fi
+    return 1
+}
+
 setup_vm() {
     echo -e "${YELLOW}Setting up Windows 10 VM...${NC}"
     
@@ -90,6 +113,56 @@ setup_vm() {
     # Use quickget to download Windows 10
     quickget windows 10
     
+    # ── Verify ISO was actually downloaded ──────────────────────────
+    if ! find_iso &>/dev/null; then
+        echo ""
+        echo -e "${RED}✗ Windows 10 ISO download failed!${NC}"
+        echo -e "${YELLOW}Microsoft blocked the automated download (common issue).${NC}"
+        echo ""
+        echo -e "${CYAN}Opening the download page in your browser...${NC}"
+        
+        # Try to open browser
+        if command -v xdg-open &>/dev/null; then
+            xdg-open "https://www.microsoft.com/en-us/software-download/windows10ISO" 2>/dev/null &
+        elif command -v vivaldi &>/dev/null; then
+            vivaldi "https://www.microsoft.com/en-us/software-download/windows10ISO" 2>/dev/null &
+        fi
+        
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo -e "${YELLOW}Manual download steps:${NC}"
+        echo "  1. Select 'Windows 10 (multi-edition ISO)'"
+        echo "  2. Choose language: English International"
+        echo "  3. Click '64-bit Download'"
+        echo -e "  4. Save to: ${CYAN}${VM_DIR}/windows-10/${NC}"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        
+        # Wait for user to download
+        echo -e "${YELLOW}Waiting for ISO file... (press Ctrl+C to cancel)${NC}"
+        while ! find_iso &>/dev/null; do
+            sleep 5
+            # Also check ~/Downloads for the ISO
+            local dl_iso
+            dl_iso=$(find "$HOME/Downloads" -maxdepth 1 -name "Win10*.iso" -size +1G 2>/dev/null | head -1)
+            if [ -n "$dl_iso" ]; then
+                echo -e "${GREEN}Found ISO in Downloads! Moving to VM directory...${NC}"
+                mv "$dl_iso" "${VM_DIR}/windows-10/"
+                break
+            fi
+        done
+        
+        # Update conf to point to the actual ISO filename
+        local actual_iso
+        actual_iso=$(find_iso)
+        if [ -n "$actual_iso" ] && [ -f "$CONF_FILE" ]; then
+            local relative_iso
+            relative_iso=$(realpath --relative-to="$VM_DIR" "$actual_iso")
+            sed -i "s|^iso=.*|iso=\"${relative_iso}\"|" "$CONF_FILE"
+            echo -e "${GREEN}Updated config to use: $relative_iso${NC}"
+        fi
+    fi
+    
     echo ""
     echo -e "${GREEN}✓ Windows 10 VM setup complete!${NC}"
     echo -e "${CYAN}Configuration file: $CONF_FILE${NC}"
@@ -110,6 +183,15 @@ start_vm() {
     fi
     
     cd "$VM_DIR"
+    
+    # Check if ISO is needed (first boot) and exists
+    local iso_path
+    iso_path=$(grep '^iso=' "$CONF_FILE" 2>/dev/null | cut -d'"' -f2)
+    if [ -n "$iso_path" ] && [ ! -f "$iso_path" ]; then
+        echo -e "${RED}Error: Windows ISO not found at: $iso_path${NC}"
+        echo -e "${YELLOW}Run '$0 setup' to download it, or manually place the ISO there.${NC}"
+        exit 1
+    fi
     
     echo -e "${GREEN}Starting Windows 10 VM...${NC}"
     echo -e "  Display: ${CYAN}$display_mode${NC}"
