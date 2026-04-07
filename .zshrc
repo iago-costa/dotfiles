@@ -184,8 +184,8 @@ alias opd="fd --type d . ~ | fzf --print0 | xargs -0 -o xdg-open"
 # ══════════════════════════════════════════════════════════
 # Aliases — VMs
 # ══════════════════════════════════════════════════════════
-alias win10='~/GITS/INC_FILES/STUDY_PROGRAMMING/dotfiles/scripts/win10-vm.sh'
-alias macos='~/GITS/INC_FILES/STUDY_PROGRAMMING/dotfiles/scripts/macos-vm.sh'
+alias win10='~/GITS/learning/dotfiles/scripts/win10-vm.sh'
+alias macos='~/GITS/learning/dotfiles/scripts/macos-vm.sh'
 
 # ══════════════════════════════════════════════════════════
 # FZF-Tab Previews (guarded)

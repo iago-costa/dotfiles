@@ -96,7 +96,7 @@ link-base:
 	mkdir -p ${HOME}/.config/nvim/ftplugin | true
 
 link-user:
-	@echo "Set tmux, zsh, vim, zellij, vifm, alacritty, xmobar, xmonad to user"
+	@echo "Set tmux, zsh, vim, zellij, vifm, alacritty, xmobar, xmonad, helix, ghostty, niri, waybar, fuzzel, DMS to user"
 	ln .tmux.conf ${HOME}/.tmux.conf | true
 	
 	ln .zshrc ${HOME}/.zshrc | true
@@ -123,6 +123,30 @@ link-user:
 	
 	mkdir -p ${HOME}/.xmonad/ | true
 	ln xmonad.hs ${HOME}/.xmonad/xmonad.hs | true
+
+	@echo "Linking niri config..."
+	mkdir -p ${HOME}/.config/niri/scripts | true
+	mkdir -p ${HOME}/.config/niri/dms | true
+	ln -sf $$(pwd)/.config/niri/config.kdl ${HOME}/.config/niri/config.kdl
+	@for f in .config/niri/scripts/*.sh; do \
+		ln -sf $$(pwd)/$$f ${HOME}/.config/niri/scripts/$$(basename $$f); \
+	done
+	@for f in .config/niri/dms/*.kdl; do \
+		ln -sf $$(pwd)/$$f ${HOME}/.config/niri/dms/$$(basename $$f); \
+	done
+
+	@echo "Linking waybar config..."
+	mkdir -p ${HOME}/.config/waybar/ | true
+	ln -sf $$(pwd)/.config/waybar/config ${HOME}/.config/waybar/config
+	ln -sf $$(pwd)/.config/waybar/style.css ${HOME}/.config/waybar/style.css
+
+	@echo "Linking fuzzel config..."
+	mkdir -p ${HOME}/.config/fuzzel/ | true
+	ln -sf $$(pwd)/.config/fuzzel/fuzzel.ini ${HOME}/.config/fuzzel/fuzzel.ini
+
+	@echo "Linking DankMaterialShell config..."
+	mkdir -p ${HOME}/.config/DankMaterialShell/ | true
+	ln -sf $$(pwd)/.config/DankMaterialShell/settings.json ${HOME}/.config/DankMaterialShell/settings.json
 
 link-root:
 	@echo "Set tmux, zsh, vim, zellij, vifm, alacritty, xmobar, xmonad to root"
@@ -157,7 +181,7 @@ del-base:
 	rm -rf ${HOME}/.config/nvim/ | true
 
 del-user:
-	@echo "Removing tmux, zsh, vim, zellij, redshift, vifm, alacritty, xmobar, xmonad from user"
+	@echo "Removing tmux, zsh, vim, zellij, redshift, vifm, alacritty, helix, ghostty, xmobar, xmonad, niri, waybar, fuzzel, DMS from user"
 	cp ${HOME}/.tmux.conf ${HOME}/.tmux.conf.bak | true
 	rm ${HOME}/.tmux.conf | true
 	
@@ -190,6 +214,21 @@ del-user:
 
 	cp ${HOME}/.xmonad/xmonad.hs ${HOME}/.xmonad/xmonad.hs.bak | true
 	rm ${HOME}/.xmonad/xmonad.hs | true
+
+	@echo "Removing niri symlinks..."
+	rm -f ${HOME}/.config/niri/config.kdl | true
+	rm -f ${HOME}/.config/niri/scripts/*.sh | true
+	rm -f ${HOME}/.config/niri/dms/*.kdl | true
+
+	@echo "Removing waybar symlinks..."
+	rm -f ${HOME}/.config/waybar/config | true
+	rm -f ${HOME}/.config/waybar/style.css | true
+
+	@echo "Removing fuzzel symlinks..."
+	rm -f ${HOME}/.config/fuzzel/fuzzel.ini | true
+
+	@echo "Removing DankMaterialShell symlinks..."
+	rm -f ${HOME}/.config/DankMaterialShell/settings.json | true
 
 del-root:
 	@echo "Removing tmux, zsh, vim, zellij, redshift, vifm, alacritty, xmobar, xmonad from root"
@@ -235,3 +274,4 @@ clean-linux:
 hard-clean:
 	make clean-nixos
 	make clean-linux
+

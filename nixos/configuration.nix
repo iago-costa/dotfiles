@@ -191,7 +191,7 @@ in
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
         user = "greeter";
       };
     };
@@ -738,6 +738,15 @@ in
 
     # ── MT5 / Wine Management ────────────────────────────────
     stable.bottles             # Wine prefix manager (install MT5 here)
+
+    # ── Windows VM (ProfitPro / Nelogica) ────────────────────
+    # ProfitPro is a .NET Windows app that does NOT work in Wine/Bottles.
+    # Run it in a lightweight Windows 10/11 VM via QEMU/KVM instead.
+    stable.virt-manager        # GUI for managing QEMU/KVM virtual machines
+    stable.spice-gtk           # SPICE client (clipboard, USB, display for VMs)
+    stable.win-spice           # Windows SPICE guest drivers
+    stable.virtio-win          # VirtIO drivers for Windows guests (disk, network, GPU)
+    stable.quickemu            # Easy VM launcher (used by win10-vm.sh script)
 
     # ── Technical Analysis C Libraries ───────────────────────
     stable.ta-lib              # TA-Lib C library (technical indicators)
