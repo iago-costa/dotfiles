@@ -12,7 +12,7 @@ set -euo pipefail
 VM_DIR="${HOME}/VMs/windows10"
 CONF_FILE="${VM_DIR}/windows-10.conf"
 RAM="${WIN10_RAM:-4G}"
-CORES="${WIN10_CORES:-2}"
+CORES="${WIN10_CORES:-4}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -42,8 +42,8 @@ print_help() {
     echo "  delete    Delete VM and all data (requires confirmation)"
     echo ""
     echo "Environment variables:"
-    echo "  WIN10_RAM     RAM allocation (default: 8G)"
-    echo "  WIN10_CORES   CPU cores (default: 4)"
+    echo "  WIN10_RAM     RAM allocation (default: 4G)"
+    echo "  WIN10_CORES   CPU cores (default: 4, +2 adicionados)"
     echo ""
     echo "Tips for best graphics performance:"
     echo "  1. Install VirtIO drivers from the mounted ISO in Windows"
@@ -198,15 +198,28 @@ start_vm() {
     echo -e "  RAM: ${CYAN}$RAM${NC}"
     echo -e "  Cores: ${CYAN}$CORES${NC}"
     echo ""
-    
+
+    # Patch .conf with cpu_cores and ram (quickemu reads from conf, not CLI flags)
+    # Also enable clipboard sharing via SPICE (copy to guest / paste from guest)
+    sed -i \
+        -e "s/^cpu_cores=.*/cpu_cores=\"${CORES}\"/" \
+        -e "s/^ram=.*/ram=\"${RAM}\"/" \
+        "$CONF_FILE"
+    # Add keys if they don't exist yet
+    grep -q '^cpu_cores=' "$CONF_FILE" || echo "cpu_cores=\"${CORES}\"" >> "$CONF_FILE"
+    grep -q '^ram='       "$CONF_FILE" || echo "ram=\"${RAM}\""             >> "$CONF_FILE"
+
+    echo -e "  ${CYAN}Clipboard:${NC} habilitado (copy to guest / paste from guest via SPICE + spice-vdagent)"
+    echo ""
+
     case "$display_mode" in
         spice)
-            # SPICE with OpenGL for best 3D acceleration
+            # SPICE: clipboard bidirecional é automático via spice-vdagent no Windows
             quickemu --vm windows-10.conf \
                 --display spice
             ;;
         sdl)
-            # SDL fallback if SPICE has issues
+            # SDL fallback (clipboard limitado, prefira spice)
             quickemu --vm windows-10.conf \
                 --display sdl
             ;;
