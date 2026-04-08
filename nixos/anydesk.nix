@@ -3,7 +3,7 @@
 , libxcb, libxkbfile, libx11, libxdamage, libxext, libxfixes, libxi, libxmu
 , libxrandr, libxtst, libxt, libice, libsm, libxrender
 , lsb-release, freetype, fontconfig, polkit, polkit_gnome, pciutils, copyDesktopItems
-, pulseaudio
+, pulseaudio, systemd, zlib, dbus, nettools
 # Wayland support
 , wayland, libxkbcommon, pipewire, xdg-desktop-portal, xdg-desktop-portal-gtk }:
 
@@ -24,7 +24,7 @@ in stdenv.mkDerivation (finalAttrs: {
   buildInputs = [
     atk cairo gdk-pixbuf glib gtk2 gtk3 stdenv.cc.cc pango
     gnome2.gtkglext libGLU libGL minizip freetype
-    fontconfig polkit polkit_gnome pulseaudio
+    fontconfig polkit polkit_gnome pulseaudio systemd zlib dbus
     libxcb libxkbfile libx11 libxdamage libxext libxfixes libxi libxmu
     libxrandr libxtst libxt libice libsm libxrender
     # Wayland support
@@ -68,7 +68,7 @@ in stdenv.mkDerivation (finalAttrs: {
       $out/bin/anydesk
 
     wrapProgram $out/bin/anydesk \
-      --prefix PATH : ${lib.makeBinPath [ lsb-release pciutils ]} \
+      --prefix PATH : ${lib.makeBinPath [ lsb-release pciutils nettools ]} \
       --set GDK_BACKEND "x11" \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ wayland libxkbcommon pipewire ]}"
   '';
