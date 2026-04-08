@@ -1006,10 +1006,9 @@ in
     
     # Wine/Lutris optimizations
     WINE_LARGE_ADDRESS_AWARE = "1";
-    DXVK_HUD = "compiler";
-    
-    # Stack size increase (fixes stack overflow errors)
-    WINEDLLOVERRIDES = "mscoree,mshtml=";
+    # NOTE: WINEDLLOVERRIDES removido — desabilitava mscoree (.NET runtime),
+    # quebrando apps .NET no Bottles (ex: trydpro). Configura por bottle no Bottles.
+    # NOTE: DXVK_HUD removido do global — configure por bottle se precisar depurar.
     WINEFSYNC = "1";
     
     # Kerberos fix

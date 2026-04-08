@@ -1004,6 +1004,468 @@ aggressive_cleanup() {
 }
 
 #===============================================================================
+# 9. LIMPEZA DE GITS (~89 GB)
+#===============================================================================
+
+cleanup_gits_dir() {
+    local gits_dir="${1:-$REAL_HOME/GITS}"
+    header "19. Limpeza de ~/GITS"
+
+    if [[ ! -d "$gits_dir" ]]; then
+        warn "Diretório $gits_dir não encontrado, pulando..."
+        return
+    fi
+
+    local gits_total=$(get_size "$gits_dir")
+    log "Tamanho total de ~/GITS: $(format_size $gits_total)"
+    echo ""
+
+    # ── Análise prévia ──────────────────────────────────────────────
+    log "Top 10 maiores subpastas:"
+    du -sh "$gits_dir"/*/  "$gits_dir"/*/*/ 2>/dev/null | sort -hr | head -10 | while read size dir; do
+        echo -e "  ${CYAN}$size${NC}\t$dir"
+    done
+    echo ""
+
+    # ── node_modules ────────────────────────────────────────────────
+    local nm_total
+    nm_total=$(find "$gits_dir" -name "node_modules" -type d -prune \
+        -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+    if (( nm_total > 0 )); then
+        log "node_modules encontrados: $(format_size $nm_total)"
+        find "$gits_dir" -name "node_modules" -type d -prune \
+            -exec du -sh {} \; 2>/dev/null | sort -hr | head -10 | while read size d; do
+            echo -e "  ${YELLOW}$size${NC}\t$(dirname $d | sed "s|$gits_dir/||")"
+        done
+        if confirm "Remover TODOS os node_modules em ~/GITS (reinstale com npm/pnpm install)"; then
+            local nm_before=$(get_size "$gits_dir")
+            find "$gits_dir" -name "node_modules" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+            local nm_freed=$(( nm_before - $(get_size "$gits_dir") ))
+            (( nm_freed < 0 )) && nm_freed=0
+            success "node_modules removidos — liberado $(format_size $nm_freed)"
+            TOTAL_FREED=$(( TOTAL_FREED + nm_freed ))
+        fi
+    fi
+    echo ""
+
+    # ── Rust target/ ────────────────────────────────────────────────
+    local rust_total
+    rust_total=$(find "$gits_dir" -name "target" -type d -prune \
+        -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+    if (( rust_total > 0 )); then
+        log "Diretórios Rust target/: $(format_size $rust_total)"
+        find "$gits_dir" -name "target" -type d -prune \
+            -exec du -sh {} \; 2>/dev/null | sort -hr | head -10 | while read size d; do
+            echo -e "  ${YELLOW}$size${NC}\t$(dirname $d | sed "s|$gits_dir/||")"
+        done
+        if confirm "Remover todos os target/ de Rust em ~/GITS (recompile com cargo build)"; then
+            local rt_before=$(get_size "$gits_dir")
+            find "$gits_dir" -name "target" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+            local rt_freed=$(( rt_before - $(get_size "$gits_dir") ))
+            (( rt_freed < 0 )) && rt_freed=0
+            success "target/ removidos — liberado $(format_size $rt_freed)"
+            TOTAL_FREED=$(( TOTAL_FREED + rt_freed ))
+        fi
+    fi
+    echo ""
+
+    # ── Python __pycache__ e .pyc ────────────────────────────────────
+    local py_total
+    py_total=$(find "$gits_dir" \( -name "__pycache__" -type d -o -name "*.egg-info" -type d -o -name ".pytest_cache" -type d \) \
+        -prune -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+    if (( py_total > 0 )); then
+        log "Caches Python (__pycache__, .egg-info, .pytest_cache): $(format_size $py_total)"
+        if confirm "Remover caches Python em ~/GITS"; then
+            local py_before=$(get_size "$gits_dir")
+            find "$gits_dir" -type d \( -name "__pycache__" -o -name "*.egg-info" -o -name ".pytest_cache" \) \
+                -prune -exec rm -rf {} + 2>/dev/null || true
+            find "$gits_dir" -name "*.pyc" -delete 2>/dev/null || true
+            local py_freed=$(( py_before - $(get_size "$gits_dir") ))
+            (( py_freed < 0 )) && py_freed=0
+            success "Caches Python removidos — liberado $(format_size $py_freed)"
+            TOTAL_FREED=$(( TOTAL_FREED + py_freed ))
+        fi
+    fi
+    echo ""
+
+    # ── Build artifacts genéricos ────────────────────────────────────
+    log "Outros artefatos de build:"
+    local build_total
+    build_total=$(find "$gits_dir" -type d \( -name "dist" -o -name "build" -o -name ".gradle" -o -name ".dart_tool" \) \
+        -prune -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+    log "  dist/, build/, .gradle/, .dart_tool/: $(format_size $build_total)"
+    if confirm "Remover diretórios dist/, build/, .gradle/, .dart_tool/ em ~/GITS"; then
+        local bd_before=$(get_size "$gits_dir")
+        find "$gits_dir" -type d \( -name "dist" -o -name "build" -o -name ".gradle" -o -name ".dart_tool" \) \
+            -prune -exec rm -rf {} + 2>/dev/null || true
+        local bd_freed=$(( bd_before - $(get_size "$gits_dir") ))
+        (( bd_freed < 0 )) && bd_freed=0
+        success "Artefatos de build removidos — liberado $(format_size $bd_freed)"
+        TOTAL_FREED=$(( TOTAL_FREED + bd_freed ))
+    fi
+    echo ""
+
+    # ── Compactar histórico git ──────────────────────────────────────
+    local git_total
+    git_total=$(find "$gits_dir" -name ".git" -type d -prune \
+        -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+    log "Total em pastas .git: $(format_size $git_total)"
+    log "Top 10 maiores .git:"
+    find "$gits_dir" -name ".git" -type d -prune \
+        -exec du -sh {} \; 2>/dev/null | sort -hr | head -10 | while read size d; do
+        echo -e "  ${CYAN}$size${NC}\t$(basename $(dirname $d))"
+    done
+    if confirm "Compactar histórico git em todos os repos (git gc --aggressive --prune=now)"; then
+        local gc_before=$(get_size "$gits_dir")
+        local repos=(); while read -r gd; do repos+=("$(dirname "$gd")"); done \
+            < <(find "$gits_dir" -name ".git" -type d -prune 2>/dev/null)
+        local total=${#repos[@]}; local current=0
+        for repo in "${repos[@]}"; do
+            ((current++))
+            show_progress "$current" "$total" " $(basename $repo)"
+            (
+                cd "$repo" 2>/dev/null || exit
+                git reflog expire --expire=now --all 2>/dev/null || true
+                git gc --aggressive --prune=now 2>/dev/null || true
+            ) &>/dev/null
+        done
+        echo ""
+        local gc_freed=$(( gc_before - $(get_size "$gits_dir") ))
+        (( gc_freed < 0 )) && gc_freed=0
+        success "Repos compactados — liberado $(format_size $gc_freed)"
+        TOTAL_FREED=$(( TOTAL_FREED + gc_freed ))
+    fi
+    echo ""
+
+    # ── Arquivos grandes suspeitos (> 100 MB, excluindo VMs/ISOs) ───
+    log "Arquivos > 100 MB em ~/GITS (excluindo .git internos):"
+    find "$gits_dir" -type f -size +100M ! -path "*/.git/objects/*" 2>/dev/null \
+        | xargs -I{} du -sh {} 2>/dev/null | sort -hr | head -15 | while read size f; do
+        echo -e "  ${RED}$size${NC}\t$f"
+    done
+    echo ""
+    log "Para remover arquivos específicos acima: rm <arquivo>"
+}
+
+#===============================================================================
+# 10. LIMPEZA DE VMs (~/VMs + ~/QEMU VMs)
+#===============================================================================
+
+_cleanup_vm_dir() {
+    local vm_dir="$1"
+    local label="$2"
+
+    if [[ ! -d "$vm_dir" ]]; then
+        warn "$label não encontrado, pulando..."
+        return
+    fi
+
+    local vm_total=$(get_size "$vm_dir")
+    log "$label: $(format_size $vm_total)"
+    echo ""
+
+    # Listar imagens e tamanhos
+    log "Imagens de disco encontradas:"
+    find "$vm_dir" -maxdepth 3 -type f \(
+        -name "*.qcow2" -o -name "*.vmdk" -o -name "*.vdi" -o -name "*.raw" -o -name "*.img"
+    \) 2>/dev/null | xargs -I{} du -sh {} 2>/dev/null | sort -hr | while read size f; do
+        fname=$(basename "$f")
+        # Tamanho virtual vs real (para qcow2)
+        virtual=""
+        if [[ "$f" == *.qcow2 ]] && command -v qemu-img &>/dev/null; then
+            virtual=$(qemu-img info "$f" 2>/dev/null | grep "virtual size" | awk '{print $3$4}')
+            virtual=" (virtual: $virtual)"
+        fi
+        echo -e "  ${CYAN}$size${NC}\t$fname$virtual"
+    done
+    echo ""
+
+    # Sparsificar imagens qcow2 com qemu-img convert
+    local qcow2_files=()
+    while IFS= read -r f; do
+        qcow2_files+=("$f")
+    done < <(find "$vm_dir" -maxdepth 3 -name "*.qcow2" -type f 2>/dev/null)
+
+    if (( ${#qcow2_files[@]} > 0 )); then
+        log "Compactar imagens qcow2 com qemu-img convert -c (sparsify + compress):"
+        warn "A VM precisa estar DESLIGADA durante este processo!"
+        for qimg in "${qcow2_files[@]}"; do
+            local qsize=$(get_size "$qimg")
+            echo -e "  ${YELLOW}$(format_size $qsize)${NC}\t$(basename $qimg)"
+        done
+        if confirm "Compactar e sparsificar imagens qcow2 em $label"; then
+            for qimg in "${qcow2_files[@]}"; do
+                local tmp="${qimg}.compacting"
+                local before=$(get_size "$qimg")
+                log "Compactando $(basename $qimg)..."
+                if qemu-img convert -O qcow2 -c "$qimg" "$tmp" 2>/dev/null; then
+                    local after=$(get_size "$tmp")
+                    local freed=$(( before - after ))
+                    if (( freed > 0 )); then
+                        mv "$tmp" "$qimg"
+                        success "$(basename $qimg) — liberado $(format_size $freed)"
+                        TOTAL_FREED=$(( TOTAL_FREED + freed ))
+                    else
+                        rm -f "$tmp"
+                        warn "$(basename $qimg) — sem ganho, mantendo original"
+                    fi
+                else
+                    rm -f "$tmp"
+                    warn "$(basename $qimg) — falha na compactação (VM pode estar em uso)"
+                fi
+            done
+        fi
+        echo ""
+    fi
+
+    # Listar e remover snapshots de VMs
+    if command -v qemu-img &>/dev/null; then
+        log "Snapshots em imagens qcow2:"
+        local snap_count=0
+        for qimg in "${qcow2_files[@]}"; do
+            local snaps
+            snaps=$(qemu-img snapshot -l "$qimg" 2>/dev/null | grep -v "^Snapshot list\|^ID\|^--" | grep -v '^[[:space:]]*$' || true)
+            if [[ -n "$snaps" ]]; then
+                snap_count=$(( snap_count + 1 ))
+                echo -e "  ${YELLOW}$(basename "$qimg")${NC}:"
+                while IFS= read -r snap_line; do echo "    $snap_line"; done <<< "$snaps"
+            fi
+        done
+        (( snap_count == 0 )) && log "  (nenhum snapshot encontrado)"
+        echo ""
+    fi
+
+    # Remover arquivos temporários/logs de VM
+    local tmp_total
+    tmp_total=$(find "$vm_dir" -maxdepth 4 -type f \(
+        -name "*.log" -o -name "*.pid" -o -name "*.lock"
+        -o -name "*.tmp" -o -name "*-QEMU_SNAPSHOT*"
+    \) -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+    if (( tmp_total > 0 )); then
+        log "Arquivos temporários/logs de VM: $(format_size $tmp_total)"
+        if confirm "Remover logs e temporários de $label"; then
+            find "$vm_dir" -maxdepth 4 -type f \(
+                -name "*.log" -o -name "*.pid" -o -name "*.lock"
+                -o -name "*.tmp" -o -name "*-QEMU_SNAPSHOT*"
+            \) -delete 2>/dev/null || true
+            success "Temporários de $label removidos"
+            TOTAL_FREED=$(( TOTAL_FREED + tmp_total ))
+        fi
+    fi
+    echo ""
+
+    # Mostrar VMs gerenciadas pelo libvirt (informativo)
+    if command -v virsh &>/dev/null; then
+        log "VMs no libvirt (virsh):"
+        virsh list --all 2>/dev/null | while read line; do
+            echo -e "  ${CYAN}$line${NC}"
+        done
+        echo ""
+        warn "Para liberar espaço máximo: desligue VMs que não usa e delete-as via virt-manager"
+    fi
+}
+
+cleanup_vms() {
+    header "20. Limpeza de VMs (~/VMs + ~/QEMU VMs)"
+
+    _cleanup_vm_dir "$REAL_HOME/VMs" "~/VMs"
+    _cleanup_vm_dir "$REAL_HOME/QEMU VMs" "~/QEMU VMs"
+
+    # Verificar se as duas pastas têm VMs duplicadas
+    if [[ -d "$REAL_HOME/VMs" && -d "$REAL_HOME/QEMU VMs" ]]; then
+        echo ""
+        log "Verificando possíveis duplicatas entre ~/VMs e ~/QEMU VMs:"
+        local vms_names qemu_names
+        vms_names=$(find "$REAL_HOME/VMs" -maxdepth 2 -name "*.qcow2" -o -name "*.vmdk" 2>/dev/null | xargs -I{} basename {} 2>/dev/null | sort)
+        qemu_names=$(find "$REAL_HOME/QEMU VMs" -maxdepth 2 -name "*.qcow2" -o -name "*.vmdk" 2>/dev/null | xargs -I{} basename {} 2>/dev/null | sort)
+        local dupes
+        dupes=$(comm -12 <(echo "$vms_names") <(echo "$qemu_names") 2>/dev/null || true)
+        if [[ -n "$dupes" ]]; then
+            warn "Imagens com mesmo nome nas DUAS pastas (possíveis duplicatas):"
+            echo "$dupes" | while read f; do
+                echo -e "  ${RED}$f${NC}"
+            done
+            warn "Revise manualmente qual cópia é a atual e remova a outra!"
+        else
+            success "Nenhuma duplicata óbvia de nome detectada entre as duas pastas de VM"
+        fi
+    fi
+}
+
+#===============================================================================
+# 11. LIMPEZA DE ~/.local
+#===============================================================================
+
+cleanup_local_dir() {
+    header "21. Limpeza de ~/.local"
+
+    local local_total=$(get_size "$REAL_HOME/.local")
+    log "Tamanho total de ~/.local: $(format_size $local_total)"
+    echo ""
+
+    # ── Visão geral ─────────────────────────────────────────────────
+    log "Top 15 maiores subpastas em ~/.local/share:"
+    du -sh "$REAL_HOME/.local/share"/*/  2>/dev/null | sort -hr | head -15 | while read size dir; do
+        echo -e "  ${CYAN}$size${NC}\t$(basename $dir)"
+    done
+    echo ""
+
+    # ── Lixeira ─────────────────────────────────────────────────────
+    if [[ -d "$REAL_HOME/.local/share/Trash" ]]; then
+        local trash_size=$(get_size "$REAL_HOME/.local/share/Trash")
+        log "Lixeira (Trash): $(format_size $trash_size)"
+        if (( trash_size > 0 )) && confirm "Esvaziar a lixeira (~/.local/share/Trash)"; then
+            rm -rf "$REAL_HOME/.local/share/Trash/files"/* 2>/dev/null || true
+            rm -rf "$REAL_HOME/.local/share/Trash/info"/* 2>/dev/null || true
+            success "Lixeira esvaziada — liberado $(format_size $trash_size)"
+            TOTAL_FREED=$(( TOTAL_FREED + trash_size ))
+        fi
+    fi
+    echo ""
+
+    # ── Bottles / Wine ──────────────────────────────────────────────
+    if [[ -d "$REAL_HOME/.local/share/bottles" ]]; then
+        local bottles_total=$(get_size "$REAL_HOME/.local/share/bottles")
+        log "Bottles total: $(format_size $bottles_total)"
+        echo ""
+
+        # Runners (versões Wine)
+        if [[ -d "$REAL_HOME/.local/share/bottles/runners" ]]; then
+            log "Wine runners instalados:"
+            du -sh "$REAL_HOME/.local/share/bottles/runners"/*/  2>/dev/null | sort -hr | while read size dir; do
+                echo -e "  ${CYAN}$size${NC}\t$(basename $dir)"
+            done
+            warn "Remova runners antigos manualmente: rm -rf ~/.local/share/bottles/runners/NOME"
+        fi
+        echo ""
+
+        # Wine prefixes (bottles)
+        if [[ -d "$REAL_HOME/.local/share/bottles/bottles" ]]; then
+            log "Wine prefixes (bottles):"
+            du -sh "$REAL_HOME/.local/share/bottles/bottles"/*/  2>/dev/null | sort -hr | while read size dir; do
+                echo -e "  ${CYAN}$size${NC}\t$(basename $dir)"
+            done
+            echo ""
+
+            # Limpar Temp e logs dentro dos bottles
+            local bottle_tmp_total
+            bottle_tmp_total=$(find "$REAL_HOME/.local/share/bottles/bottles" \
+                -type d -name "Temp" -prune -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+            bottle_tmp_total=$(( bottle_tmp_total + $(find "$REAL_HOME/.local/share/bottles/bottles" \
+                -maxdepth 6 -name "*.log" -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}') ))
+            
+            if (( bottle_tmp_total > 0 )); then
+                log "Temp e logs dentro dos bottles: $(format_size $bottle_tmp_total)"
+                if confirm "Limpar pastas Temp e logs dentro dos bottles Wine"; then
+                    local bt_before=$(get_size "$REAL_HOME/.local/share/bottles/bottles")
+                    # Limpar Temp do Windows dentro de cada bottle
+                    find "$REAL_HOME/.local/share/bottles/bottles" \
+                        -type d -name "Temp" -prune -exec rm -rf {} + 2>/dev/null || true
+                    # Limpar logs de instalação
+                    find "$REAL_HOME/.local/share/bottles/bottles" \
+                        -maxdepth 6 -name "*.log" -delete 2>/dev/null || true
+                    # Limpar Internet Files cache do Wine
+                    find "$REAL_HOME/.local/share/bottles/bottles" \
+                        -type d -name "Temporary Internet Files" -prune -exec rm -rf {} + 2>/dev/null || true
+                    local bt_freed=$(( bt_before - $(get_size "$REAL_HOME/.local/share/bottles/bottles") ))
+                    (( bt_freed < 0 )) && bt_freed=0
+                    success "Temp e logs dos bottles removidos — liberado $(format_size $bt_freed)"
+                    TOTAL_FREED=$(( TOTAL_FREED + bt_freed ))
+                fi
+            fi
+        fi
+        echo ""
+
+        # DXVK state cache
+        local dxvk_total
+        dxvk_total=$(find "$REAL_HOME/.local/share/bottles" -name "*.dxvk-cache" -o -name "d3d*cache" \
+            -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+        if (( dxvk_total > 0 )); then
+            log "DXVK caches de shader: $(format_size $dxvk_total)"
+            if confirm "Limpar caches DXVK (serão reconstruídos na próxima execução)"; then
+                find "$REAL_HOME/.local/share/bottles" \
+                    \( -name "*.dxvk-cache" -o -name "d3d*cache" \) -delete 2>/dev/null || true
+                success "DXVK caches removidos"
+                TOTAL_FREED=$(( TOTAL_FREED + dxvk_total ))
+            fi
+        fi
+        echo ""
+    fi
+
+    # ── Flatpak (user) ───────────────────────────────────────────────
+    for flatpak_dir in \
+        "$REAL_HOME/.local/share/flatpak" \
+        "/var/lib/flatpak"; do
+        if [[ -d "$flatpak_dir" ]]; then
+            local fp_size=$(get_size "$flatpak_dir")
+            log "Flatpak ($flatpak_dir): $(format_size $fp_size)"
+        fi
+    done
+    if command -v flatpak &>/dev/null; then
+        if confirm "Remover runtimes Flatpak não utilizados"; then
+            local fp_before=0
+            [[ -d /var/lib/flatpak ]] && fp_before=$(get_size /var/lib/flatpak)
+            flatpak uninstall --unused -y 2>/dev/null || true
+            local fp_freed=$(( fp_before - $(get_size /var/lib/flatpak 2>/dev/null || echo $fp_before) ))
+            (( fp_freed < 0 )) && fp_freed=0
+            success "Runtimes Flatpak removidos — liberado $(format_size $fp_freed)"
+            TOTAL_FREED=$(( TOTAL_FREED + fp_freed ))
+        fi
+    fi
+    echo ""
+
+    # ── ~/.var/app (Flatpak user data caches) ───────────────────────
+    if [[ -d "$REAL_HOME/.var/app" ]]; then
+        local var_app_size=$(get_size "$REAL_HOME/.var/app")
+        log "~/.var/app (dados Flatpak): $(format_size $var_app_size)"
+        du -sh "$REAL_HOME/.var/app"/*/  2>/dev/null | sort -hr | head -10 | while read size dir; do
+            echo -e "  ${CYAN}$size${NC}\t$(basename $dir)"
+        done
+        if confirm "Limpar caches de apps Flatpak em ~/.var/app"; then
+            local va_before=$(get_size "$REAL_HOME/.var/app")
+            for app_dir in "$REAL_HOME/.var/app"/*/; do
+                for sub in cache Cache "Code Cache" GPUCache; do
+                    [[ -d "$app_dir/$sub" ]] && safe_clean_dir "$app_dir/$sub"
+                done
+            done
+            local va_freed=$(( va_before - $(get_size "$REAL_HOME/.var/app") ))
+            (( va_freed < 0 )) && va_freed=0
+            success "Caches de apps Flatpak limpos — liberado $(format_size $va_freed)"
+            TOTAL_FREED=$(( TOTAL_FREED + va_freed ))
+        fi
+        echo ""
+    fi
+
+    # ── Logs antigos em ~/.local/share ──────────────────────────────
+    local old_logs_total
+    old_logs_total=$(find "$REAL_HOME/.local/share" -name "*.log" -mtime +30 \
+        -exec du -sb {} \; 2>/dev/null | awk '{s+=$1} END {print s+0}')
+    if (( old_logs_total > 0 )); then
+        log "Logs > 30 dias em ~/.local/share: $(format_size $old_logs_total)"
+        if confirm "Remover logs com mais de 30 dias em ~/.local/share"; then
+            find "$REAL_HOME/.local/share" -name "*.log" -mtime +30 -delete 2>/dev/null || true
+            success "Logs antigos removidos — liberado $(format_size $old_logs_total)"
+            TOTAL_FREED=$(( TOTAL_FREED + old_logs_total ))
+        fi
+    fi
+    echo ""
+
+    # ── Recentemente usados (não liberativo, mas pode ser grande) ────
+    local ru="$REAL_HOME/.local/share/recently-used.xbel"
+    if [[ -f "$ru" ]]; then
+        local ru_size=$(get_size "$ru")
+        log "recently-used.xbel: $(format_size $ru_size)"
+    fi
+
+    # ── Estado final ─────────────────────────────────────────────────
+    local local_after=$(get_size "$REAL_HOME/.local")
+    local local_freed=$(( local_total - local_after ))
+    (( local_freed < 0 )) && local_freed=0
+    echo ""
+    success "Limpeza de ~/.local concluída — total liberado nesta seção: $(format_size $local_freed)"
+}
+
+#===============================================================================
 # MAIN
 #===============================================================================
 
@@ -1085,6 +1547,9 @@ main() {
         cleanup_git_repos
         cleanup_node_modules
         cleanup_flatpak
+        cleanup_gits_dir
+        cleanup_vms
+        cleanup_local_dir
     fi
     
     # Análise final
