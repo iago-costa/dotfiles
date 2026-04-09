@@ -11,7 +11,7 @@ set -euo pipefail
 # Configuration
 VM_DIR="${HOME}/VMs/windows10"
 CONF_FILE="${VM_DIR}/windows-10.conf"
-RAM="${WIN10_RAM:-4G}"
+RAM="${WIN10_RAM:-8G}"
 CORES="${WIN10_CORES:-4}"
 
 # Colors for output
