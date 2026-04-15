@@ -16,10 +16,19 @@ nixos-link:
 	sudo ln /etc/nixos/*.nix ./nixos/ | true
 
 nixos-del:
-	@echo "Removing nixos configuration"
+	@echo "Removing nixos configuration hard links"
 	sudo rm ./nixos/configuration.nix | true
 	sudo rm ./nixos/hardware-configuration.nix | true
 	sudo rm ./nixos/hybrid-sleep-and-hibernate.nix | true
+	sudo rm ./nixos/anydesk.nix | true
+	sudo rm ./nixos/trae.nix | true
+	sudo rm ./nixos/qoder.nix | true
+	sudo rm ./nixos/cline.nix | true
+	sudo rm ./nixos/dev-env.nix | true
+	sudo rm ./nixos/flutter.nix | true
+	sudo rm ./nixos/magic.nix | true
+	sudo rm ./nixos/trading-env.nix | true
+	sudo rm ./nixos/trouble.nix | true
 
 nixos-hard:
 	@echo "Updating nixos configuration"

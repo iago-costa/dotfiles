@@ -20,6 +20,8 @@ let
     android_sdk.accept_android_sdk_licenses = true;  
   };
   anydesk = pkgs.callPackage /etc/nixos/anydesk.nix {};
+  trae = pkgs.callPackage /etc/nixos/trae.nix {};
+  qoder = pkgs.callPackage /etc/nixos/qoder.nix {};
 
   stable = import <nixos-25.11> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
@@ -321,6 +323,8 @@ in
     unstable.code-cursor
     stable.vscode
     stable.windsurf
+    trae
+    qoder
 
     # ══════════════════════════════════════════════════════════
     # Terminal / Multiplexers
