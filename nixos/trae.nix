@@ -8,7 +8,7 @@
 let
   version = "2.3.13344";
   description = "AI-powered IDE by ByteDance — The Real AI Engine";
-in stdenv.mkDerivation {
+in stdenv.mkDerivation (finalAttrs: {
   pname = "trae";
   inherit version;
 
@@ -70,7 +70,7 @@ in stdenv.mkDerivation {
   '';
 
   postFixup = let
-    libraryPath = lib.makeLibraryPath buildInputs;
+    libraryPath = lib.makeLibraryPath finalAttrs.buildInputs;
   in ''
     # Patch the main binary
     patchelf \
@@ -105,4 +105,4 @@ in stdenv.mkDerivation {
     platforms = [ "x86_64-linux" ];
     mainProgram = "trae";
   };
-}
+})

@@ -9,7 +9,7 @@
 
 let
   description = "AI-powered agentic coding platform by Alibaba";
-in stdenv.mkDerivation {
+in stdenv.mkDerivation (finalAttrs: {
   pname = "qoder";
   # Rolling "latest" release — update hash after each upstream push
   version = "latest";
@@ -20,7 +20,7 @@ in stdenv.mkDerivation {
     # If this hash becomes stale, run:
     #   nix-prefetch-url https://download.qoder.com/release/latest/qoder_x86_64.rpm
     # and replace the hash below with the new one from the error output.
-    sha256 = "0000000000000000000000000000000000000000000000000000";
+    sha256 = "sha256-fNjKKKgOJX9wi42Nl4a+QyBoMpS7b7iL1TLXBO7rmG4=";
   };
 
   nativeBuildInputs = [ makeWrapper copyDesktopItems autoPatchelfHook rpmextract cpio ];
@@ -83,7 +83,7 @@ in stdenv.mkDerivation {
   '';
 
   postFixup = let
-    libraryPath = lib.makeLibraryPath buildInputs;
+    libraryPath = lib.makeLibraryPath finalAttrs.buildInputs;
   in ''
     # Wrap with Wayland flags for Niri
     wrapProgram $out/bin/qoder \
@@ -99,4 +99,4 @@ in stdenv.mkDerivation {
     platforms = [ "x86_64-linux" ];
     mainProgram = "qoder";
   };
-}
+})

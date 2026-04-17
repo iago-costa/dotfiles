@@ -20,8 +20,8 @@ let
     android_sdk.accept_android_sdk_licenses = true;  
   };
   anydesk = pkgs.callPackage /etc/nixos/anydesk.nix {};
-  trae = pkgs.callPackage /etc/nixos/trae.nix {};
-  qoder = pkgs.callPackage /etc/nixos/qoder.nix {};
+  # trae = pkgs.callPackage /etc/nixos/trae.nix {};  # FIXME: build broken — upstream .deb changed
+  # qoder = pkgs.callPackage /etc/nixos/qoder.nix {};  # FIXME: build broken — re-enable after fixing
 
   stable = import <nixos-25.11> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
@@ -323,8 +323,8 @@ in
     unstable.code-cursor
     stable.vscode
     stable.windsurf
-    trae
-    qoder
+    # trae  # FIXME: build broken
+    # qoder  # FIXME: build broken
 
     # ══════════════════════════════════════════════════════════
     # Terminal / Multiplexers
@@ -634,6 +634,7 @@ in
     # Communication / Remote
     # ══════════════════════════════════════════════════════════
     anydesk
+    stable.rustdesk-flutter   # Remote desktop (Wayland-native via PipeWire)
     stable.remmina
     stable.teamviewer
 
