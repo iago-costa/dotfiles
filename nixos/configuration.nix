@@ -140,7 +140,54 @@ in
     # If you want to use JACK applications, uncomment this
     jack.enable = true;
     wireplumber.enable = true;
+
+    # ─── CX11970: nomes amigáveis para os nós de áudio ────────────────────────
+    # O fix de jack detection é feito no kernel (ver hardware.firmware + boot.extraModprobeConfig abaixo).
+    # Aqui só renomeamos os nós para facilitar identificação no PipeWire/pavucontrol.
+    wireplumber.extraConfig."50-cx11970-names" = {
+      "monitor.alsa.rules" = [
+        {
+          matches = [ { "node.name" = "~alsa_input.pci-0000_04_00.6.*"; } ];
+          actions."update-props" = {
+            "node.description" = "Microfone P2 (CX11970)";
+            "node.nick"        = "Microfone P2";
+          };
+        }
+        {
+          matches = [ { "node.name" = "~alsa_output.pci-0000_04_00.6.*"; } ];
+          actions."update-props" = {
+            "node.description" = "Alto-falantes (CX11970)";
+            "node.nick"        = "Alto-falantes";
+          };
+        }
+      ];
+    };
   };
+
+  # ─── CX11970: Patch de firmware HDA — fix definitivo de jack detection ──────
+  # PROBLEMA: O combo jack P2 (pin 0x16 = HP Out) tem jack detection ativo.
+  #   Ao plugar um adaptador de microfone, o contato físico dispara o jack sense
+  #   no pin de headphone (mesmo sem fones conectados). O kernel reporta
+  #   "Headphone Jack = on" e o ACP do PipeWire muta Speaker=0%/off.
+  # FIX: Patch de firmware que seta NO_PRESENCE (bit 8) no pin 0x16.
+  #   Pin config original: 0x03211040 → novo: 0x03211140
+  #   Com NO_PRESENCE, o kernel desabilita unsolicited events neste pin →
+  #   nenhum jack event → ACP nunca muta o Speaker.
+  #   O pin 0x19 (Mic In) mantém jack detection ativo → mic funciona normalmente.
+  hardware.firmware = [
+    (pkgs.writeTextDir "lib/firmware/hda-cx11970-nojack.fw" ''
+      [codec]
+      0x14f120d0 0x278212c2 0
+
+      [pincfg]
+      0x16 0x03211140
+    '')
+  ];
+
+  boot.extraModprobeConfig = ''
+    options snd-hda-intel patch=hda-cx11970-nojack.fw,hda-cx11970-nojack.fw
+  '';
+
 
   services.upower = {
     enable = true;
