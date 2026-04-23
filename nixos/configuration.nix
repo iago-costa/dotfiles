@@ -141,23 +141,48 @@ in
     jack.enable = true;
     wireplumber.enable = true;
 
-    # ─── CX11970: nomes amigáveis para os nós de áudio ────────────────────────
+    # ─── Nomes amigáveis para dispositivos de áudio ────────────────────────────
     # O fix de jack detection é feito no kernel (ver hardware.firmware + boot.extraModprobeConfig abaixo).
-    # Aqui só renomeamos os nós para facilitar identificação no PipeWire/pavucontrol.
-    wireplumber.extraConfig."50-cx11970-names" = {
+    # Aqui renomeamos Device + Nodes para facilitar identificação no pavucontrol/PipeWire.
+    #
+    # Hierarquia: Device (card) → Node (sink/source) → Port (speaker/mic/headphone)
+    #   - Device "Áudio Notebook (CX11970)" contém:
+    #       → Node de saída "Alto-falantes (CX11970)"    → Portas: Speaker, Headphone
+    #       → Node de entrada "Microfone (CX11970)"      → Portas: Mic Interno, Mic Externo P2
+    #   - Device "HDMI/DP (AMD Renoir)" contém:
+    #       → Nodes de saída HDMI (só ativos com monitor externo)
+    wireplumber.extraConfig."50-audio-names" = {
       "monitor.alsa.rules" = [
+        # ── Device: CX11970 (card da placa de som do notebook) ──
+        {
+          matches = [ { "device.name" = "alsa_card.pci-0000_04_00.6"; } ];
+          actions."update-props" = {
+            "device.description" = "Áudio Notebook (CX11970)";
+            "device.nick"        = "CX11970";
+          };
+        }
+        # ── Node de entrada (captura): mic interno + externo P2 ──
         {
           matches = [ { "node.name" = "~alsa_input.pci-0000_04_00.6.*"; } ];
           actions."update-props" = {
-            "node.description" = "Microfone P2 (CX11970)";
-            "node.nick"        = "Microfone P2";
+            "node.description" = "Microfone (CX11970)";
+            "node.nick"        = "Microfone";
           };
         }
+        # ── Node de saída (playback): alto-falantes internos ──
         {
           matches = [ { "node.name" = "~alsa_output.pci-0000_04_00.6.*"; } ];
           actions."update-props" = {
             "node.description" = "Alto-falantes (CX11970)";
             "node.nick"        = "Alto-falantes";
+          };
+        }
+        # ── Device: HDMI/DP (AMD Renoir/Cezanne — saída para monitor externo) ──
+        {
+          matches = [ { "device.name" = "alsa_card.pci-0000_04_00.1"; } ];
+          actions."update-props" = {
+            "device.description" = "HDMI/DP (AMD Renoir)";
+            "device.nick"        = "HDMI";
           };
         }
       ];
