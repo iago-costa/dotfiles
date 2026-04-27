@@ -85,7 +85,12 @@ let
     gnumake                     # Makefile support
     go-task                     # Taskfile runner (task)
     nodejs                      # Node.js runtime (provides npx)
-  ];
+    meld                        # Visual diff / merge tool
+  ] ++ linuxOnlyList (with pkgs; [
+    dbeaver-bin                 # Universal visual DB client (Linux)
+    mongodb-compass             # MongoDB GUI (Linux)
+    postman                     # API testing GUI (Linux)
+  ]);
 
   # Frontend Development
   frontendDev = with pkgs; [
@@ -118,7 +123,7 @@ let
     shfmt                       # Shell script formatter
     lazydocker                  # Docker TUI
     docker-compose              # Container orchestration
-  ];
+  ] ++ linuxOnly freelens-bin;  # Kubernetes IDE (Linux only)
 
   # Cloud Provider CLIs (all pre-built binaries)
   cloudCLIs = with pkgs; [
@@ -134,13 +139,33 @@ let
     hey                         # HTTP load generator (ab replacement)
     xh                          # Fast HTTP requests (curl alternative)
     wrk2                        # HTTP benchmark
-  ];
+  ] ++ linuxOnlyList (with pkgs; [
+    jmeter                      # Java-based load testing GUI (Linux)
+    gatling                     # HTTP load testing (Linux)
+  ]);
 
   # Data Engineering (CLI tools, pre-built)
   dataEngineering = with pkgs; [
     duckdb                      # Fast analytical DB
     visidata                    # Data exploration TUI
-  ];
+    pspp                        # SPSS alternative (.sav editor)
+    python312Packages.pandas    # Data manipulation
+    python312Packages.numpy     # Numerical computing
+    python312Packages.matplotlib # Plotting / visualization
+    python312Packages.scikit-learn # Machine learning
+    python312Packages.jupyter   # Notebooks
+    python312Packages.ipython   # Enhanced Python REPL
+    python312Packages.requests  # HTTP for Python
+    python312Packages.sqlalchemy # Python ORM
+    python312Packages.polars    # Fast DataFrames
+    python312Packages.duckdb    # DuckDB Python bindings
+    python312Packages.dask      # Parallel computing
+    python312Packages.plotly    # Interactive visualization
+    python312Packages.bokeh     # Interactive web plotting
+  ] ++ linuxOnlyList (with pkgs; [
+    spark                       # Big data processing (Linux)
+    clickhouse-cli              # ClickHouse client (Linux)
+  ]);
 
   # AI / ML Engineering (CLI agents & tools, pre-built)
   aiML = with pkgs; [
@@ -149,6 +174,14 @@ let
     opencode                    # AI coding agent built for the terminal
     crush                       # Glamourous AI coding agent for your terminal
     goose-cli                   # Open-source, extensible AI agent
+    (import ./cline.nix { inherit pkgs; }) # Cline AI CLI (Custom Package)
+    # Python AI/ML frameworks
+    python312Packages.fastapi   # ML API framework
+    python312Packages.uvicorn   # ASGI server
+    python312Packages.pydantic  # Data validation
+    python312Packages.httpx     # Async HTTP client
+    python312Packages.boto3     # AWS SDK for Python
+    python312Packages.rich      # Beautiful terminal output
   ] ++ linuxOnly ollama;        # Local LLM runner (Linux only)
 
   # Language Servers / Linters (pre-built — removed those that compile from source)
@@ -166,6 +199,13 @@ let
     dart-bin                                # Dart SDK (binary, includes LSP)
     kotlin-language-server                  # Kotlin LSP
     tree-sitter                             # Multi-lang parser
+    clang-tools                             # C/C++ LSP (clangd)
+    jdt-language-server                     # Java LSP (jdtls)
+    omnisharp-roslyn                        # C# LSP
+    metals                                  # Scala LSP
+    clojure-lsp                             # Clojure LSP
+    haskell-language-server                 # Haskell LSP
+    alire                                   # Ada package manager
   ];
 
   # Daily CLI Productivity (Modern Replacements — all pre-built Go/Rust binaries)
@@ -266,6 +306,18 @@ let
   # Multimedia (CLI only, pre-built)
   multimediaCLI = with pkgs; [
     ffmpeg                      # Video/audio converter
+  ];
+
+  # LaTeX / Typesetting
+  latexTools = with pkgs; [
+    texstudio                   # LaTeX editor
+    texlive.combined.scheme-medium # LaTeX compiler (pdflatex, etc)
+    tectonic                    # Modern LaTeX compiler
+  ];
+
+  # Mobile / Android
+  mobileTools = with pkgs; [
+    android-tools               # Android development tools
   ];
 
   # ────────────────────────────────────────────────────────────────────────────
@@ -371,5 +423,7 @@ in {
     ++ securityCLI
     ++ systemUtils
     ++ multimediaCLI
+    ++ latexTools
+    ++ mobileTools
   );
 }

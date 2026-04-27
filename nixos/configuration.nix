@@ -13,7 +13,6 @@ let
         enableWideVine = true;
     };
     permittedInsecurePackages = [
-        "electron-27.3.11"
         "qtwebengine-5.15.19"
     ];
     android_sdk.accept_license = true;
@@ -25,7 +24,7 @@ let
 
   stable = import <nixos-25.11> { config = baseconfig; };
   unstable = import <nixos> { config = baseconfig; };
-  deprecated = import <nixos-25.05> { config = baseconfig; };
+
 in
 {
   nix.settings.trusted-users = [ "root" "zen" ];
@@ -395,8 +394,6 @@ in
     unstable.code-cursor
     stable.vscode
     stable.windsurf
-    # trae  # FIXME: build broken
-    # qoder  # FIXME: build broken
 
     # ══════════════════════════════════════════════════════════
     # Terminal / Multiplexers
@@ -501,6 +498,7 @@ in
     stable.python312Packages.plotly          # Interactive visualization
     stable.python312Packages.bokeh           # Interactive web plotting
     stable.pspp                            # SPSS alternative (.sav editor)
+
     # ══════════════════════════════════════════════════════════
     # Data Engineering / Big Data
     # ══════════════════════════════════════════════════════════
@@ -599,7 +597,7 @@ in
     stable.iotop             # I/O monitor
     stable.dig
     stable.mitmproxy           # HTTP/HTTPS proxy
-    stable.ettercap          # Network sniffer/MITM toolk
+    stable.ettercap          # Network sniffer/MITM tool
     stable.cifs-utils
     stable.wireshark
     stable.tshark
@@ -733,7 +731,11 @@ in
     stable.vlc                 # Media player
     stable.ffmpeg              # Video/audio converter
     stable.kdePackages.kdenlive  # Video editor
+    stable.davinci-resolve     # Professional video editing and color grading
+    stable.losslesscut-bin     # Fast video trimming without re-encoding
     stable.qtractor            # Audio workstation
+    stable.audacity            # Audio editor
+    stable.easyeffects         # Real-time audio effects for microphone (EQ, noise reduction)
     stable.inkscape            # Vector graphics
     stable.gimp                # Image editor
     stable.pavucontrol       # Audio volume control
@@ -790,11 +792,11 @@ in
     # ══════════════════════════════════════════════════════════
     # Specialized Tools
     # ══════════════════════════════════════════════════════════
-    stable.android-tools     # Android development tools
-    stable.logseq            # Knowledge management (stable.logseq found earlier)
+    stable.logseq            # Knowledge management
+    stable.android-tools     # Android ADB / fastboot
     stable.texstudio         # LaTeX editor
-    stable.texlive.combined.scheme-medium # LaTeX compiler (pdflatex, etc)
-    stable.tectonic          # Modern C++ LaTeX compiler (no setup required)
+    stable.texliveFull       # Full LaTeX distribution
+    stable.tectonic          # Modern LaTeX engine
     # stable.spec-kit          # Spec-Driven Development toolkit (not in stable 25.11)
 
     # ══════════════════════════════════════════════════════════
@@ -810,54 +812,45 @@ in
     stable.super-productivity  # ToDo list, Time tracker, Pomodoro timer (stable: Electron 39 broken on unstable)
 
     # ══════════════════════════════════════════════════════════
-    # Financial Markets / Trading (B3 & USA)
+    # Financial Markets / Trading (Python libs via nix-shell trading-env.nix)
     # ══════════════════════════════════════════════════════════
 
     # ── MT5 / Wine Management ────────────────────────────────
     stable.bottles             # Wine prefix manager (install MT5 here)
 
     # ── Windows VM (ProfitPro / Nelogica) ────────────────────
-    # ProfitPro is a .NET Windows app that does NOT work in Wine/Bottles.
-    # Run it in a lightweight Windows 10/11 VM via QEMU/KVM instead.
     stable.virt-manager        # GUI for managing QEMU/KVM virtual machines
     stable.spice-gtk           # SPICE client (clipboard, USB, display for VMs)
     stable.win-spice           # Windows SPICE guest drivers
     stable.virtio-win          # VirtIO drivers for Windows guests (disk, network, GPU)
     stable.quickemu            # Easy VM launcher (used by win10-vm.sh script)
 
-    # ── Technical Analysis C Libraries ───────────────────────
+    # ── Technical Analysis C Libraries (system-level) ────────
     stable.ta-lib              # TA-Lib C library (technical indicators)
     stable.quantlib            # QuantLib C++ (quantitative finance)
 
-    # ── Python: Market Data & Finance ────────────────────────
-    stable.python312Packages.yfinance         # Yahoo Finance (stocks, ETFs, options)
-    stable.python312Packages.mplfinance       # Candlestick / OHLCV charts
-    stable.python312Packages.beautifulsoup4   # Web scraping (B3/SEC filings)
-    stable.python312Packages.lxml             # Fast XML/HTML parsing
-    stable.python312Packages.selenium         # Browser automation (broker portals)
-    stable.python312Packages.tweepy           # Twitter API (market sentiment)
-    stable.python312Packages.arrow            # Human-friendly dates/times
+    # ── Trading Python Packages ──────────────────────────────
+    stable.python312Packages.yfinance       # Yahoo Finance data
+    stable.python312Packages.scipy          # Scientific computing
+    stable.python312Packages.websockets     # WebSocket client
+    stable.python312Packages.websocket-client # WebSocket client (alt)
+    stable.python312Packages.python-dotenv  # .env file loading
+    stable.python312Packages.psycopg2       # PostgreSQL driver
+    stable.python312Packages.redis          # Redis client
+    stable.python312Packages.celery         # Task queue
+    stable.python312Packages.dash           # Plotly dashboard
+    stable.python312Packages.streamlit      # Data app framework
+    stable.python312Packages.mplfinance     # Financial plotting
+    stable.python312Packages.ta             # Technical analysis (pure Python)
+    stable.python312Packages.ccxt           # Crypto exchange connectors
+    stable.python312Packages.pyarrow        # Apache Arrow / Parquet
+    stable.python312Packages.openpyxl       # Excel files
+    stable.python312Packages.xlrd           # Legacy Excel
+    stable.python312Packages.beautifulsoup4 # HTML parsing
+    stable.python312Packages.lxml           # XML/HTML parsing
+    stable.python312Packages.aiohttp        # Async HTTP
+    stable.python312Packages.dateutil       # Date utilities
 
-    # ── Python: Technical & Statistical Analysis ─────────────
-    stable.python312Packages.scipy            # Scientific computing
-    stable.python312Packages.statsmodels      # Econometrics / time-series
-    stable.python312Packages.seaborn          # Statistical visualization
-
-    # ── Python: Async & Real-Time Data ───────────────────────
-    stable.python312Packages.websockets       # WebSocket protocol
-    stable.python312Packages.websocket-client # WebSocket client
-    stable.python312Packages.aiohttp         # Async HTTP client/server
-
-    # ── Python: Scheduling & Notifications ───────────────────
-    stable.python312Packages.schedule          # Lightweight job scheduler
-    stable.python312Packages.apscheduler      # Advanced Python scheduler
-    stable.python312Packages.python-telegram-bot  # Telegram trade alerts
-    stable.python312Packages.pytz             # Timezone handling (B3 = America/Sao_Paulo)
-
-    # ── Python: Reporting & Data Export ──────────────────────
-    stable.python312Packages.openpyxl         # Excel read/write
-    stable.python312Packages.xlsxwriter       # Excel report generation
-    stable.python312Packages.pyyaml           # YAML config files
 
     # ══════════════════════════════════════════════════════════
     # Gaming (Lutris / Wine / Vulkan)
